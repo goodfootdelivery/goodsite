@@ -1,0 +1,58 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}This is my new project home page{% endblock title %}</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+					<a class="navbar-brand" href={% url 'home' %}>GoodFoot Delivery</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+		<div class="container">
+			{% block account %}
+
+			{% if user.is_authenticated %}
+				<p>Welcome, {{ user.username }} <a href={% url 'django.contrib.auth.views.logout' %}?next=/>[Logout]</a></p>
+			{% else %}
+				<a href="{% url 'django.contrib.auth.views.login' %}">[Login]</a>
+				<a href="{% url 'registration_register' %}">[Register]</a>
+			{% endif %}
+
+			{% endblock account %}
+		</div>
+
+	
+		<div class="container">
+			{% block content %}
+
+			{% endblock content %}
+		</div>
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    </body>
+</html>
