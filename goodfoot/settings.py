@@ -39,6 +39,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pinax_theme_bootstrap',
+    'bootstrapform',
+    'account',
     'delivery',
 )
 
@@ -51,6 +54,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'account.middleware.LocaleMiddleware',
+    'account.middleware.TimezoneMiddleware',
 )
 
 ROOT_URLCONF = 'goodfoot.urls'
@@ -69,6 +74,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.core.context_processors.request',
+                'pinax_theme_bootstrap.context_processors.theme',
+                'account.context_processors.account',
             ],
         },
     },
@@ -115,8 +122,9 @@ STATICFILES_DIRS = (
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # Django-Registration Setting
-ACCOUNT_ACTIVATION_DAYS = 7
-LOGIN_REDIRECT_URL = 'home'
+# ACCOUNT_ACTIVATION_DAYS = 7
+# LOGIN_REDIRECT_URL = 'home'
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Grappelli Settings
 GRAPPELLI_ADMIN_TITLE = 'GoodFoot Delivery'
