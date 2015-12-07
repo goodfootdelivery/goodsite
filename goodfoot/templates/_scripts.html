@@ -1,3 +1,12 @@
 {% load staticfiles %}
 
-<script src={% static 'dist/js/site.js' %}></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js"></script> -->
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script src={% static 'js/site.js' %}></script>
+
+<script src={% static 'js/geocomplete/jquery.geocomplete.js' %}></script>
+<script src={% static 'js/map.js' %}></script>
+
+

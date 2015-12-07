@@ -2,30 +2,27 @@
 
 {% load i18n %}
 
-{% block head_title %}pinax-project-account{% endblock %}
+
+{% block head_title %}GoodFoot Delivery{% endblock %}
 
 {% block body_class %}home{% endblock %}
 
 {% block body_base %}
+
     <section class="jumbotron">
         <div class="container">
             {% include "_messages.html" %}
-            <h1>{% blocktrans %}Welcome to<br>pinax-project-account{% endblocktrans %}</h1>
+            <h1>{% blocktrans %}Welcome to<br>GoodFoot Delivery!{% endblocktrans %}</h1>
             <p>
                 {% blocktrans %}
-                In addition to what is provided by the "zero" project, this project
-                provides thorough integration with django-user-accounts, adding
-                comprehensive account management functionality. It is a foundation
-                suitable for most sites that have user accounts.
+                Good Foot provides a personalized point-to-point delivery service on foot or via public transit as well as employment opportunities to people with developmental disabilities. We are a social enterprise and registered charity.
+By supporting Good Foot you are supporting an environmentally-friendly delivery service and helping members of your community get a foothold on independence.
                 {% endblocktrans %}
             </p>
-            {% if not user.is_authenticated %}
-            {% url "account_login" as login_url %}
-            {% url "account_signup" as signup_url %}
-            <p>{% blocktrans %}You can <a href="{{ login_url }}" class="btn btn-default">Log In</a> or <a href="{{ signup_url }}" class="btn btn-primary">Sign Up</a> to try out the site.{% endblocktrans %}</p>
-            {% endif %}
-        </div>
+		</div>
     </section>
+
+
     <section>
         <div class="container">
             <h2 class="text-center">{% blocktrans %}What is Pinax?{% endblocktrans %}</h2>
@@ -64,6 +61,7 @@
             </div>
         </div>
     </section>
+
     <section>
         <div class="container">
             <p class="lead text-center">
@@ -74,4 +72,5 @@
             </p>
         </div>
     </section>
+
 {% endblock %}
