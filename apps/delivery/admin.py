@@ -5,13 +5,9 @@ from .models import Order
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_id', 'user_id', 'date', 'courier')
-    list_filter = ['date', 'user_id', 'courier']
+    list_display = ('user', 'order_date', 'courier')
+    list_filter = ['order_date', 'user', 'courier']
 
 admin.site.register(Order, OrderAdmin)
-
-
-class OrderMetaAdmin(admin.ModelAdmin):
-    pass
 
 # admin.site.register(OrderMeta, OrderMetaAdmin)

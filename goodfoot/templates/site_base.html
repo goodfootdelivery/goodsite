@@ -3,22 +3,31 @@
 {% load staticfiles %}
 {% load i18n %}
 
+{% block css %}
+	<!-- <link rel="stylesheet" href="{% static "css/flat-ui.min.css" %}"> -->
+{% endblock %}
 
-{% block styles %}
-    {% include "_styles.html" %}
+{% block head_js %}
 {% endblock %}
 
 {% block extra_head_base %}
     {% block extra_head %}{% endblock %}
 {% endblock %}
 
-{% block footer %}
-    {% include "_footer.html" %}
+
+{% block nav %}
+	<ul class="nav navbar-nav">
+		<li><a href={% url 'delivery:placeorder' %}>Place Order</a></li>
+		<li><a href="#tab_one">Services & Pricing</a></li>
+	</ul>
 {% endblock %}
 
+{% block footer %}
+{% endblock %}
 
-{% block scripts %}
-    {% include "_scripts.html" %}
+{% block foot_js %}
+		<script src="{% static "js/theme.js" %}"></script>
+		<!-- <script src="{% static "js/flat-ui.min.js" %}"></script> -->
 {% endblock %}
 
 {% block extra_body_base %}

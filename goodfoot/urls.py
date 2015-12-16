@@ -23,7 +23,6 @@ urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^account/', include('account.urls')),
-    # url(r'^delivery/', include('delivery.urls', namespace='delivery')),
-    url(r'^placeorder/', views.OrderView.as_view(), name='placeorder'),
+    url(r'^delivery/', include('delivery.urls', namespace='delivery')),
     url(r'^$', views.HomeView.as_view(), name='home'),
 ]

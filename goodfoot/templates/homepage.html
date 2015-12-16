@@ -1,7 +1,7 @@
-{% extends "site_base.html" %}
+{% extends 'site_base.html' %}
 
 {% load i18n %}
-
+{% load staticfiles %}
 
 {% block head_title %}GoodFoot Delivery{% endblock %}
 
@@ -11,14 +11,7 @@
 
     <section class="jumbotron">
         <div class="container">
-            {% include "_messages.html" %}
-            <h1>{% blocktrans %}Welcome to<br>GoodFoot Delivery!{% endblocktrans %}</h1>
-            <p>
-                {% blocktrans %}
-                Good Foot provides a personalized point-to-point delivery service on foot or via public transit as well as employment opportunities to people with developmental disabilities. We are a social enterprise and registered charity.
-By supporting Good Foot you are supporting an environmentally-friendly delivery service and helping members of your community get a foothold on independence.
-                {% endblocktrans %}
-            </p>
+			<img src={% static 'images/good_1.jpg' %} style="max-width:100%; max-height:100%;" alt="good_one">
 		</div>
     </section>
 

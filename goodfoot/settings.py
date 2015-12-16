@@ -39,9 +39,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pinax_theme_bootstrap',
     'bootstrapform',
     'account',
+    'leaflet',
     'delivery',
 )
 
@@ -74,7 +74,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.core.context_processors.request',
-                'pinax_theme_bootstrap.context_processors.theme',
                 'account.context_processors.account',
             ],
         },
@@ -83,6 +82,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'goodfoot.wsgi.application'
 
+# Session Serializer
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -124,3 +125,6 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # Grappelli Settings
 GRAPPELLI_ADMIN_TITLE = 'GoodFoot Delivery'
+
+# Login Settings
+LOGIN_URL = '/account/login'

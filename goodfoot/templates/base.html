@@ -1,26 +1,26 @@
 {% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 
     <head>
         <meta charset="utf-8" />
-        <title>
-			{% block head_title_base %}
-				{% if SITE_NAME %}
-					{{ SITE_NAME }}
-				{% else %} GoodFoot Delivery 
-				{% endif %}
 
-				{% block head_title %}
+			<title>
+				{% block head_title_base %}
+					{% block head_title %}
+						GoodFoot Delivery 
+					{% endblock %}
 				{% endblock %}
-			{% endblock %}
-		</title>
+			</title>
 
         {% block viewport %}
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% endblock %}
+		
+		{% include "_styles.html" %}
 
-        {% block styles %}{% endblock %}
+		{% block css %}{% endblock %}
 
         {% block html5shim %}
             <!-- HTML5 shim, for IE6-8 support of HTML elements -->
@@ -32,6 +32,8 @@
         {% block extra_head_base %}
             {% block extra_head %}{% endblock %}
         {% endblock %}
+
+		{% block head_js %}{% endblock %}
     </head>
 
 
@@ -51,14 +53,12 @@
                                 <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                                     <span class="fa fa-bars"></span>
                                 </button>
-                                {% block site_brand %}<a class="navbar-brand" href="{% url "home" %}">GoodFoot Delivery</a>{% endblock %}
+                                {% block site_brand %}
+								<a class="navbar-brand" href="{% url "home" %}">GoodFoot Delivery</a>
+								{% endblock %}
                             </div>
                             <div class="collapse navbar-collapse navbar-responsive-collapse">
                                 {% block nav %}
-                                        <ul class="nav navbar-nav">
-											<li><a href={% url 'placeorder' %}>Place Order</a></li>
-                                            <li><a href="#tab_one">Services & Pricing</a></li>
-                                        </ul>
                                 {% endblock %}
                                 {% block account_bar %}{% include "_account_bar.html" %}{% endblock %}
                             </div>
@@ -71,7 +71,6 @@
             {% block body_base %}
                 <section id="content_body">
                     <div class="container">
-                        {% include "_messages.html" %}
                         {% block body %}
                         {% endblock %}
                     </div>
@@ -88,15 +87,9 @@
             {% endblock %}
         </div>
 
-        {% block scripts %}{% endblock %}
 
-        {% block theme_script %}
-            <script src="{% static "pinax/js/theme.js" %}"></script>
-        {% endblock %}
-
-		{% block extra_body_base %}
-            {% block extra_body %}{% endblock %}
-        {% endblock %}
+		{% include "_scripts.html" %}
+		{% block foot_js %}{% endblock %}
 
             </body>
 </html>

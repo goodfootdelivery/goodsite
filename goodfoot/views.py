@@ -6,6 +6,3 @@ class HomeView(TemplateView):
     title = 'home'
 
 
-class OrderView(TemplateView):
-    template_name = 'placeorder.html'
-    title = 'placeorder'
