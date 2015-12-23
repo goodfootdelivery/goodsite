@@ -128,3 +128,10 @@ GRAPPELLI_ADMIN_TITLE = 'GoodFoot Delivery'
 
 # Login Settings
 LOGIN_URL = '/account/login'
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (43.66, -79.40),
+    'DEFAULT_ZOOM': 11,
+    'MIN_ZOOM': 5,
+    'MAX_ZOOM': 18,
+}

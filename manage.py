@@ -1,4 +1,4 @@
-#!/Users/connorsullivan/workspace/good_env/bin/python
+#!/Users/connorsullivan/.virtualenvs/goodfoot/bin/python
 
 import os
 import sys

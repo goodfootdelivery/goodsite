@@ -17,12 +17,8 @@ class AddressForm(ModelForm):
                 'geo': 'formatted_address',
                 'type': 'hidden',
             }),
-            'latitude': TextInput(attrs={
-                'geo': 'lat',
-                'type': 'hidden',
-            }),
-            'longitude': TextInput(attrs={
-                'geo': 'lng',
+            'location': TextInput(attrs={
+                'geo': 'location',
                 'type': 'hidden',
             }),
             'comments': Textarea(attrs={

@@ -1,25 +1,21 @@
 {% extends "site_base.html" %}
 
 {% load i18n %}
-
-{% block head_title %}Order Successful{% endblock %}
-
-{% block body_class %}success{% endblock %}
-
-{% block body_base %}
-
 {% load leaflet_tags %}
 {% load bootstrap %}
+
+{% block head_title %}Order Successful{% endblock %}
+{% block body_class %}success{% endblock %}
+
+
+{% block body_base %}
 
 <div class="container">
 	<div class="container">
 		<h1>Success</h1>
-
 		<p>
 		This order has been submitted succesfully. Please refer to your user account page to view status.
 		</p>
-	
 	</div>
 </div>
-
 {% endblock %}

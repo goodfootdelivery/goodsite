@@ -6,19 +6,61 @@
 
 {% block head_title %}Confirm Order{% endblock %}
 {% block body_class %}changeorder{% endblock %}
+
+{% block css %}
+	{% leaflet_css %}	
+{% endblock %}
+
+{% block head_js %}
+	{% leaflet_js %}	
+	<script type="text/javascript">
+		function pickup(map, options) {
+			var content = `<ul class='list-unstyled'>
+							{% for x in orig.get_address %}
+								<li>{{x}}</li>
+							{% endfor %}
+						</ul>`
+			var mark = L.marker({{ orig.make_point }}).addTo(map);
+			mark.bindPopup(content).openPopup();
+			map.setView({{ orig.make_point }}, 17);
+		}
+		function dropoff(map, options) {
+			var content = `<ul class='list-unstyled'>
+							{% for x in dest.get_address %}
+								<li>{{x}}</li>
+							{% endfor %}
+						</ul>`
+			var mark = L.marker({{ dest.make_point }}).addTo(map);
+			mark.bindPopup(content).openPopup();
+			map.setView({{ dest.make_point }}, 17);
+		}
+	</script>
+{% endblock %}
+
 {% block body_base %}
 
-
 <div class="container">
-	<div class="container">
 		<legend><h2>Review and Confirm Order</h2></legend>
-
-		<h3>--{{ trip.dist }}--</h3>
+</div>
+<div class="container">
+	<div class="col-xs-6">
+		<legend>Pickup</legend>
+		{% leaflet_map 'pickup' callback='window.pickup' %}
+	</div>
+	<div class="col-xs-6">
+		<legend>Dropoff</legend>
+		{% leaflet_map 'dropoff' callback='window.dropoff' %}
+	</div>
+</div>
+<div class="container">
+		<h3>--{{ order.get_duration }}--</h3>
 
 		<form action="{% url 'delivery:confirmorder' %}" method="POST">
 
 		{% csrf_token %}
+</div>
 
+<div class="container">
 		{% for radio, price in prices %}
 		<div class="col-xs-4">
 			<label>
@@ -28,20 +70,22 @@
 			</label>
 		</div>
 		{% endfor %}
+
 		{% if form.errors %}
-    {% for field in form %}
-        {% for error in field.errors %}
-            <div class="alert alert-error">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-error">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-{% endif %}
+			{% for field in form %}
+				{% for error in field.errors %}
+					<div class="alert alert-error">
+						<strong>{{ error|escape }}</strong>
+					</div>
+				{% endfor %}
+			{% endfor %}
+
+			{% for error in form.non_field_errors %}
+				<div class="alert alert-error">
+					<strong>{{ error|escape }}</strong>
+				</div>
+			{% endfor %}
+		{% endif %}
 
 			<div class="col-xs-12">
 				<div class="form-group" style="float:right;">
@@ -51,7 +95,5 @@
 			</div>
 			<!-- <input type="submit" value="submit"> -->
 		</form>
-	
-	</div>
 </div>
 {% endblock %}

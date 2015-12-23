@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect as redirect
 from django.http import HttpResponse as say
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 
 from .forms import AddressForm, OrderForm, ServiceForm
-from .delivery import Mapper
+from .models import Order
 
 
 # Views for Delivery App
@@ -13,8 +14,6 @@ from .delivery import Mapper
 start = 'pickup'
 end = 'dropoff'
 details = 'details'
-
-PRICES = [1.50, 2.34, 7.54]
 
 
 @login_required
@@ -25,19 +24,24 @@ def placeorder(request):
 
     if request.method == 'POST':
         if form1.is_valid() & form2.is_valid() & form3.is_valid():
-            orig = form1.cleaned_data
-            dest = form2.cleaned_data
-
-            # Add exception handling Here
-            trip = Mapper(orig['address'], dest['address'])
-            # and Rerender this template
-
+            origin = form1.save(commit=False)
+            destin = form2.save(commit=False)
             ordd = form3.cleaned_data
 
-            request.session['trip'] = trip
-            request.session['form1'] = orig
-            request.session['form2'] = dest
-            request.session['form3'] = ordd
+            order = Order(pickup=origin, dropoff=destin)
+            order.delivery_date = ordd['delivery_date']
+            order.envelopes = ordd['envelopes']
+            order.boxes = ordd['boxes']
+            order.rolls = ordd['rolls']
+
+            order.set_dist_mat()
+
+            # Add exception handling Here
+            # and Rerender this template
+
+            request.session['orig'] = origin
+            request.session['dest'] = destin
+            request.session['order'] = order
 
             return redirect(reverse('delivery:confirmorder'))
 
@@ -47,18 +51,32 @@ def placeorder(request):
 
 def confirmorder(request):
     form = ServiceForm(request.POST or None)
-    trip = request.session['trip']
-    # Calculate Price Vector
-    vect = trip.prices(PRICES)
-    price_choices = zip(form['service'], vect)
+    order = request.session['order']
+    price_choices = zip(form['service'], order.get_prices)
 
     context = {'form': form}
-    context.update({'trip': trip})
-    context.update({'prices': price_choices})
+    context.update({'prices': price_choices,
+                    'order': order,
+                    'orig': request.session['orig'],
+                    'dest': request.session['dest'],
+                    })
 
     if request.method == 'POST':
         if form.is_valid():
-            request.session['form4'] = form
+            ordd = form.cleaned_data
+            orig = request.session['orig']
+            dest = request.session['dest']
+            order = request.session['order']
+
+            orig.user = User.objects.get(username=request.user)
+            dest.user = User.objects.get(username=request.user)
+            order.user = User.objects.get(username=request.user)
+            orig.save()
+            dest.save()
+
+            order.service = ordd['service']
+            order.save()
+
             return redirect(reverse('delivery:success'))
 
     return render(request, 'delivery/confirmorder.html', context)
