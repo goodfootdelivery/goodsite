@@ -5,15 +5,15 @@ from .models import Order, Address
 
 
 class OrderAdmin(admin.ModelAdmin):
-    exclude = ['dist_mat', 'status']
-    list_display = ['user', 'order_date', 'courier', 'get_duration']
+    exclude = ['dist_mat', 'issue']
+    list_display = ['user', 'order_date', 'courier', 'duration']
     list_filter = ['order_date', 'user', 'courier']
 
 
 class AddressAdmin(admin.ModelAdmin):
     # form = AddressForm
     exclude = ['location']
-    list_display = ['user', 'address', 'contact_name', 'contact_number']
+    list_display = ['user', 'contact_name', 'contact_number']
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Address, AddressAdmin)

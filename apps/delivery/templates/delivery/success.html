@@ -11,6 +11,33 @@
 {% block body_base %}
 
 <div class="container">
+			<div class="col-xs-12 col-sm-6">
+				<div class="col-xs-12">
+					<legend>Date & Time</legend>
+				</div>
+				<div class="col-xs-6">
+					{{ form3.delivery_date|bootstrap}}
+				</div>
+				<div class="col-xs-6">
+					{{ form3.ready_time|bootstrap}}
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-6">
+				<div class="col-xs-12">
+					<legend>Packages</legend>
+				</div>
+				<div class="col-xs-4">
+					{{ form3.envelopes|bootstrap}}
+				</div>
+				<div class="col-xs-4">
+					{{ form3.rolls|bootstrap}}
+				</div>
+				<div class="col-xs-4">
+					{{ form3.boxes|bootstrap}}
+				</div>
+			</div>
+
 	<div class="container">
 		<h1>Success</h1>
 		<p>

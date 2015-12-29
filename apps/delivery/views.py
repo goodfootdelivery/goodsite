@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect as redirect
-from django.http import HttpResponse as say
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 
@@ -17,46 +16,48 @@ details = 'details'
 
 
 @login_required
-def placeorder(request):
+def set_addr(request):
     form1 = AddressForm(request.POST or None, auto_id='%s', prefix=start)
     form2 = AddressForm(request.POST or None, auto_id='%s', prefix=end)
-    form3 = OrderForm(request.POST or None, prefix=details)
+    form3 = OrderForm(request.POST or None, auto_id='%s', prefix=details)
 
     if request.method == 'POST':
         if form1.is_valid() & form2.is_valid() & form3.is_valid():
             origin = form1.save(commit=False)
             destin = form2.save(commit=False)
-            ordd = form3.cleaned_data
-
             order = Order(pickup=origin, dropoff=destin)
-            order.delivery_date = ordd['delivery_date']
-            order.envelopes = ordd['envelopes']
-            order.boxes = ordd['boxes']
-            order.rolls = ordd['rolls']
-
+            # Test Address Data
             order.set_dist_mat()
+            print order.dist_mat
 
-            # Add exception handling Here
-            # and Rerender this template
+            info = form3.cleaned_data
+            order.delivery_date = info['delivery_date']
 
-            request.session['orig'] = origin
-            request.session['dest'] = destin
             request.session['order'] = order
-
             return redirect(reverse('delivery:confirmorder'))
 
-    context = {'form1': form1, 'form2': form2, 'form3': form3}
-    return render(request, 'delivery/placeorder.html', context)
+    return render(request, 'delivery/placeorder.html', {
+        'form1': form1,
+        'form2': form2,
+        'form3': form3,
+    })
+
+def set_parcels(request):
+    form1 = AddressForm(request.POST or None, auto_id='%s', prefix=start)
+    form2 = AddressForm(request.POST or None, auto_id='%s', prefix=end)
+    pass
+
 
 
 def confirmorder(request):
     form = ServiceForm(request.POST or None)
     order = request.session['order']
-    price_choices = zip(form['service'], order.get_prices)
+    price_choices = zip(form['service'], order.prices)
 
     context = {'form': form}
     context.update({'prices': price_choices,
                     'order': order,
+                    'form': form,
                     'orig': request.session['orig'],
                     'dest': request.session['dest'],
                     })
@@ -79,7 +80,13 @@ def confirmorder(request):
 
             return redirect(reverse('delivery:success'))
 
-    return render(request, 'delivery/confirmorder.html', context)
+    return render(request, 'delivery/confirmorder.html',
+                                {'prices': price_choices,
+                                'order': order,
+                                'form': form,
+                                'orig': request.session['orig'],
+                                'dest': request.session['dest'],
+                                })
 
 
 def success(request):

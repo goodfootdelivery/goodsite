@@ -1,9 +1,9 @@
 from django import forms
 from django.forms import ModelForm, TextInput, Textarea, NumberInput, TimeInput
-from .models import Address, SERVICES
-from functools import partial
+from .models import Address, Parcel
+from .delivery import SERVICES, PARCELS
 
-# Wed Dec  9 13:38:57 2015
+# Tue Dec 29 15:31:41 2015
 
 
 class AddressForm(ModelForm):
@@ -13,8 +13,32 @@ class AddressForm(ModelForm):
         model = Address
         exclude = ['user']
         widgets = {
-            'address': TextInput(attrs={
+            'formatted': TextInput(attrs={
                 'geo': 'formatted_address',
+                'type': 'hidden',
+            }),
+            'number': TextInput(attrs={
+                'geo': 'street_number',
+                'type': 'hidden',
+            }),
+            'street': TextInput(attrs={
+                'geo': 'route',
+                'type': 'hidden',
+            }),
+            'locality': TextInput(attrs={
+                'geo': 'locality',
+                'type': 'hidden',
+            }),
+            'postal_code': TextInput(attrs={
+                'geo': 'postal_code',
+                'type': 'hidden',
+            }),
+            'region': TextInput(attrs={
+                'geo': 'administrative_area_level_1',
+                'type': 'hidden',
+            }),
+            'country': TextInput(attrs={
+                'geo': 'country',
                 'type': 'hidden',
             }),
             'location': TextInput(attrs={
@@ -29,29 +53,14 @@ class AddressForm(ModelForm):
 
 class OrderForm(forms.Form):
     delivery_date = forms.DateField()
-    ready_time = forms.TimeField(
-        widget=TimeInput(format='%H:%M')
-    )
-    envelopes = forms.IntegerField(
-        min_value=0,
-        widget=NumberInput(attrs={
-            'value': 0,
-        })
-    )
-    rolls = forms.IntegerField(
-        min_value=0,
-        widget=NumberInput(attrs={
-            'value': 0,
-        })
-    )
-    boxes = forms.IntegerField(
-        min_value=0,
-        widget=NumberInput(attrs={
-            'value': 0,
-        })
-    )
+    ready_time = forms.TimeField(widget=TimeInput(format='%H:%M'))
+    parcel = forms.ChoiceField(widget=forms.RadioSelect, choices=PARCELS)
+
+
+class ParcelForm(ModelForm):
+    class Meta:
+        model = Parcel
 
 
 class ServiceForm(forms.Form):
     service = forms.ChoiceField(widget=forms.RadioSelect, choices=SERVICES)
-
