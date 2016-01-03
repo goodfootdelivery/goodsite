@@ -1,51 +1,30 @@
 import googlemaps
 import easypost
 
+
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
-PRICE_VECTOR = [1.50, 2.34, 7.54]
+PRICE_VECTOR = [0.0075, 0.005, 0.004]
 
-# Need To Add Exceptions for Invalid Addresses
-# And Connection Issues
+SERVICES = (
+        ('EX', 'Express'),
+        ('SD', 'Same Day'),
+        ('ND', 'Next Day'),
+    )
 
-
-class Mapper(object):
-    _client = googlemaps.Client(key=GKEY)
-
-    def __init__(self, orig, dest, md='transit'):
-        self.dist_mat = self._client.distance_matrix(orig, dest, mode=md)
-        # Distance In Km and Point Value
-        self.__distance = self.dist_mat['rows'][0]['elements'][0]['duration']['text']
-        self.__points = self.dist_mat['rows'][0]['elements'][0]['duration']['value']
-        self.origin = orig
-        self.destin = dest
-
-    @property
-    def one(self):
-        addr = self.origin.split(',')
-        return [x.strip() for x in addr]
-
-    @property
-    def two(self):
-        addr = self.destin.split(',')
-        return [x.strip() for x in addr]
-
-    @property
-    def dist(self):
-        return self.__distance
-
-    @property
-    def pnts(self):
-        return self.__points
-
-    def prices(self, array):
-        return [float(self.__points)*x for x in array]
+STATUSES = (
+        ('RE', 'Recieved'),
+        ('AS', 'Assigned'),
+        ('TR', 'In Transit'),
+        ('DE', 'Delivered'),
+        ('PD', 'Paid'),
+    )
 
 
-tdot = '17 Raglan Ave, Toronto, ON M6C 2K7, Canada'
-home = '48 Parkview Court, Chatham, ON N7M 6H9, Canada'
-buxx = 'Nonsense'
-
+### TESTING ###
 if __name__ == '__main__':
+    tdot = '17 Raglan Ave, Toronto, ON M6C 2K7, Canada'
+    home = '48 Parkview Court, Chatham, ON N7M 6H9, Canada'
+    buxx = 'Nonsense'
 
 
     x = 29

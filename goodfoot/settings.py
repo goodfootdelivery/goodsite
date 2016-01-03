@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'account',
     'leaflet',
     'delivery',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
