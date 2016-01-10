@@ -12,7 +12,6 @@
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
@@ -92,7 +92,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -120,9 +120,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'goodfoot', 'static'),
 )
 
-# Change Applications Directoryk
-sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-
 
 # Grappelli Settings
 GRAPPELLI_ADMIN_TITLE = 'GoodFoot Delivery'
@@ -135,4 +132,8 @@ LEAFLET_CONFIG = {
     'DEFAULT_ZOOM': 11,
     'MIN_ZOOM': 5,
     'MAX_ZOOM': 18,
+}
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 10
 }
