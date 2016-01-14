@@ -11,6 +11,7 @@
 # """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sys
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -92,7 +93,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
     }
 }
 
@@ -110,6 +111,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Site Settings
+SITE_ID = 1
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -120,6 +124,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'goodfoot', 'static'),
 )
 
+sys.path.insert(1, os.path.join(BASE_DIR, 'apps'))
 
 # Grappelli Settings
 GRAPPELLI_ADMIN_TITLE = 'GoodFoot Delivery'

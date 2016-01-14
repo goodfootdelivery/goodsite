@@ -1,0 +1,89 @@
+<div class="row" ng-controller="AddressCtrl">
+
+	<!-- <pickup></pickup> -->
+
+<div class="col-sm-6">
+	<div class="form-group">
+		<label class="control-label" for="pickup.result">Pickup</label>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				options = "options"
+				details = "pickup.details" 
+				ng-model = "pickup.result"/>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-7">
+			<label class="control-label" for="pickup.name">Name</label>
+			<input class="form-control" type="text" ng-model = "pickup.name"/>
+		</div>
+		<div class="col-sm-5">
+			<label class="control-label" for="pickup.number">Number</label>
+			<input class="form-control" type="text" ng-model="pickup.number"/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-8">
+			<label class="control-label" for="pickup.reference">Reference ID</label>
+			<input class="form-control" type="text" ng-model="pickup.reference"/>
+		</div>
+		<div class="col-sm-4">
+			<label class="control-label" for="pickup.unit">Unit</label>
+			<input class="form-control" type="text" ng-model="pickup.unit"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label" for="pickup.spins">Special Instructions</label>
+		<input class="form-control" type="text" ng-model="pickup.spins"/>
+	</div>
+</div>
+
+	<!-- <dropoff></dropoff> -->
+
+<div class="col-sm-6">
+	<div class="form-group">
+		<label class="control-label" for="dropoff.result">Dropoff</label>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				options = "options"
+				details = "dropoff.details" 
+				ng-model = "dropoff.result"/>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-7">
+			<label class="control-label" for="dropoff.name">Name</label>
+			<input class="form-control" type="text" ng-model="dropoff.name"/>
+		</div>
+		<div class="col-sm-5">
+			<label class="control-label" for="dropoff.number">Number</label>
+			<input class="form-control" type="text" ng-model="dropoff.number"/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-8">
+			<label class="control-label" for="dropoff.reference">Reference ID</label>
+			<input class="form-control" type="text" ng-model="dropoff.reference"/>
+		</div>
+		<div class="col-sm-4">
+			<label class="control-label" for="dropoff.unit">Unit</label>
+			<input class="form-control" type="text" ng-model="dropoff.unit"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label" for="dropoff.spins">Special Instructions</label>
+		<input class="form-control" type="text" ng-model="dropoff.spins"/>
+	</div>
+</div>
+
+<!-- <check></check> -->
+<div class="row">
+	<input type="button" value="check" ng-click="check()">
+	<div>
+		|| form | json ||
+	</div>
+</div>
+
+</div>
