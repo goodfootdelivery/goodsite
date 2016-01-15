@@ -1,0 +1,26 @@
+{
+  "name": "GoodFoot Delivery App",
+  "homepage": "https://github.com/connorsullivan/goodfoot",
+  "description": "Angular.js frontend for GoodFoot Delivery Order Process",
+  "main": "",
+  "moduleType": [],
+  "authors": [
+    "Connor Sullivan"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap": "~1.0.3",
+    "bootstrap": "~3.3.6",
+    "angular": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "ngAutocomplete": "~1.0.0"
+  }
+}
