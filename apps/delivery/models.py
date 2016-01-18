@@ -9,6 +9,7 @@ class Address(models.Model):
     contact_number = models.CharField(max_length=12, blank=True)
     street = models.CharField(max_length=100, null=True)
     postal_code = models.CharField(max_length=10, null=True)
+    city = models.CharField(max_length=50, null=True)
     region = models.CharField(max_length=2, null=True)
     country = models.CharField(max_length=2, null=True)
     unit = models.CharField(max_length=20, blank=True)
@@ -18,6 +19,24 @@ class Address(models.Model):
 
     def __str__(self):
         return '%s, %s' % (self.street, self.region)
+
+    @property
+    def easypost(self):
+        return {
+            'name': self.contact_name or None,
+            'phone': self.contact_number or None,
+            'street1': self.street,
+            'street2': self.unit or None,
+            'city': self.city,
+            'state': self.region,
+            'country': self.country,
+            'zip': self.postal_code,
+        }
+
+    def formatted(self):
+        return self.street + ', ' + self.city + ', ' \
+            + self.region + ' ' + self.postal_code + ', ' \
+            + self.country
 
 
 class Parcel(models.Model):

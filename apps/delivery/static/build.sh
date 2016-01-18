@@ -3,7 +3,7 @@
 # Script to move all frontend files to base directories
 # To import access
 
-BASE=~/workspace/goodfoot/front
+BASE=~/workspace/goodfoot/static
 MODS=$BASE/mods
 
 #If directories exist

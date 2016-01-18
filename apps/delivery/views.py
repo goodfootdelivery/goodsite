@@ -1,22 +1,17 @@
-from django.contrib.auth.models import User
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
+from rest_framework.exceptions import ValidationError
+# from rest_framework.reverse import reverse
 
 from rest_framework import permissions
 from rest_framework import viewsets
-from rest_framework.generics import (ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView, ListAPIView, RetrieveAPIView)
 
-from .models import Address, Order
-from .serializers import AddressSerializer, UserSerializer, OrderSerializer
+from .models import Address, Order, Shipment
+from .serializers import AddressSerializer, OrderSerializer, ShipmentSerializer
 from .permissions import IsOwnerOrReadOnly
 
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+import easypost
+TEST_EP_KEY = 'yARJbUTstAI0WNeVQLxK4g'
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -33,10 +28,44 @@ class AddressViewSet(viewsets.ModelViewSet):
 
 
 class ShipmentViewSet(viewsets.ModelViewSet):
-    def perform_create(self):
-        # Create Easypost Shipment
-        pass
-    pass
+    serializer_class = ShipmentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_queryset(self):
+        return Shipment.objects.all()
+
+    def perform_create(self, serializer):
+        pickup = serializer.validated_data['pickup']
+        dropoff = serializer.validated_data['dropoff']
+        parcel = serializer.validated_data['parcel']
+
+        if dropoff.city == 'Toronto':
+            serializer.save()
+            return
+
+        easypost.api_key = TEST_EP_KEY
+
+        shipment = easypost.Shipment.create(
+            from_address = pickup.easypost,
+            to_address = dropoff.easypost,
+            parcel={
+                'length': parcel.get('length'),
+                'width': parcel.get('width'),
+                'height': parcel.get('height'),
+                'weight': parcel.get('weight'),
+            }
+        )
+
+        if not shipment.rates:
+            raise ValidationError('Invalid Shipment')
+        else:
+            shipment.buy(
+                rate = {'id': shipment.rates[0].id}
+            )
+            serializer.save(
+                tracking_code = shipment.tracking_code,
+                postal_label = shipment.postage_label.label_url
+            )
 
 
 class OrderViewSet(viewsets.ModelViewSet):

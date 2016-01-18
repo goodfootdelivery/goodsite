@@ -21,6 +21,7 @@ STATUSES = (
         ('PD', 'Paid'),
     )
 
+
 if __name__ == '__main__':
     easypost.api_key = TEST_EP_KEY
 
@@ -58,4 +59,17 @@ if __name__ == '__main__':
         parcel = parcel
     )
 
-    print shipment
+    if not shipment.rates:
+        print 'Order Failed'
+    else:
+        print 'Order Success'
+        for rate in shipment.rates:
+            print rate.id
+            print rate.rate
+
+        shipment.buy(
+            rate = {'id': shipment.rates[0].id}
+        )
+
+        print shipment.postage_label.label_url
+        print shipment.tracking_code

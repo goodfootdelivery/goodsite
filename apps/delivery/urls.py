@@ -5,13 +5,13 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r'users', views.UserViewSet)
 router.register(r'addresses', views.AddressViewSet, 'address')
 router.register(r'orders', views.OrderViewSet)
+router.register(r'shipments', views.ShipmentViewSet, 'shipment')
 
 urlpatterns = [
-    url (r'^', include(router.urls)),
+    url(r'^', include(router.urls)),
     url(r'check/$', views.check_trip, name='check_trip')
 ]
 
-urlpatterns += router.urls
+# urlpatterns += router.urls
