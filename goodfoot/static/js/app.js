@@ -7,7 +7,8 @@ var config = function($interpolateProvider){
 
 
 var addressServ = function($resource){
-	var url = 'http://jsonplaceholder.typicode.com/users/:user';
+	var url = 'http://127.0.0.1:8000/api/addresses/'
+	// var url = 'http://jsonplaceholder.typicode.com/users/:user';
 	return $resource(url, {user: '@user'})
 };
 addressServ.$inject = ['$resource'];

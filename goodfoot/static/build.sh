@@ -3,21 +3,13 @@
 # Script to move all frontend files to base directories
 # To import access
 
-BASE=~/workspace/goodfoot/delivery/static
+BASE=~/workspace/goodfoot/goodfoot/static
 MODS=$BASE/mods
 
-#If directories exist
-if [ -d $BASE/css ] || [ -d $BASE/js ]
-then
-	test -d $BASE/css && rm -rf $BASE/css
-	test -d $BASE/js && rm -rf $BASE/js
-	test -d $BASE/fonts && rm -rf $BASE/fonts
-fi
-
-# Make new dirs
-mkdir $BASE/css && CSS=$BASE/css
-mkdir $BASE/js && JS=$BASE/js
-mkdir $BASE/fonts && FONTS=$BASE/fonts
+# Target Folders
+CSS=$BASE/css
+JS=$BASE/js
+FONTS=$BASE/fonts
 
 #Link files from dependencies
 

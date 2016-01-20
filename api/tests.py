@@ -6,6 +6,7 @@ USER = 'sully'
 PSWD = 'koncluv102'
 # Create your tests here.
 
+
 class AddressTest(APITestCase):
     def setUp(self):
         # John, ID_1
@@ -16,6 +17,6 @@ class AddressTest(APITestCase):
         self.client.login(username='jane', password='janepassword')
 
     def test_address_list(self):
-        url = reverse('delivery:address-list')
+        url = reverse('address-list')
         request = self.client.get(url, format='json')
         print request.data

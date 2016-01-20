@@ -42,8 +42,8 @@ INSTALLED_APPS = (
     'bootstrapform',
     'account',
     'leaflet',
-    'delivery',
     'rest_framework',
+    'api',
 )
 
 MIDDLEWARE_CLASSES = (

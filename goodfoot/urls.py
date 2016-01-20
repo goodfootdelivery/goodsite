@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^account/', include('account.urls')),
 
     # API
-    url(r'^api/', include('delivery.urls')),
+    url(r'^api/', include('api.urls')),
 
     # Goodfoot
     url(r'^$', views.HomeView.as_view(), name='home'),
