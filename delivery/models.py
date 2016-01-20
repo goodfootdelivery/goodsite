@@ -13,7 +13,6 @@ class Address(models.Model):
     region = models.CharField(max_length=2, null=True)
     country = models.CharField(max_length=2, null=True)
     unit = models.CharField(max_length=20, blank=True)
-    saved = models.BooleanField(default=False)
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
     comments = models.CharField(max_length=200, blank=True)

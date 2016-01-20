@@ -10,7 +10,7 @@ OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
 
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
-    link = serializers.HyperlinkedIdentityField(view_name='delivery:address-detail')
+    link = serializers.HyperlinkedIdentityField(view_name='address-detail')
 
     class Meta:
         model = Address
@@ -33,11 +33,11 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     tracking_code = serializers.ReadOnlyField()
     postal_label = serializers.ReadOnlyField()
     pickup = serializers.HyperlinkedRelatedField(
-        view_name = 'delivery:address-detail',
+        view_name = 'address-detail',
         queryset = Address.objects.all()
     )
     dropoff = serializers.HyperlinkedRelatedField(
-        view_name = 'delivery:address-detail',
+        view_name = 'address-detail',
         queryset = Address.objects.all()
     )
     parcel = ParcelSerializer()

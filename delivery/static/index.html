@@ -15,7 +15,12 @@
 	<legend>Order Form</legend>
 	<form name="mainForm" no-validate>
 			<ng-include src="'address_form.html'"></ng-include>
-	
+
+<div class="row" ng-repeat="usr in users">
+	<ul>
+		<li><strong>|| usr.name ||</strong> || usr.email || </li>
+	</ul>
+</div>
 			
 	</form>
 </div>
