@@ -7,10 +7,15 @@ from . import views
 
 
 urlpatterns = [
+    # Overhead
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^account/', include('account.urls')),
-    url(r'^delivery/', include('delivery.urls', namespace='delivery')),
+
+    # API
+    url(r'^api/', include('delivery.urls')),
+
+    # Goodfoot
     url(r'^$', views.HomeView.as_view(), name='home'),
 ]

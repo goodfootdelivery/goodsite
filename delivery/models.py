@@ -13,6 +13,7 @@ class Address(models.Model):
     region = models.CharField(max_length=2, null=True)
     country = models.CharField(max_length=2, null=True)
     unit = models.CharField(max_length=20, blank=True)
+    saved = models.BooleanField(default=False)
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
     comments = models.CharField(max_length=200, blank=True)
@@ -50,23 +51,16 @@ class Parcel(models.Model):
             (self.length, self.width, self.height, self.weight)
 
 
-class Shipment(models.Model):
+class Order(models.Model):
+    owner = models.ForeignKey('auth.User', related_name='orders')
     tracking_code = models.CharField(max_length=100, null=True, blank=True)
     postal_label = models.URLField(max_length=200, blank=True, null=True)
     pickup = models.ForeignKey(Address, null=True, related_name='start')
     dropoff = models.ForeignKey(Address, null=True, related_name='end')
-    parcel = models.OneToOneField(Parcel, null=True)
-
-    def get_price(self):
-        pass
-
-
-class Order(models.Model):
-    owner = models.ForeignKey('auth.User', related_name='orders')
+    parcel = models.ForeignKey(Parcel, null=True)
     order_date = models.DateField(auto_now_add=True)
     delivery_date = models.DateField(null=True)
     price = models.FloatField(blank=True, null=True)
-    shipment = models.OneToOneField(Shipment)
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
     service = models.CharField(max_length=2, choices=SERVICES, default=None)
     courier = models.ForeignKey(User, null=True,
@@ -74,3 +68,6 @@ class Order(models.Model):
 
     def __str__(self):
         return "Order: #%s, Date: %s" % (str(self.id), str(self.order_date))
+
+    def get_price(self):
+        pass

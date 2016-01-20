@@ -1,9 +1,9 @@
-<div class="row" ng-controller="AddressCtrl">
+<div class="row" ng-form="addressForm">
 
 	<!-- <pickup></pickup> -->
 
 <div class="col-sm-6">
-	<div class="form-group">
+	<fieldset class="form-group">
 		<label class="control-label" for="pickup.result">Pickup</label>
 			<input 
 				class="form-control"
@@ -12,8 +12,8 @@
 				options = "options"
 				details = "pickup.details" 
 				ng-model = "pickup.result"/>
-	</div>
-	<div class="form-group row">
+	</fieldset>
+	<fieldset class="form-group row">
 		<div class="col-sm-7">
 			<label class="control-label" for="pickup.name">Name</label>
 			<input class="form-control" type="text" ng-model = "pickup.name"/>
@@ -22,8 +22,8 @@
 			<label class="control-label" for="pickup.number">Number</label>
 			<input class="form-control" type="text" ng-model="pickup.number"/>
 		</div>
-	</div>
-	<div class="form-group row">
+	</fieldset>
+	<fieldset class="form-group row">
 		<div class="col-sm-8">
 			<label class="control-label" for="pickup.reference">Reference ID</label>
 			<input class="form-control" type="text" ng-model="pickup.reference"/>
@@ -32,11 +32,11 @@
 			<label class="control-label" for="pickup.unit">Unit</label>
 			<input class="form-control" type="text" ng-model="pickup.unit"/>
 		</div>
-	</div>
-	<div class="form-group">
+	</fieldset>
+	<fieldset class="form-group">
 		<label class="control-label" for="pickup.spins">Special Instructions</label>
-		<input class="form-control" type="text" ng-model="pickup.spins"/>
-	</div>
+		<input class="form-control" type="text" ng-model="pickup.comments"/>
+	</fieldset>
 </div>
 
 	<!-- <dropoff></dropoff> -->
@@ -74,15 +74,27 @@
 	</div>
 	<div class="form-group">
 		<label class="control-label" for="dropoff.spins">Special Instructions</label>
-		<input class="form-control" type="text" ng-model="dropoff.spins"/>
+		<input class="form-control" type="text" ng-model="dropoff.comments"/>
 	</div>
 </div>
 
 <!-- <check></check> -->
 <div class="row">
-	<input type="button" value="check" ng-click="check()">
-	<div>
-		|| form | json ||
+	<div class="col-md-12">
+		<input type="button" value="check" ng-click="check()">
+		<div>
+			|| form | json ||
+		</div>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-md-6">
+		<uib-datepicker ng-model="date">
+	</div>
+	<div class="col-md-6">
+		<uib-timepicker ng-model="time"></uib-timepicker>
 	</div>
 </div>
 

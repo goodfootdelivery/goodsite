@@ -1,11 +1,12 @@
 // GoodFoot Delivery Order Application
 // Thu 14 Jan 17:29:49 2016
 
-Config = function($interpolateProvider){
+config = function($interpolateProvider){
 	$interpolateProvider.startSymbol('||').endSymbol('||')
 };
 
-AddressCtrl = function($scope){
+
+mainCtrl = function($scope, $resource){
 	$scope.options = {
 		country: 'ca',
 		types: 'geocode',
@@ -25,14 +26,12 @@ AddressCtrl = function($scope){
 		$scope.pickup.reference = 'HERE';
 	};
 };
+AddressCtrl.$inject = [ '$scope', '$resource' ]
 
-addFactory = function($http){
-	var url = '127.0.0.1:8000/delivery/check/';
-};
 
 // MAIN //
 angular
-	.module('delivery', ['ngAutocomplete', 'ui.bootstrap', 'ngAnimate'])
-	.config(Config)
-	.controller('AddressCtrl', ['$scope', AddressCtrl])
+	.module('delivery', ['ngAutocomplete', 'ui.bootstrap', 'ngRoute', 'ngResource'])
+	.config(config)
+	.controller('mainCtrl', , mainCtrl])
 	.factory('addFactory', ['$http', 'addFactory'])

@@ -6,8 +6,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework import permissions
 from rest_framework import viewsets
 
-from .models import Address, Order, Shipment
-from .serializers import AddressSerializer, OrderSerializer, ShipmentSerializer
+from .models import Address, Order
+from .serializers import AddressSerializer, OrderSerializer
 from .permissions import IsOwnerOrReadOnly
 
 import easypost
@@ -27,14 +27,16 @@ class AddressViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class ShipmentViewSet(viewsets.ModelViewSet):
-    serializer_class = ShipmentSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+class OrderViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly)
 
     def get_queryset(self):
-        return Shipment.objects.all()
+        return Order.objects.all()
 
     def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
         pickup = serializer.validated_data['pickup']
         dropoff = serializer.validated_data['dropoff']
         parcel = serializer.validated_data['parcel']
@@ -64,18 +66,9 @@ class ShipmentViewSet(viewsets.ModelViewSet):
             )
             serializer.save(
                 tracking_code = shipment.tracking_code,
-                postal_label = shipment.postage_label.label_url
+                postal_label = shipment.postage_label.label_url,
+                owner=self.request.user
             )
-
-
-class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly)
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
 
 
 @api_view(['GET', 'POST'])

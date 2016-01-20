@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Address, Parcel, Order, Shipment
+from .models import Address, Parcel, Order
 
 import googlemaps
+import easypost
 
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
 OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
@@ -28,7 +29,7 @@ class ParcelSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('length', 'height', 'width', 'weight')
 
 
-class ShipmentSerializer(serializers.HyperlinkedModelSerializer):
+class OrderSerializer(serializers.HyperlinkedModelSerializer):
     tracking_code = serializers.ReadOnlyField()
     postal_label = serializers.ReadOnlyField()
     pickup = serializers.HyperlinkedRelatedField(
@@ -42,9 +43,9 @@ class ShipmentSerializer(serializers.HyperlinkedModelSerializer):
     parcel = ParcelSerializer()
 
     class Meta:
-        model = Shipment
-        fields = ( 'pickup', 'dropoff', 'parcel',
-                        'tracking_code', 'postal_label')
+        model = Order
+        fields = ( 'pickup', 'dropoff', 'parcel', 'order_date',
+                    'delivery_date', 'service', 'tracking_code', 'postal_label')
         depth = 1
 
     def create(self, validated_data):
@@ -55,9 +56,9 @@ class ShipmentSerializer(serializers.HyperlinkedModelSerializer):
             height = package.get('height'),
             weight = package.get('weight'),
         )
-        shipment = Shipment(parcel=parcel, **validated_data)
-        shipment.save()
-        return shipment
+        order = Order(parcel=parcel, **validated_data)
+        order.save()
+        return order
 
     def validate_pickup(self, value):
         if not value.city == 'Toronto':
@@ -89,10 +90,3 @@ class ShipmentSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError(
                 'Please Ensure both addresses are valid and try again'
             )
-
-
-
-class OrderSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Order
-        fields = ('order_date', 'delivery_date', 'service', 'shipment')
