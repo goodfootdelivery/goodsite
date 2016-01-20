@@ -1,7 +1,6 @@
 *.pyc
 *.swp
 *.swo
-
 errors.html
 test.json
 .DS_Store
