@@ -18,4 +18,5 @@ urlpatterns = [
 
     # Goodfoot
     url(r'^$', views.HomeView.as_view(), name='home'),
+    url(r'^delivery/', views.DeliveryView.as_view(), name='delivery'),
 ]

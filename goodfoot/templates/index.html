@@ -1,40 +1,151 @@
-<!DOCTYPE html>
+{% load staticfiles %}
+
+
 <html lang="en" ng-app="delivery">
+
+
+<!-- <head></head> -->
+
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href={% static "css/bootstrap.min.css" %}>
 
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-
-    <!-- Google Maps -->
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
-
-
 </head>
+
+
+<!-- <body></body> -->
+
+
 <body>
 <div ng-controller="mainCtrl" class="container">
 	<legend>Order Form</legend>
 	<form name="mainForm" no-validate>
-			<ng-include src="'address_form.html'"></ng-include>
 
-<div class="row" ng-repeat="usr in users">
-	<ul>
-		<li><strong>|| usr.name ||</strong> || usr.email || </li>
-	</ul>
+<div class="row" ng-form="addressForm">
+
+	<!-- <pickup></pickup> -->
+
+<div class="col-sm-6">
+	<fieldset class="form-group">
+		<label class="control-label" for="pickup.result">Pickup</label>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				options = "options"
+				details = "pickup.details" 
+				ng-model = "pickup.result"/>
+	</fieldset>
+	<fieldset class="form-group row">
+		<div class="col-sm-7">
+			<label class="control-label" for="pickup.name">Name</label>
+			<input class="form-control" type="text" ng-model = "pickup.name"/>
+		</div>
+		<div class="col-sm-5">
+			<label class="control-label" for="pickup.number">Number</label>
+			<input class="form-control" type="text" ng-model="pickup.number"/>
+		</div>
+	</fieldset>
+	<fieldset class="form-group row">
+		<div class="col-sm-8">
+			<label class="control-label" for="pickup.reference">Reference ID</label>
+			<input class="form-control" type="text" ng-model="pickup.reference"/>
+		</div>
+		<div class="col-sm-4">
+			<label class="control-label" for="pickup.unit">Unit</label>
+			<input class="form-control" type="text" ng-model="pickup.unit"/>
+		</div>
+	</fieldset>
+	<fieldset class="form-group">
+		<label class="control-label" for="pickup.spins">Special Instructions</label>
+		<input class="form-control" type="text" ng-model="pickup.comments"/>
+	</fieldset>
 </div>
+
+	<!-- <dropoff></dropoff> -->
+
+<div class="col-sm-6">
+	<div class="form-group">
+		<label class="control-label" for="dropoff.result">Dropoff</label>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				options = "options"
+				details = "dropoff.details" 
+				ng-model = "dropoff.result"/>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-7">
+			<label class="control-label" for="dropoff.name">Name</label>
+			<input class="form-control" type="text" ng-model="dropoff.name"/>
+		</div>
+		<div class="col-sm-5">
+			<label class="control-label" for="dropoff.number">Number</label>
+			<input class="form-control" type="text" ng-model="dropoff.number"/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-sm-8">
+			<label class="control-label" for="dropoff.reference">Reference ID</label>
+			<input class="form-control" type="text" ng-model="dropoff.reference"/>
+		</div>
+		<div class="col-sm-4">
+			<label class="control-label" for="dropoff.unit">Unit</label>
+			<input class="form-control" type="text" ng-model="dropoff.unit"/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label" for="dropoff.spins">Special Instructions</label>
+		<input class="form-control" type="text" ng-model="dropoff.comments"/>
+	</div>
+</div>
+
+<!-- <check></check> -->
+<div class="row">
+	<div class="col-md-12">
+		<input type="button" value="check" ng-click="check()">
+		<div>
+			|| form | json ||
+		</div>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-md-6">
+		<uib-datepicker ng-model="date">
+	</div>
+	<div class="col-md-6">
+		<uib-timepicker ng-model="time"></uib-timepicker>
+	</div>
+</div>
+
+</div>
+
+
+		
+		<input type="text" ng-model="tester"/>
+		
+		<div class="row" ng-repeat="usr in users">
+			<ul>
+				<li><strong>|| usr.name ||</strong> || usr.email || </li>
+			</ul>
+		</div>
 			
 	</form>
 </div>
 
 <!-- <Angular-Code></Angular-Code> -->
-<script src="js/angular.min.js"></script>
-<script src="js/ngAutocomplete.js"></script>
-<script src="js/ui-bootstrap.min.js"></script>
-<script src="js/ui-bootstrap-tpls.min.js"></script>
-<script src="js/angular-resource.min.js"></script>
+<script src={% static "js/angular.min.js" %}></script>
+<script src={% static "js/ngAutocomplete.js" %}></script>
+<script src={% static "js/ui-bootstrap.min.js" %}></script>
+<script src={% static "js/ui-bootstrap-tpls.min.js" %}></script>
+<script src={% static "js/angular-resource.min.js" %}></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
-
-<script src="app.js"></script>
+<script src={% static "js/app.js" %}></script>
 
 </body>
 </html>

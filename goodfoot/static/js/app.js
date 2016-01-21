@@ -1,34 +1,27 @@
 // GoodFoot Delivery Order Application
 // Thu 14 Jan 17:29:49 2016
 
-var config = function($interpolateProvider){
+config = function($interpolateProvider){
 	$interpolateProvider.startSymbol('||').endSymbol('||')
 };
 
+// addressServ = function($resource){
+// 	// var url = 'http://127.0.0.1:8000/api/addresses/'
+// 	var url = 'http://jsonplaceholder.typicode.com/users/:user';
+// 	return $resource(url, {user: '@user'})
+// };
+// mainCtrl.$inject = ['$resource'];
 
-var addressServ = function($resource){
-	var url = 'http://127.0.0.1:8000/api/addresses/'
-	// var url = 'http://jsonplaceholder.typicode.com/users/:user';
-	return $resource(url, {user: '@user'})
-};
-addressServ.$inject = ['$resource'];
-
-
-mainCtrl = function($scope, $resource, $http, addressServ){
-	$scope.pickup = {},
-	$scope.dropoff = {},
+mainCtrl = function($scope){
+	$scope.pickup = {};
+	$scope.dropoff = {};
 
 	$scope.options = {
 		country: 'ca',
 		types: 'geocode',
 	};
 
-	$scope.users = addressServ.query();
-
-	// var user_data = $http.get('http://jsonplaceholder.typicode.com/users');
-	// user_data.then( function(result){
-	// 		$scope.users = result.data;
-	// } );
+	// $scope.users = addressServ.query();
 
 	$scope.check = function(){
 		if($scope.pickup.details){
@@ -44,17 +37,16 @@ mainCtrl = function($scope, $resource, $http, addressServ){
 		$scope.pickup.reference = 'HERE';
 	};
 };
-mainCtrl.$inject = [ '$scope', '$resource', '$http', 'addressServ' ]
+mainCtrl.$inject = ['$scope'];
 
 // MAIN //
 angular
 	.module('delivery', [
 		'ngAutocomplete',
 		'ui.bootstrap',
-		'ngRoute',
 		'ngResource'
 	])
 
 	.config(config)
 	.controller('mainCtrl', mainCtrl)
-	.factory('addressServ', addressServ)
+	// .factory('addressServ', addressServ)
