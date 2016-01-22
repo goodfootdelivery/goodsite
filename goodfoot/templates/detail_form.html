@@ -1,0 +1,72 @@
+<div class="row" ng-form="detailForm">
+	<div class="col-sm-6">
+		<legend>When</legend>
+		<!-- <date></date> -->
+
+		<div class="row">
+			<div class="col-sm-7">
+				<div class="input-group">
+					<input type="text" class="form-control vertical-center" uib-datepicker-popup="||format||"
+						ng-model="dt" is-open="popup1.opened" min-date="minDate" show-weeks="false" max-date="maxDate" 
+						datepicker-options="dateOptions" date-disabled="disabled(date, mode)" 
+						ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default" 
+							ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+					</span>
+				</div>
+			</div>
+
+			<!-- <time></time> -->
+
+			<div class="col-sm-5">
+				<span style="float:right" uib-timepicker arrowkeys="false" show-spinners="false" ng-model="time"></span>
+			</div>
+		</div>
+
+		<!-- <datetimedisplay></datetimedisplay> -->
+
+		<div class="row">
+			<div class="space col-sm-12">
+				<pre class="alert alert-info">|| dt | date:"fullDate" ||. || time | date:"shortTime" ||</pre>
+			</div>
+		</div>
+	</div>
+
+	<!-- <rightcolumn></rightcolumn> -->
+
+	<div class="col-md-6">
+		<legend>Parcel</legend>
+
+		<fieldset class="row">
+			<div class="col-sm-4" id="chec">
+				<label class="btn btn-primary" ng-model="parcel" uib-btn-radio="||sml||">Small</label>
+			</div>
+			<div class="col-sm-4">
+				<label class="btn btn-primary" ng-model="parcel" uib-btn-radio="||med||">Medium</label>
+			</div>
+			<div class="col-sm-4">
+				<label class="btn btn-primary" ng-model="parcel" uib-btn-radio="||lrg||">Large</label>
+			</div>
+		</fieldset>
+
+		<fieldset class="form-group row">
+			<div class="col-sm-3">
+				<label class="control-label" for="parcel.length">Length</label>
+				<input class="form-control" type="text" ng-model="parcel.length"/>
+			</div>
+			<div class="col-sm-3">
+				<label class="control-label" for="parcel.width">Width</label>
+				<input class="form-control" type="text" ng-model="parcel.width"/>
+			</div>
+			<div class="col-sm-3">
+				<label class="control-label" for="parcel.height">Height</label>
+				<input class="form-control" type="text" ng-model="parcel.height"/>
+			</div>
+			<div class="col-sm-3">
+				<label class="control-label" for="parcel.weight">Weight</label>
+				<input class="form-control" type="text" ng-model="parcel.weight"/>
+			</div>
+		</fieldset>
+	</div>
+</div>

@@ -3,8 +3,21 @@
 	<!-- <pickup></pickup> -->
 
 <div class="col-sm-6">
+	<legend>Pickup Form</legend>
 	<fieldset class="form-group">
-		<label class="control-label" for="pickup.result">Pickup</label>
+		<div>
+			<label class="control-label" for="pickup.result">Address</label>
+			<span style="float:right" uib-dropdown on-toggle="toggled(open)">
+				<a href id="simple-dropdown" uib-dropdown-toggle>
+					Saved
+				</a>
+				<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+				</ul>
+			</span>
+		</div>
 			<input 
 				class="form-control"
 				type = "text" 
@@ -42,8 +55,21 @@
 	<!-- <dropoff></dropoff> -->
 
 <div class="col-sm-6">
+	<legend>Dropoff Form</legend>
 	<div class="form-group">
-		<label class="control-label" for="dropoff.result">Dropoff</label>
+		<div>
+			<label class="control-label" for="dropoff.result">Address</label>
+			<span style="float:right" uib-dropdown on-toggle="toggled(open)">
+				<a href id="simple-dropdown" uib-dropdown-toggle>
+					Saved
+				</a>
+				<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+				</ul>
+			</span>
+		</div>
 			<input 
 				class="form-control"
 				type = "text" 
@@ -79,23 +105,13 @@
 </div>
 
 <!-- <check></check> -->
-<div class="row">
+<!-- <div class="row">
 	<div class="col-md-12">
 		<input type="button" value="check" ng-click="check()">
 		<div>
 			|| form | json ||
 		</div>
 	</div>
-</div>
-
-
-<div class="row">
-	<div class="col-md-6">
-		<uib-datepicker ng-model="date">
-	</div>
-	<div class="col-md-6">
-		<uib-timepicker ng-model="time"></uib-timepicker>
-	</div>
-</div>
+</div> -->
 
 </div>
