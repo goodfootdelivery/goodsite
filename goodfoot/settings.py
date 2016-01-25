@@ -44,10 +44,14 @@ INSTALLED_APPS = (
     'leaflet',
     'rest_framework',
     'api',
+    # Dev only:
+    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Dev only:
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -91,8 +95,11 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dev',
+        'USER': 'root',
+        'PASSWORK': 'koncluv102',
+        'HOST': 'localhost',
     }
 }
 
@@ -139,3 +146,6 @@ LEAFLET_CONFIG = {
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
+
+# DEV ONLY, CORS HEADERS
+CORS_ORIGIN_ALLOW_ALL = True
