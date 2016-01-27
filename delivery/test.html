@@ -1,0 +1,36 @@
+<div class="container" ng-controller="TestCtrl as vm">
+
+	<h1>Module</h1>
+
+	<div>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				options = "vm.options"
+				details = "vm.pickup.details" 
+				ng-model = "vm.pickup.result"/>
+	</div>
+	<div><b>Pickup:</b>|| vm.pickup.result ||</div>
+	<div><b>Pickup:</b>|| vm.dropoff.result ||</div>
+	<div><b>Distance:</b>|| vm.distance ||</div>
+	
+	<div>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				options = "vm.options"
+				details = "vm.dropoff.details" 
+				ng-model = "vm.dropoff.result"/>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-12">
+			<input type="button" value="check" ng-click="vm.help()">
+		</div>
+	</div>
+</div>
+
+

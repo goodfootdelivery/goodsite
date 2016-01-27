@@ -1,114 +1,132 @@
+<!--
+*
+*					ADDRESS FORM
+*
+*										Wed 27 Jan 17:12:37 2016
+*
+-->
+
 <div class="row" ng-form="addressForm">
 
-	<!-- <pickup></pickup> -->
 
-<div class="col-sm-6">
-	<legend>Pickup Form</legend>
-	<fieldset class="form-group">
-		<div>
-			<label class="control-label" for="pickup.result">Address</label>
-			<span style="float:right" uib-dropdown on-toggle="toggled(open)">
-				<a href id="simple-dropdown" uib-dropdown-toggle>
-					Saved
-				</a>
-				<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-				</ul>
-			</span>
-		</div>
-			<input 
-				class="form-control"
-				type = "text" 
-				ng-autocomplete
-				options = "options"
-				details = "pickup.details" 
-				ng-model = "pickup.result"/>
-	</fieldset>
-	<fieldset class="form-group row">
-		<div class="col-sm-7">
-			<label class="control-label" for="pickup.name">Name</label>
-			<input class="form-control" type="text" ng-model = "pickup.name"/>
-		</div>
-		<div class="col-sm-5">
-			<label class="control-label" for="pickup.number">Number</label>
-			<input class="form-control" type="text" ng-model="pickup.number"/>
-		</div>
-	</fieldset>
-	<fieldset class="form-group row">
-		<div class="col-sm-8">
-			<label class="control-label" for="pickup.reference">Reference ID</label>
-			<input class="form-control" type="text" ng-model="pickup.reference"/>
-		</div>
-		<div class="col-sm-4">
-			<label class="control-label" for="pickup.unit">Unit</label>
-			<input class="form-control" type="text" ng-model="pickup.unit"/>
-		</div>
-	</fieldset>
-	<fieldset class="form-group">
-		<label class="control-label" for="pickup.spins">Special Instructions</label>
-		<input class="form-control" type="text" ng-model="pickup.comments"/>
-	</fieldset>
-</div>
+<!-- PICKUP -->
 
-	<!-- <dropoff></dropoff> -->
 
-<div class="col-sm-6">
-	<legend>Dropoff Form</legend>
-	<div class="form-group">
-		<div>
-			<label class="control-label" for="dropoff.result">Address</label>
-			<span style="float:right" uib-dropdown on-toggle="toggled(open)">
-				<a href id="simple-dropdown" uib-dropdown-toggle>
-					Saved
-				</a>
-				<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
-				</ul>
-			</span>
-		</div>
-			<input 
-				class="form-control"
-				type = "text" 
-				ng-autocomplete
-				options = "options"
-				details = "dropoff.details" 
-				ng-model = "dropoff.result"/>
+	<div class="col-sm-6">
+		<legend>Pickup Form</legend>
+		<fieldset class="form-group">
+			<div>
+				<label class="control-label" for="pickup.result">Address</label>
+				<span style="float:right" uib-dropdown on-toggle="toggled(open)">
+					<a href id="simple-dropdown" uib-dropdown-toggle>
+						Saved
+					</a>
+					<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
+						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+					</ul>
+				</span>
+			</div>
+				<input 
+					class="form-control"
+					type = "text" 
+					ng-autocomplete
+					options = "options"
+					details = "pickup.details" 
+					ng-model = "pickup.result"/>
+		</fieldset>
+		<fieldset class="form-group row">
+			<div class="col-sm-7">
+				<label class="control-label" for="pickup.name">Name</label>
+				<input class="form-control" type="text" ng-model = "pickup.name"/>
+			</div>
+			<div class="col-sm-5">
+				<label class="control-label" for="pickup.number">Number</label>
+				<input class="form-control" type="text" ng-model="pickup.number"/>
+			</div>
+		</fieldset>
+		<fieldset class="form-group row">
+			<div class="col-sm-8">
+				<label class="control-label" for="pickup.reference">Reference ID</label>
+				<input class="form-control" type="text" ng-model="pickup.reference"/>
+			</div>
+			<div class="col-sm-4">
+				<label class="control-label" for="pickup.unit">Unit</label>
+				<input class="form-control" type="text" ng-model="pickup.unit"/>
+			</div>
+		</fieldset>
+		<fieldset class="form-group">
+			<label class="control-label" for="pickup.spins">Special Instructions</label>
+			<input class="form-control" type="text" ng-model="pickup.comments"/>
+		</fieldset>
 	</div>
-	<div class="form-group row">
-		<div class="col-sm-7">
-			<label class="control-label" for="dropoff.name">Name</label>
-			<input class="form-control" type="text" ng-model="dropoff.name"/>
-		</div>
-		<div class="col-sm-5">
-			<label class="control-label" for="dropoff.number">Number</label>
-			<input class="form-control" type="text" ng-model="dropoff.number"/>
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-sm-8">
-			<label class="control-label" for="dropoff.reference">Reference ID</label>
-			<input class="form-control" type="text" ng-model="dropoff.reference"/>
-		</div>
-		<div class="col-sm-4">
-			<label class="control-label" for="dropoff.unit">Unit</label>
-			<input class="form-control" type="text" ng-model="dropoff.unit"/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="control-label" for="dropoff.spins">Special Instructions</label>
-		<input class="form-control" type="text" ng-model="dropoff.comments"/>
-	</div>
-</div>
 
-<!-- <check></check> -->
-<div class="row">
-	<div class="col-md-12">
-		<input type="button" value="check" ng-click="getDistance()">
+
+<!-- DROPOFF -->
+
+
+	<div class="col-sm-6">
+		<legend>Dropoff Form</legend>
+		<div class="form-group">
+			<div>
+				<label class="control-label" for="dropoff.result">Address</label>
+				<span style="float:right" uib-dropdown on-toggle="toggled(open)">
+					<a href id="simple-dropdown" uib-dropdown-toggle>
+						Saved
+					</a>
+					<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
+						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+					</ul>
+				</span>
+			</div>
+				<input 
+					class="form-control"
+					type = "text" 
+					ng-autocomplete
+					options = "options"
+					details = "dropoff.details" 
+					ng-model = "dropoff.result"/>
+		</div>
+		<div class="form-group row">
+			<div class="col-sm-7">
+				<label class="control-label" for="dropoff.name">Name</label>
+				<input class="form-control" type="text" ng-model="dropoff.name"/>
+			</div>
+			<div class="col-sm-5">
+				<label class="control-label" for="dropoff.number">Number</label>
+				<input class="form-control" type="text" ng-model="dropoff.number"/>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-sm-8">
+				<label class="control-label" for="dropoff.reference">Reference ID</label>
+				<input class="form-control" type="text" ng-model="dropoff.reference"/>
+			</div>
+			<div class="col-sm-4">
+				<label class="control-label" for="dropoff.unit">Unit</label>
+				<input class="form-control" type="text" ng-model="dropoff.unit"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label" for="dropoff.spins">Special Instructions</label>
+			<input class="form-control" type="text" ng-model="dropoff.comments"/>
+		</div>
 	</div>
-</div>
+
+
+<!-- CHECK -->
+
+
+	<div class="row">
+		<div class="col-md-12">
+			<input type="button" value="check" ng-click="getDistance()">
+		</div>
+	</div>
+
+
+<!-- CLOSE -->
 
 </div>

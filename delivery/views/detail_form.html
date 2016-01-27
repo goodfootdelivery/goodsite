@@ -1,9 +1,21 @@
+<!--
+*
+*					DATE, TIME, PARCEL, & SERVICE FORM
+*
+*										Wed 27 Jan 17:09:51 2016
+*
+-->
+
 <div class="row" ng-form="detailForm">
+
+
+<!-- DATE & TIME -->
+
+
 	<div class="col-sm-6" ng-controller="DateController">
 		<legend>When</legend>
-		<!-- <date></date> -->
-
 		<div class="row">
+<!-- Date -->
 			<div class="col-sm-7">
 				<div class="input-group">
 					<input type="text" class="form-control vertical-center" uib-datepicker-popup="||format||"
@@ -16,16 +28,12 @@
 					</span>
 				</div>
 			</div>
-
-			<!-- <time></time> -->
-
+<!-- Time -->
 			<div class="col-sm-5">
 				<span style="float:right" uib-timepicker arrowkeys="false" show-spinners="false" ng-model="time"></span>
 			</div>
 		</div>
-
-		<!-- <datetimedisplay></datetimedisplay> -->
-
+<!-- Date & Time Display -->
 		<div class="row">
 			<div class="space col-sm-12">
 				<pre class="alert alert-info">|| date | date:"fullDate" ||. || time | date:"shortTime" ||</pre>
@@ -33,11 +41,12 @@
 		</div>
 	</div>
 
-	<!-- <rightcolumn></rightcolumn> -->
+
+<!-- PARCEL -->
+
 
 	<div class="col-md-6">
 		<legend>Parcel</legend>
-
 		<fieldset class="row">
 			<div class="col-sm-4" id="chec">
 				<label class="btn btn-primary" ng-model="parcel" uib-btn-radio="||sml||">Small</label>
@@ -49,7 +58,6 @@
 				<label class="btn btn-primary" ng-model="parcel" uib-btn-radio="||lrg||">Large</label>
 			</div>
 		</fieldset>
-
 		<fieldset class="form-group row">
 			<div class="col-sm-3">
 				<label class="control-label" for="parcel.length">Length</label>
@@ -71,8 +79,25 @@
 	</div>
 </div>
 
+
+<!-- SERVICE -->
+
+
 <div class="row" ng-if="distance">
-	<div class="col-sm-4">$|| prices[0] ||</div>
-	<div class="col-sm-4">$|| prices[1] ||</div>
-	<div class="col-sm-4">$|| prices[2] ||</div>
+	<div class="col-sm-4">
+		<input type="radio" ng-model="service" value="EX">
+		$|| prices[0] ||
+	</div>
+	<div class="col-sm-4">
+		<input type="radio" ng-model="service" value="SD">
+		$|| prices[1] ||
+	</div>
+	<div class="col-sm-4">
+		<input type="radio" ng-model="service" value="ND">
+		$|| prices[2] ||
+	</div>
+
+
+<!-- CLOSE -->
+	
 </div>

@@ -8,8 +8,19 @@ mainCtrl = function($scope, GoogleDistanceAPI, addressServ){
 	$scope.sml = {"length":1.2, "width":1.2, "height":1.2, "weight":1.2};
 	$scope.med = {"length":2.2, "width":2.2, "height":2.2, "weight":2.2};
 	
+	$scope.order = {
+		pickup: $scope.pickup,
+		dropoff: $scope.pickup,
+		date: $scope.date,
+		time: $scope.time,
+		service: $scope.service,
+	};
+
 	$scope.pickup = {};
 	$scope.dropoff = {};
+	$scope.date = null;
+	$scope.time = null;
+	$scope.service = {};
 
 
 	var price_vector = [1.32, 2.5, 3.00];
@@ -33,7 +44,7 @@ mainCtrl = function($scope, GoogleDistanceAPI, addressServ){
 							return $scope.distance * x;
 						})
 				});
-			}
+		}
 	};
 	$scope.getDistance();
 
@@ -117,8 +128,8 @@ DateController = function($scope){
 	};
 
 	$scope.dateOptions = {
-	formatYear: 'yy',
-	startingDay: 1
+		formatYear: 'yy',
+		startingDay: 1
 	};
 
 	// Date Format
@@ -130,32 +141,25 @@ DateController = function($scope){
 	tomorrow.setDate(tomorrow.getDate() + 1);
 	var afterTomorrow = new Date();
 	afterTomorrow.setDate(tomorrow.getDate() + 1);
-	$scope.events =
-	[
-	  {
-		date: tomorrow,
-		status: 'full'
-	  },
-	  {
-		date: afterTomorrow,
-		status: 'partially'
-	  }
+	$scope.events = [
+		{ date: tomorrow, status: 'full' },
+		{ date: afterTomorrow, status: 'partially' }
 	];
 
-	$scope.getDayClass = function(date, mode) {
-	if (mode === 'day') {
-	  var dayToCheck = new Date(date).setHours(0,0,0,0);
+	// $scope.getDayClass = function(date, mode) {
+	// if (mode === 'day') {
+	//   var dayToCheck = new Date(date).setHours(0,0,0,0);
 
-	  for (var i = 0; i < $scope.events.length; i++) {
-		var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
+	//   for (var i = 0; i < $scope.events.length; i++) {
+	// 	var currentDay = new Date($scope.events[i].date).setHours(0,0,0,0);
 
-		if (dayToCheck === currentDay) {
-		  return $scope.events[i].status;
-		}
-	  }
-	}
+	// 	if (dayToCheck === currentDay) {
+	// 	  return $scope.events[i].status;
+	// 	}
+	//   }
+	// }
 
-	return '';
-	};
+	// return '';
+	// };
 
 };
