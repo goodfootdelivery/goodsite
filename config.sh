@@ -10,7 +10,7 @@ address=$API
 address+='addresses/'
 echo "Address Views set at: $address"
 
-# User View Setjk
+# User View Set
 user=$API
 user+='users/'
 echo "User Views set at: $user"

@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 # from rest_framework.reverse import reverse
@@ -14,6 +14,8 @@ import easypost
 TEST_EP_KEY = 'yARJbUTstAI0WNeVQLxK4g'
 
 
+# ADDRESS VIEWS
+
 class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -27,6 +29,8 @@ class AddressViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
+# ORDER VIEWS
+
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
@@ -37,45 +41,21 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-        pickup = serializer.validated_data['pickup']
-        dropoff = serializer.validated_data['dropoff']
-        parcel = serializer.validated_data['parcel']
 
-        if dropoff.city == 'Toronto':
-            serializer.save()
-            return
+    @detail_route(methods=['GET', 'POST'])
+    def get_rates(self, request, pk=None):
+        if request.method == 'GET':
+            # order = self.get_object()
+            # OR
+            # order = Order.objects.get(pk)
 
-        easypost.api_key = TEST_EP_KEY
+            # EASYPOST STUFF
 
-        shipment = easypost.Shipment.create(
-            from_address = pickup.easypost,
-            to_address = dropoff.easypost,
-            parcel={
-                'length': parcel.get('length'),
-                'width': parcel.get('width'),
-                'height': parcel.get('height'),
-                'weight': parcel.get('weight'),
-            }
-        )
-
-        if not shipment.rates:
-            raise ValidationError('Invalid Shipment')
-        else:
-            shipment.buy(
-                rate = {'id': shipment.rates[0].id}
-            )
-            serializer.save(
-                tracking_code = shipment.tracking_code,
-                postal_label = shipment.postage_label.label_url,
-                owner=self.request.user
-            )
-
-
-@api_view(['GET', 'POST'])
-def check_trip(request):
-    if request.method == 'GET':
-        print type(request.data)
-        return Response([
-            { 'type': request.content_type, },
-            { 'data': request.data }
-        ])
+            # serializer = RateSerializer(rates)
+            # RETURN RATES
+            pass
+        if request.method == 'POST':
+            # BUY RATE
+            # COMPLETE ORDER INFO
+            pass
+        pass

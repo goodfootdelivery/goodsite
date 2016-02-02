@@ -8,8 +8,4 @@ router = DefaultRouter()
 router.register(r'addresses', views.AddressViewSet, 'address')
 router.register(r'orders', views.OrderViewSet, 'order')
 
-urlpatterns = [
-    url(r'check/$', views.check_trip, name='check_trip')
-]
-
-urlpatterns += router.urls
+urlpatterns = router.urls

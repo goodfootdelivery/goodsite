@@ -1,8 +1,8 @@
 import googlemaps
 import easypost
 
-TEST_EP_KEY = 'yARJbUTstAI0WNeVQLxK4g'
-SECRET_EP_KEY = None
+TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
+SECRET_EP_KEY = 'NhPygTn6jeiwKLPW5GLhug'
 
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
 PRICE_VECTOR = [0.0075, 0.005, 0.004]
@@ -63,13 +63,11 @@ if __name__ == '__main__':
         print 'Order Failed'
     else:
         print 'Order Success'
+        print shipment.id
         for rate in shipment.rates:
-            print rate.id
-            print rate.rate
+            print rate
 
-        shipment.buy(
-            rate = {'id': shipment.rates[0].id}
-        )
-
-        print shipment.postage_label.label_url
-        print shipment.tracking_code
+        shipment2 = easypost.Shipment.retrieve(shipment.id)
+        print 'HEREREERER'
+        for rate in shipment2.rates:
+            print rate
