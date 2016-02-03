@@ -7,7 +7,7 @@ from rest_framework import permissions
 from rest_framework import viewsets
 
 from .models import Address, Order
-from .serializers import AddressSerializer, OrderSerializer
+from .serializers import AddressSerializer, OrderSerializer, RateSerializer
 from .permissions import IsOwnerOrReadOnly
 
 import easypost
@@ -43,19 +43,21 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
     @detail_route(methods=['GET', 'POST'])
-    def get_rates(self, request, pk=None):
+    def rates(self, request, pk=None):
+        order = Order.objects.get(pk=pk)
+        # order = self.get_object()
+
         if request.method == 'GET':
-            # order = self.get_object()
-            # OR
-            # order = Order.objects.get(pk)
+            print 'get method'
+            serializer = RateSerializer(order)
+            print 'hererere'
+            print serializer.data
+            return Response(serializer.data)
 
-            # EASYPOST STUFF
-
-            # serializer = RateSerializer(rates)
-            # RETURN RATES
-            pass
         if request.method == 'POST':
-            # BUY RATE
-            # COMPLETE ORDER INFO
-            pass
-        pass
+            print 'post method'
+            serializer = RateSerializer(order, data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.validated_data)

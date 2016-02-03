@@ -63,11 +63,6 @@ if __name__ == '__main__':
         print 'Order Failed'
     else:
         print 'Order Success'
-        print shipment.id
-        for rate in shipment.rates:
-            print rate
-
         shipment2 = easypost.Shipment.retrieve(shipment.id)
-        print 'HEREREERER'
         for rate in shipment2.rates:
             print rate

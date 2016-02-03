@@ -107,4 +107,43 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
 ### RATE SERIALIZER ###
 
 class RateSerializer(serializers.BaseSerializer):
-    pass
+    easypost.api_key = TEST_EP_KEY
+
+    def to_representation(self, obj):
+        print 'here'
+        try:
+            shipp = easypost.Shipment.retrieve(obj.shipping_id)
+        except Exception as e:
+            raise ValidationError(e)
+
+        rates = {}
+        for rate in shipp.rates:
+            print type(rate)
+            id = rate.pop('id')
+            rates[id] = rate
+
+        return rates
+
+    def to_internal_value(self, data):
+        rate_id = data.get('rate_id')
+
+        if not rate_id:
+            raise ValidationError('Shipment Not Initialized')
+
+        return {
+            'rate_id': rate_id
+        }
+
+    def update(self, instance, validated_data):
+        rate_id = validated_data.get('rate_id')
+
+        # EasyPost Retrieval & Purchase
+        shipp = easypost.Shipment.retrieve(instance.shipping_id)
+        purchase = shipp.buy(rate={ 'id': rate_id })
+
+        # Update Object
+        instance.postal_label = purchase.postal_label.label_url,
+        instance.tracking_code = purchase.tracking_code
+        instance.save()
+
+        return instance
