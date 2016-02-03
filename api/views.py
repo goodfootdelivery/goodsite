@@ -1,6 +1,7 @@
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from rest_framework.renderers import JSONRenderer
 # from rest_framework.reverse import reverse
 
 from rest_framework import permissions
@@ -36,8 +37,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly)
 
-    def get_queryset(self):
-        return Order.objects.all()
+    # def get_queryset(self):
+    #     return Order.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -48,14 +49,13 @@ class OrderViewSet(viewsets.ModelViewSet):
         # order = self.get_object()
 
         if request.method == 'GET':
-            print 'get method'
             serializer = RateSerializer(order)
-            print 'hererere'
-            print serializer.data
+            # print serializer.data
+            # print type(serializer.data)
+
             return Response(serializer.data)
 
         if request.method == 'POST':
-            print 'post method'
             serializer = RateSerializer(order, data=request.data)
 
             if serializer.is_valid():

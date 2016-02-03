@@ -110,7 +110,6 @@ class RateSerializer(serializers.BaseSerializer):
     easypost.api_key = TEST_EP_KEY
 
     def to_representation(self, obj):
-        print 'here'
         try:
             shipp = easypost.Shipment.retrieve(obj.shipping_id)
         except Exception as e:
@@ -118,9 +117,9 @@ class RateSerializer(serializers.BaseSerializer):
 
         rates = {}
         for rate in shipp.rates:
-            print type(rate)
-            id = rate.pop('id')
+            id = rate['id']
             rates[id] = rate
+            print id
 
         return rates
 
@@ -134,16 +133,16 @@ class RateSerializer(serializers.BaseSerializer):
             'rate_id': rate_id
         }
 
-    def update(self, instance, validated_data):
-        rate_id = validated_data.get('rate_id')
+    # def update(self, instance, validated_data):
+    #     rate_id = validated_data.get('rate_id')
 
-        # EasyPost Retrieval & Purchase
-        shipp = easypost.Shipment.retrieve(instance.shipping_id)
-        purchase = shipp.buy(rate={ 'id': rate_id })
+    #     # EasyPost Retrieval & Purchase
+    #     shipp = easypost.Shipment.retrieve(instance.shipping_id)
+    #     purchase = shipp.buy(rate={ 'id': rate_id })
 
-        # Update Object
-        instance.postal_label = purchase.postal_label.label_url,
-        instance.tracking_code = purchase.tracking_code
-        instance.save()
+    #     # Update Object
+    #     instance.postal_label = purchase.postal_label.label_url,
+    #     instance.tracking_code = purchase.tracking_code
+    #     instance.save()
 
-        return instance
+    #     return instance
