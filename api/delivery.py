@@ -1,6 +1,8 @@
 import googlemaps
 import easypost
 
+OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
+
 TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 SECRET_EP_KEY = 'NhPygTn6jeiwKLPW5GLhug'
 

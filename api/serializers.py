@@ -2,12 +2,12 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import Address, Parcel, Order
 
-import googlemaps
 import easypost
 TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 
+import googlemaps
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
-OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
+
 
 
 ### ADDRESS SERIALIZER ###
@@ -38,7 +38,7 @@ class ParcelSerializer(serializers.HyperlinkedModelSerializer):
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='order-detail')
-    shipping_id = serializers.ReadOnlyField()
+    shipmenting_id = serializers.ReadOnlyField()
     pickup = serializers.HyperlinkedRelatedField(
         view_name = 'address-detail',
         queryset = Address.objects.all()
@@ -51,7 +51,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Order
-        fields = ( 'link', 'pickup', 'dropoff', 'parcel', 'order_date', 'shipping_id',
+        fields = ( 'link', 'pickup', 'dropoff', 'parcel', 'order_date', 'shipmenting_id',
                         'delivery_date', 'service', )
         depth = 1
 
@@ -69,13 +69,13 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
                 to_address = dropoff.easypost,
                 parcel= package
             )
-            shipping_id = shipment.id
+            shipmenting_id = shipment.id
         except Exception as e:
             raise ValidationError(e)
 
         order = Order.objects.create(
             parcel = parcel,
-            shipping_id = shipping_id,
+            shipmenting_id = shipmenting_id,
             **validated_data
         )
         return order
@@ -111,38 +111,38 @@ class RateSerializer(serializers.BaseSerializer):
 
     def to_representation(self, obj):
         try:
-            shipp = easypost.Shipment.retrieve(obj.shipping_id)
+            shipment = easypost.Shipment.retrieve(obj.shipping_id)
         except Exception as e:
             raise ValidationError(e)
 
-        rates = {}
-        for rate in shipp.rates:
-            id = rate['id']
-            rates[id] = rate
-            print id
+        rates = []
+        for rate in shipment.rates:
+            rates.append(rate.id)
 
         return rates
 
     def to_internal_value(self, data):
         rate_id = data.get('rate_id')
+        shipping_id = data.get('shipping_id')
 
-        if not rate_id:
-            raise ValidationError('Shipment Not Initialized')
+        # EasyPost Retrieval & Purchase
+        try:
+            shipment = easypost.Shipment.retrieve(shipping_id)
+            purchase = shipment.buy(rate={ 'id': rate_id })
+        except Exception as e:
+            raise ValidationError(e)
 
         return {
-            'rate_id': rate_id
+            'rate_id': rate_id,
+            'shipping_id': shipping_id,
+            'postal_label': purchase.postage_label.label_url,
+            'tracking_code': purchase.tracking_code
         }
 
-    # def update(self, instance, validated_data):
-    #     rate_id = validated_data.get('rate_id')
+    def update(self, instance, validated_data):
+        instance.rate_id = validated_data.get('rate_id')
+        instance.postal_label = validated_data.get('postal_label')
+        instance.tracking_code = validated_data.get('tracking_code')
 
-    #     # EasyPost Retrieval & Purchase
-    #     shipp = easypost.Shipment.retrieve(instance.shipping_id)
-    #     purchase = shipp.buy(rate={ 'id': rate_id })
-
-    #     # Update Object
-    #     instance.postal_label = purchase.postal_label.label_url,
-    #     instance.tracking_code = purchase.tracking_code
-    #     instance.save()
-
-    #     return instance
+        instance.save()
+        return instance

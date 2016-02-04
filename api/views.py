@@ -11,7 +11,6 @@ from .models import Address, Order
 from .serializers import AddressSerializer, OrderSerializer, RateSerializer
 from .permissions import IsOwnerOrReadOnly
 
-import easypost
 TEST_EP_KEY = 'yARJbUTstAI0WNeVQLxK4g'
 
 
@@ -37,8 +36,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly)
 
-    # def get_queryset(self):
-    #     return Order.objects.all()
+    def get_queryset(self):
+        return Order.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -50,14 +49,12 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         if request.method == 'GET':
             serializer = RateSerializer(order)
-            # print serializer.data
-            # print type(serializer.data)
-
             return Response(serializer.data)
 
         if request.method == 'POST':
             serializer = RateSerializer(order, data=request.data)
-
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.validated_data)
+            # else:
+            #     return Response(serializer.errors, status=)
