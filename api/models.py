@@ -4,15 +4,18 @@ from .delivery import SERVICES, STATUSES
 
 
 class Address(models.Model):
-    owner = models.ForeignKey('auth.User', related_name='addresses')
-    contact_name = models.CharField(max_length=30, blank=True)
-    contact_number = models.CharField(max_length=12, blank=True)
+    owner = models.ForeignKey('auth.User', null=True, blank=True, related_name='addresses')
+    # Contact
+    name = models.CharField(max_length=30, blank=True)
+    phone = models.CharField(max_length=12, blank=True)
+    # Address
     street = models.CharField(max_length=100, null=True)
     postal_code = models.CharField(max_length=10, null=True)
     city = models.CharField(max_length=50, null=True)
     region = models.CharField(max_length=2, null=True)
     country = models.CharField(max_length=2, null=True)
     unit = models.CharField(max_length=20, blank=True)
+    # Extra Info
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
     comments = models.CharField(max_length=200, blank=True)
@@ -23,8 +26,8 @@ class Address(models.Model):
     @property
     def easypost(self):
         return {
-            'name': self.contact_name or None,
-            'phone': self.contact_number or None,
+            'name': self.name or None,
+            'phone': self.phone or None,
             'street1': self.street,
             'street2': self.unit or None,
             'city': self.city,
@@ -51,7 +54,7 @@ class Parcel(models.Model):
 
 
 class Order(models.Model):
-    owner = models.ForeignKey('auth.User', related_name='orders')
+    owner = models.ForeignKey('auth.User', null=True, blank=True, related_name='orders')
     courier = models.ForeignKey(User, null=True,
                                 limit_choices_to={'groups__name': 'Couriers'}, related_name='courier')
 

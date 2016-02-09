@@ -1,0 +1,82 @@
+<!--
+*
+* 			Address Form
+*							Sun 31 Jan 13:11:25 2016
+*
+-->
+<div ng-form="addressForm">
+
+	<!-- ngAutocomplete Field -->
+
+	<fieldset class="form-group required"
+		ng-class="{'has-error': addressForm.address.$invalid && !addressForm.address.$pristine}">
+		<div>
+			<label class="control-label" for="address.result">Address</label>
+			<span style="float:right" uib-dropdown on-toggle="toggled(open)">
+				<a href id="simple-dropdown" uib-dropdown-toggle>
+					Saved
+				</a>
+				<ul uib-dropdown-menu aria-labelledby="simple-dropdown">
+					<li>1</li>
+					<li>2</li>
+					<li>3</li>
+				</ul>
+			</span>
+		</div>
+			<input 
+				class="form-control"
+				type = "text" 
+				ng-autocomplete
+				required
+				name="address"
+				options = "options"
+				details = "address.details" 
+				ng-model = "address.result"/>
+	</fieldset>
+
+<!-- Name & Phone Number -->
+
+	<fieldset class="row">
+		<div class="col-sm-7 form-group"
+			ng-class="{ 'has-error': addressForm.name.$invalid && !addressForm.name.$pristine }">
+
+			<label class="control-label" for="address.name">Name</label>
+			<input class="form-control" type="text" ng-model="address.name"/>
+		</div>
+
+		<div class="col-sm-5 form-group"
+			ng-class="{'has-error':addressForm.number.$invalid && !addressForm.number.$pristine }">
+
+			<label class="control-label" for="address.number">Phone</label>
+			<input type="text" name="number"  class="form-control" type="text" ng-model="address.number"/>
+		</div>
+	</fieldset>
+
+<!-- Reference ID & Unit -->
+
+	<fieldset class="row">
+		<div class="col-sm-8 form-group">
+			<label class="control-label" for="address.reference">Reference</label>
+			<input class="form-control" type="text" ng-model="address.reference"/>
+		</div>
+		<div class="col-sm-4 form-group">
+			<label class="control-label" for="address.unit">Unit</label>
+			<input class="form-control" type="text" ng-model="address.unit"/>
+		</div>
+	</fieldset>
+
+	
+<!-- Comments & Saved -->
+
+
+	<fieldset class="row">
+		<div class="col-xs-10 form-group">
+			<label class="control-label" for="address.spins">Additional Info.</label>
+			<input class="form-control" type="text" ng-model="address.comments"/>
+		</div>
+		<div class="col-xs-2 form-group">
+			<label class="control-label" for="address.saved">Save?</label>
+			<input class="form-control" type="checkbox" ng-model="address.saved"/>
+		</div>
+	</fieldset>
+</div>

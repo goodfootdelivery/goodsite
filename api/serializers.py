@@ -8,6 +8,7 @@ TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 import googlemaps
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
 
+OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
 
 
 ### ADDRESS SERIALIZER ###
@@ -18,7 +19,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Address
         fields = ( 'street', 'link', 'postal_code', 'region', 'country',
-                  'city', 'contact_name', 'contact_number', )
+                  'city', 'name', 'phone', )
 
     def validate_country(self, value):
         if not value.upper() == 'CA':
@@ -38,7 +39,7 @@ class ParcelSerializer(serializers.HyperlinkedModelSerializer):
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='order-detail')
-    shipmenting_id = serializers.ReadOnlyField()
+    shipping_id = serializers.ReadOnlyField()
     pickup = serializers.HyperlinkedRelatedField(
         view_name = 'address-detail',
         queryset = Address.objects.all()
@@ -51,7 +52,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Order
-        fields = ( 'link', 'pickup', 'dropoff', 'parcel', 'order_date', 'shipmenting_id',
+        fields = ( 'link', 'pickup', 'dropoff', 'parcel', 'order_date', 'shipping_id',
                         'delivery_date', 'service', )
         depth = 1
 
@@ -69,13 +70,12 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
                 to_address = dropoff.easypost,
                 parcel= package
             )
-            shipmenting_id = shipment.id
         except Exception as e:
             raise ValidationError(e)
 
         order = Order.objects.create(
             parcel = parcel,
-            shipmenting_id = shipmenting_id,
+            shipping_id = shipment.id,
             **validated_data
         )
         return order
@@ -117,7 +117,13 @@ class RateSerializer(serializers.BaseSerializer):
 
         rates = []
         for rate in shipment.rates:
-            rates.append(rate.id)
+            rates.append({
+                'id': rate.id,
+                'carrier': rate.carrier,
+                'service': rate.service,
+                'rate': rate.rate,
+                'days': rate.delivery_days
+            })
 
         return rates
 

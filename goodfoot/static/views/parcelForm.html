@@ -1,0 +1,38 @@
+<!--
+*
+*					PARCEL FORM
+*
+*										Mon Feb  1 10:53:32 2016
+*
+-->
+<div>
+	<fieldset class="row">
+		<div class="col-sm-4" id="chec">
+			<label class="btn btn-primary" ng-model="pm.parcel" uib-btn-radio="||pm.sml||">Small</label>
+		</div>
+		<div class="col-sm-4">
+			<label class="btn btn-primary" ng-model="pm.parcel" uib-btn-radio="||pm.med||">Medium</label>
+		</div>
+		<div class="col-sm-4">
+			<label class="btn btn-primary" ng-model="pm.parcel" uib-btn-radio="||pm.lrg||">Large</label>
+		</div>
+	</fieldset>
+	<fieldset class="row">
+		<div class="col-sm-3 form-group">
+			<label class="control-label" for="pm.parcel.length">Length</label>
+			<input class="form-control" type="text" ng-model="pm.parcel.length"/>
+		</div>
+		<div class="col-sm-3 form-group">
+			<label class="control-label" for="pm.parcel.width">Width</label>
+			<input class="form-control" type="text" ng-model="pm.parcel.width"/>
+		</div>
+		<div class="col-sm-3 form-group">
+			<label class="control-label" for="pm.parcel.height">Height</label>
+			<input class="form-control" type="text" ng-model="pm.parcel.height"/>
+		</div>
+		<div class="col-sm-3 form-group">
+			<label class="control-label" for="pm.parcel.weight">Weight</label>
+			<input class="form-control" type="text" ng-model="pm.parcel.weight"/>
+		</div>
+	</fieldset>
+</div>

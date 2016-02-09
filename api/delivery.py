@@ -67,5 +67,4 @@ if __name__ == '__main__':
         print 'Order Success'
         shipment2 = easypost.Shipment.retrieve(shipment.id)
         for rate in shipment2.rates:
-           pass
-        print shipment2
+            print rate

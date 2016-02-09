@@ -1,0 +1,26 @@
+<!--
+*
+* 			Confirm Form
+*							Sun 31 Jan 13:11:25 2016
+*
+-->
+<div class="modal-header">
+		<h3 class="modal-title">Confirm Order</h3>
+	</div>
+	<div class="modal-body">
+			<div class="col-xs-6">
+				<ui-gmap-google-map center='mm.pmap.center' zoom='mm.pmap.zoom'>
+					<ui-gmap-marker coords='mm.pmark.coords' idKey='mm.pmark.id'></ui-gmap-marker>
+				</ui-gmap-google-map>
+				
+			</div>
+			<div class="col-xs-6">
+				<ui-gmap-google-map center='mm.dmap.center' zoom='mm.dmap.zoom'>
+					<ui-gmap-marker coords='mm.dmark.coords' idKey='mm.dmark.id'></ui-gmap-marker>
+				</ui-gmap-google-map>
+			</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="mm.ok()">OK</button>
+		<button class="btn btn-warning" type="button" ng-click="mm.cancel()">Cancel</button>
+</div>

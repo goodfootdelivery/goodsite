@@ -8,6 +8,4 @@ router = DefaultRouter()
 router.register(r'addresses', views.AddressViewSet, 'address')
 router.register(r'orders', views.OrderViewSet, 'order')
 
-urlpatterns = []
-
-urlpatterns += router.urls
+urlpatterns = router.urls

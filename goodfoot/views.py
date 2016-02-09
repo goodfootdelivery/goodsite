@@ -7,5 +7,5 @@ class HomeView(TemplateView):
 
 
 class DeliveryView(TemplateView):
-    template_name = 'delivery/index.html'
+    template_name = 'delivery/app.html'
     title = 'delivery'

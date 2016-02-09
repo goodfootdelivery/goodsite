@@ -1,0 +1,13 @@
+@import "customVariables";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.form-group.required .control-label:after {
+  content: "*";
+  color: blue;
+  font-weight: 300;
+}
+
+.angular-google-map-container {
+	height: 250px;
+	width: 250px;
+}
