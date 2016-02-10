@@ -1,0 +1,42 @@
+{% extends 'site_base.html' %}
+
+{% load render_bundle from webpack_loader %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block head_title %}goodfoot delivery{% endblock %}
+
+{% block body_class %}home{% endblock %}
+
+{% block body_base %}
+
+    <section class="jumbotron">
+        <div class="container">
+			<img src={% static 'images/good_1.jpg' %} style="max-width:100%; max-height:100%;" alt="good_one">
+		</div>
+    </section>
+
+
+    <section>
+		<div class="container">
+			<div class="col-sm-4"></div>
+			<div id="order" class="col-sm-4">
+				{% render_bundle 'order' %}
+			</div>
+			<div class="col-sm-4"></div>
+		</div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p class="lead text-center">
+                {% blocktrans %}
+                See <a href="http://blog.goodfootdelivery.com/">blog.goodfootdelivery.com</a>
+                for more information.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </section>
+	
+
+{% endblock %}

@@ -53,7 +53,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Order
         fields = ( 'link', 'pickup', 'dropoff', 'parcel', 'order_date', 'shipping_id',
-                        'delivery_date', 'service', )
+                        'delivery_date', 'service', 'tracking_code' )
         depth = 1
 
     def create(self, validated_data):
