@@ -1,6 +1,8 @@
 *.pyc
 *.swp
 *.swo
+bower_components
+node_modules
 errors.html
 test.json
 .DS_Store

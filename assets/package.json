@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/connorsullivan/goodfoot",
   "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-inject": "^3.0.0",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-sass": "^2.2.0",
+    "gulp-wiredep": "0.0.0",
     "webpack": "^1.12.13"
   },
   "devDependencies": {
