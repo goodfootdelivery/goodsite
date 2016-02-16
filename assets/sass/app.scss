@@ -1,13 +1,21 @@
 @import "customVariables";
 @import "../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 
-.form-group.required .control-label:after {
-  content: "*";
-  color: blue;
-  font-weight: 300;
+// Prevent Navbar from Overlapping
+body{
+	padding-top: $navbar-height;
 }
 
-.angular-google-map-container {
-	height: 250px;
-	width: 250px;
+// edit for main logo
+#logo-container{
+	position: relative;
+	overflow: hidden;
+	height: 75px;
+	width: 100px;
 }
+
+#logo-container img {
+    max-height:100%;
+	max-width:100%;
+}
+// end edit for main logo
