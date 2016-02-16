@@ -15,7 +15,7 @@ const orderApp = (state=initialState, action) => {
 	switch(action.type) {
 		case 'SET_ADDRESSES':
 			var newState = {
-				step: 2,
+				step: state.step + 1,
 				order: action.data
 			}
 			return Object.assign({}, state, newState)

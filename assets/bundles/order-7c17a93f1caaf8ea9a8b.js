@@ -21257,7 +21257,11 @@
 		displayName: 'AddressPair',
 
 		next: function next() {
-			this.props.nextStep();
+			var data = {
+				pickup: this.refs.pickup.build(),
+				dropoff: this.refs.dropoff.build()
+			};
+			console.log(data);
 		},
 
 		render: function render() {
@@ -21307,7 +21311,7 @@
 						_react2.default.createElement(_raisedButton2.default, {
 							secondary: true,
 							label: 'Next',
-							onClick: this.submit
+							onClick: this.next
 						})
 					)
 				)
@@ -21421,6 +21425,17 @@
 	var Address = _react2.default.createClass({
 		displayName: 'Address',
 
+		build: function build() {
+			return {
+				street: this.refs.street.getValue(),
+				unit: this.refs.unit.getValue(),
+				city: this.refs.city.getValue(),
+				prov: this.refs.prov.getValue(),
+				postal: this.refs.postal.getValue(),
+				name: this.refs.name.getValue(),
+				phone: this.refs.phone.getValue()
+			};
+		},
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -21432,6 +21447,7 @@
 						'div',
 						{ className: 'col-xs-8' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'street',
 							fullWidth: true,
 							defaultValue: this.props.address.street,
 							floatingLabelText: 'Street'
@@ -21441,6 +21457,7 @@
 						'div',
 						{ className: 'col-xs-4' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'unit',
 							fullWidth: true,
 							defaultValue: this.props.address.unit,
 							floatingLabelText: 'Apt.'
@@ -21454,6 +21471,7 @@
 						'div',
 						{ className: 'col-xs-5' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'city',
 							fullWidth: true,
 							defaultValue: this.props.address.city,
 							floatingLabelText: 'City'
@@ -21463,6 +21481,7 @@
 						'div',
 						{ className: 'col-xs-2' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'prov',
 							fullWidth: true,
 							defaultValue: this.props.address.prov,
 							floatingLabelText: 'Prov.'
@@ -21472,6 +21491,7 @@
 						'div',
 						{ className: 'col-xs-5' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'postal',
 							fullWidth: true,
 							defaultValue: this.props.address.postal,
 							floatingLabelText: 'Postal Code'
@@ -21485,6 +21505,7 @@
 						'div',
 						{ className: 'col-xs-7' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'name',
 							fullWidth: true,
 							defaultValue: this.props.address.name,
 							floatingLabelText: 'Name/Company'
@@ -21494,6 +21515,7 @@
 						'div',
 						{ className: 'col-xs-5' },
 						_react2.default.createElement(_textField2.default, {
+							ref: 'phone',
 							fullWidth: true,
 							defaultValue: this.props.address.phone,
 							floatingLabelText: 'Phone'
@@ -40698,7 +40720,7 @@
 		switch (action.type) {
 			case 'SET_ADDRESSES':
 				var newState = {
-					step: 2,
+					step: state.step + 1,
 					order: action.data
 				};
 				return Object.assign({}, state, newState);

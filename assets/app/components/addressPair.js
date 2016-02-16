@@ -20,7 +20,11 @@ import RaisedButton from 'material-ui/lib/raised-button'
  */
 const AddressPair = React.createClass({
 	next: function() {
-		this.props.nextStep()
+		let data = {
+			pickup: this.refs.pickup.build(),
+			dropoff: this.refs.dropoff.build()
+		}
+		console.log(data)
 	},
 
 	render: function() {
@@ -51,7 +55,7 @@ const AddressPair = React.createClass({
 							<RaisedButton 
 								secondary={true}
 								label="Next"
-								onClick={this.submit} 
+								onClick={this.next} 
 								/>
 						</div>
 					</div>

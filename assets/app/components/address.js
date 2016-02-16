@@ -11,12 +11,24 @@ import TextField from 'material-ui/lib/text-field';
  * Address Form
  */
 const Address = React.createClass({
+	build: function() {
+		return {
+			street: this.refs.street.getValue(),
+			unit: this.refs.unit.getValue(),
+			city: this.refs.city.getValue(),
+			prov: this.refs.prov.getValue(),
+			postal: this.refs.postal.getValue(),
+			name: this.refs.name.getValue(),
+			phone: this.refs.phone.getValue()
+		}	
+	},
 	render: function() {
 		return (
 				<div>
 					<div className="row">
 						<div className="col-xs-8">
 							<TextField 
+								ref='street'
 								fullWidth={true}
 								defaultValue={this.props.address.street}
 								floatingLabelText='Street'
@@ -24,6 +36,7 @@ const Address = React.createClass({
 						</div>
 						<div className="col-xs-4">
 							<TextField 
+								ref='unit'
 								fullWidth={true}
 								defaultValue={this.props.address.unit}
 								floatingLabelText='Apt.'
@@ -33,6 +46,7 @@ const Address = React.createClass({
 					<div className="row">
 						<div className="col-xs-5">
 							<TextField 
+								ref='city'
 								fullWidth={true}
 								defaultValue={this.props.address.city}
 								floatingLabelText='City'
@@ -40,6 +54,7 @@ const Address = React.createClass({
 						</div>
 						<div className="col-xs-2">
 							<TextField 
+								ref='prov'
 								fullWidth={true}
 								defaultValue={this.props.address.prov}
 								floatingLabelText='Prov.'
@@ -47,6 +62,7 @@ const Address = React.createClass({
 						</div>
 						<div className="col-xs-5">
 							<TextField 
+								ref='postal'
 								fullWidth={true}
 								defaultValue={this.props.address.postal}
 								floatingLabelText='Postal Code'
@@ -56,6 +72,7 @@ const Address = React.createClass({
 					<div className="row">
 						<div className="col-xs-7">
 							<TextField 
+								ref='name'
 								fullWidth={true}
 								defaultValue={this.props.address.name}
 								floatingLabelText='Name/Company'
@@ -63,6 +80,7 @@ const Address = React.createClass({
 						</div>
 						<div className="col-xs-5">
 							<TextField 
+								ref='phone'
 								fullWidth={true}
 								defaultValue={this.props.address.phone}
 								floatingLabelText='Phone'
