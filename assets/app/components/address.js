@@ -19,14 +19,14 @@ const Address = React.createClass({
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.street}
-								floatingLabelText='street'
+								floatingLabelText='Street'
 									/>
 						</div>
 						<div className="col-xs-4">
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.unit}
-								floatingLabelText='unit'
+								floatingLabelText='Apt.'
 									/>
 						</div>
 					</div>
@@ -35,21 +35,21 @@ const Address = React.createClass({
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.city}
-								floatingLabelText='city'
+								floatingLabelText='City'
 									/>
 						</div>
 						<div className="col-xs-2">
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.prov}
-								floatingLabelText='prov'
+								floatingLabelText='Prov.'
 									/>
 						</div>
 						<div className="col-xs-5">
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.postal}
-								floatingLabelText='postal'
+								floatingLabelText='Postal Code'
 									/>
 						</div>
 					</div>
@@ -58,14 +58,14 @@ const Address = React.createClass({
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.name}
-								floatingLabelText='name'
+								floatingLabelText='Name/Company'
 									/>
 						</div>
 						<div className="col-xs-5">
 							<TextField 
 								fullWidth={true}
 								defaultValue={this.props.address.phone}
-								floatingLabelText='number'
+								floatingLabelText='Phone'
 									/>
 						</div>
 					</div>

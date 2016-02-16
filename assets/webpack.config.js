@@ -19,7 +19,7 @@ module.exports = {
 	// the entry point we created earlier
 	entry: { 
 		// order: './app/order.jsx', 
-		order: './redux', 
+		order: './app', 
 		// ... & More
 	},
 	

@@ -66,7 +66,7 @@ var GeoCode = React.createClass({
 					<div className="col-xs-12">
 						<TextField
 								hintText='ex: 720 Bathurst St, Toronto ON'
-								floatingLabelText='Pickup Address'
+								floatingLabelText={this.props.label}
 								onChange={this.onChange}
 								value={this.state.formatted}
 								onBlur={this.setAddress}

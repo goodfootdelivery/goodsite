@@ -19,6 +19,8 @@ const orderApp = (state=initialState, action) => {
 				order: action.data
 			}
 			return Object.assign({}, state, newState)
+		case 'RESET':
+			return initialState
 		default:
 			return state
 	}
