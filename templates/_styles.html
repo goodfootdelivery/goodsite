@@ -1,16 +1,15 @@
 {% load staticfiles %}
 
-<link href={% static 'css/site.css' %} rel='stylesheet' />
+<!-- PINAX INCLUDED -->
+<link rel='stylesheet' href={% static "stylesheets/site.css" %}/>
+<link rel='stylesheet' href={% static "stylesheets/theme.css" %}/>
+
+<!-- SASS CUSTOM BUILD -->
 <link rel="stylesheet" href="{% static "stylesheets/app.css" %}">
 
-<link href="{% static "fonts/glyphicons-halflings-regular.ttf" %}">
-<link href="{% static "fonts/glyphicons-halflings-regular.woff" %}">
-<link href="{% static "fonts/glyphicons-halflings-regular.woff2" %}">
-
-<style type="text/css">
-	.map_canvas {
-		width: 600px;
-		height: 400px;
-	}
-</style>
-
+<!-- ICONS -->
+<link href="{% static "stylesheets/fonts/fontawesome-webfont.svg" %}">
+<link href="{% static "stylesheets/fonts/fontawesome-webfont.eot" %}">
+<link href="{% static "stylesheets/fonts/fontawesome-webfont.ttf" %}">
+<link href="{% static "stylesheets/fonts/fontawesome-webfont.woff" %}">
+<link href="{% static "stylesheets/fonts/fontawesome-webfont.woff2" %}">

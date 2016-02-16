@@ -54,8 +54,6 @@ const mapStateToProps = (state) => {
 	}	
 }
 
-const AddressCon = connect(
-	mapStateToProps
-)(AddressPair)
+const AddressContainer = connect(mapStateToProps)(AddressPair)
 
-export default AddressCon
+export default AddressContainer

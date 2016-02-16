@@ -1,30 +1,7 @@
 {% load staticfiles %}
 
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>
+<!-- PINAX INCLUDED -->
+<script src={% static "scripts/site.js" %}></script>
 
-<script src={% static 'js/site.js' %}></script>
-
-
-<script src="{% static 'bower_components/jquery/dist/jquery.js' %}"></script>
-<script src="{% static 'bower_components/angular/angular.js' %}"></script>
-<script src="{% static 'bower_components/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
-<script src="{% static 'bower_components/angular-resource/angular-resource.js' %}"></script>
-<script src="{% static 'bower_components/angular-google-distance/src/angular-google-distance.js' %}"></script>
-<script src="{% static 'bower_components/bootstrap-sass/assets/javascripts/bootstrap.js' %}"></script>
-<script src="{% static 'bower_components/ngAutocomplete/src/ngAutocomplete.js' %}"></script>
-<script src="{% static 'bower_components/angular-route/angular-route.js' %}"></script>
-<script src="{% static 'bower_components/angular-django-rest-resource/angular-django-rest-resource.js' %}"></script>
-<script src="{% static 'bower_components/angular-simple-logger/dist/angular-simple-logger.js' %}"></script>
-<script src="{% static 'bower_components/lodash/lodash.js' %}"></script>
-<script src="{% static 'bower_components/angular-google-maps/dist/angular-google-maps.js' %}"></script>
-
-
-<script src="{% static 'scripts/directives/addressForm.js' %}"></script>
-<script src="{% static 'scripts/directives/dateForm.js' %}"></script>
-<script src="{% static 'scripts/directives/parcelForm.js' %}"></script>
-<script src="{% static 'scripts/controllers/accountCtrl.js' %}"></script>
-<script src="{% static 'scripts/controllers/confirmCtrl.js' %}"></script>
-<script src="{% static 'scripts/controllers/mainCtrl.js' %}"></script>
-<script src="{% static 'scripts/app.js' %}"></script>
-
-
+<!-- BOWER COMPONENTS -->
+<script src={% static "bower_components/jquery/dist/jquery.js" %}></script>

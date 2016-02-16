@@ -10,9 +10,9 @@ class Address(models.Model):
     phone = models.CharField(max_length=12, blank=True)
     # Address
     street = models.CharField(max_length=100, null=True)
-    postal_code = models.CharField(max_length=10, null=True)
+    postal = models.CharField(max_length=10, null=True)
     city = models.CharField(max_length=50, null=True)
-    region = models.CharField(max_length=2, null=True)
+    prov = models.CharField(max_length=2, null=True)
     country = models.CharField(max_length=2, null=True)
     unit = models.CharField(max_length=20, blank=True)
     # Extra Info
@@ -21,7 +21,7 @@ class Address(models.Model):
     comments = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
-        return '%s, %s' % (self.street, self.region)
+        return '%s, %s' % (self.street, self.prov)
 
     @property
     def easypost(self):
@@ -31,14 +31,14 @@ class Address(models.Model):
             'street1': self.street,
             'street2': self.unit or None,
             'city': self.city,
-            'state': self.region,
+            'state': self.prov,
             'country': self.country,
-            'zip': self.postal_code,
+            'zip': self.postal,
         }
 
     def formatted(self):
         return self.street + ', ' + self.city + ', ' \
-            + self.region + ' ' + self.postal_code + ', ' \
+            + self.prov + ' ' + self.postal + ', ' \
             + self.country
 
 

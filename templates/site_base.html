@@ -13,6 +13,12 @@
     {% block extra_head %}{% endblock %}
 {% endblock %}
 
+{% block site_brand %}
+<a class="navbar-brand" href="{% url "home" %}">
+	GoodFoot Delivery
+</a>
+{% endblock %}
+
 
 {% block nav %}
 	<ul class="nav navbar-nav">
@@ -25,8 +31,7 @@
 {% endblock %}
 
 {% block foot_js %}
-		<script src="{% static "js/theme.js" %}"></script>
-		<!-- <script src="{% static "js/flat-ui.min.js" %}"></script> -->
+		<script src="{% static "scripts/theme.js" %}"></script>
 {% endblock %}
 
 {% block extra_body_base %}

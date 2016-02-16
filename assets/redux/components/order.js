@@ -12,9 +12,9 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
-import AddressCon from './addressPair.js'
+import AddressContainer from './addressPair.js'
 import GeoCode from './geoCode.js';
-import StartCon from './start'
+import StartContainer from './start'
 /*
  * Allow Tap Event with Material UI
  */
@@ -26,8 +26,8 @@ injectTapEventPlugin()
  */
 const Order = ({step}) => (
 	<div>
-		{ step == 1 && <StartCon /> }
-		{ step == 2 && <AddressCon /> }
+		{ step == 1 && <StartContainer /> }
+		{ step == 2 && <AddressContainer /> }
 	</div>
 )
 /*
@@ -39,7 +39,7 @@ Order.PropTypes = {
 
 
 /*
- *	Container Component
+ *	Containertainer Component
  */
 const mapStateToProps = (state) => {
 	return {
@@ -47,8 +47,8 @@ const mapStateToProps = (state) => {
 	}
 }
 
-const OrderCon = connect(
+const OrderContainer = connect(
 	mapStateToProps
 )(Order)
 
-export default OrderCon;
+export default OrderContainer;

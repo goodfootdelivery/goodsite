@@ -12,6 +12,15 @@ import GeoCode from './geoCode.js';
 import FlatButton from 'material-ui/lib/flat-button';
 
 const Start = React.createClass({
+	setAddr: function(){
+		this.props.dispatch(
+			setAddresses({
+				pickup: this.refs.pickup.state.address,
+				dropoff: this.refs.dropoff.state.address
+			})
+		)
+
+	},
 	render: function() {
 		return (
 			<div>
@@ -24,17 +33,11 @@ const Start = React.createClass({
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-xs-6">
-					</div>
+					<div className="col-xs-6"></div>
 					<div className="col-xs-6">
 						<FlatButton 
 							label='Next'
-							onClick={() => this.props.dispatch(
-								setAddresses({
-									pickup: this.refs.pickup.state.address,
-									dropoff: this.refs.dropoff.state.address
-								})
-							)} 
+							onClick={this.setAddr} 
 							/>
 					</div>
 				</div>
@@ -43,14 +46,6 @@ const Start = React.createClass({
 	}
 })
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		onSubmit: (data) => {
-			dispatch(setAddresses(data))
-		}
-	}	
-}
+const StartContainer = connect()(Start)
 
-const StartCon = connect(mapDispatchToProps)(Start)
-
-export default StartCon
+export default StartContainer
