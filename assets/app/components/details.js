@@ -1,7 +1,17 @@
+/*
+ *		Detail REACT Components
+ *
+ *				Tue 16 Feb 23:39:07 2016
+ *
+ */
+
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { reset } from '../actions.js';
+// Material-UI
 import DatePicker from 'material-ui/lib/date-picker/date-picker';
 import TimePicker from 'material-ui/lib/time-picker/time-picker';
+import RaisedButton from 'material-ui/lib/raised-button'
 import TextField from 'material-ui/lib/text-field'
 import RadioButtonGroup from 'material-ui/lib/radio-button-group';
 import RadioButton from 'material-ui/lib/radio-button';
@@ -102,6 +112,19 @@ const Details = React.createClass({
 							/>
 					</div>
 				</div>
+
+				<br></br>
+				
+				<div className="row">
+					<div className="col-xs-6">
+						<RaisedButton 
+							primary={true}
+							label="RESET"
+							onClick={this.props.reset} 
+							/>
+					</div>
+					<div className="col-xs-6"></div>
+				</div>
 			</div>
 		)
 	}
@@ -117,7 +140,11 @@ const mapStateToProps = (state) => {
 	}	
 }
 const mapDispatchToProps = (dispatch) => {
-	return {}
+	return {
+		reset: () => {
+			dispatch(reset())
+		}
+	}
 }
 
 // Detail Container Component

@@ -7,7 +7,7 @@ import { combineReducers } from 'redux';
 
 const initialState = {
 	step: 1,
-	isLocal: false,
+	isLocal: true,
 	order: {}
 }
 
@@ -25,6 +25,11 @@ const orderApp = (state=initialState, action) => {
 			var newState = {
 				step: state.step + 1,
 				order: action.data
+			}
+			if (state.order.dropoff.city.toUpperCase() === 'TORONTO'){
+				newState.isLocal = true
+			}else{
+				newState.isLocal = false
 			}
 			return Object.assign({}, state, newState)
 

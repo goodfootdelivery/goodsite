@@ -40411,6 +40411,8 @@
 
 	var _reactRedux = __webpack_require__(159);
 
+	var _actions = __webpack_require__(182);
+
 	var _datePicker = __webpack_require__(273);
 
 	var _datePicker2 = _interopRequireDefault(_datePicker);
@@ -40418,6 +40420,10 @@
 	var _timePicker = __webpack_require__(303);
 
 	var _timePicker2 = _interopRequireDefault(_timePicker);
+
+	var _raisedButton = __webpack_require__(248);
+
+	var _raisedButton2 = _interopRequireDefault(_raisedButton);
 
 	var _textField = __webpack_require__(185);
 
@@ -40433,6 +40439,9 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// Material-UI
+
+
 	var styles = {
 		block: {
 			maxWidth: 250
@@ -40445,6 +40454,13 @@
 	/*
 	 *	Default Parcel Sizes
 	 */
+	/*
+	 *		Detail REACT Components
+	 *
+	 *				Tue 16 Feb 23:39:07 2016
+	 *
+	 */
+
 	var smParcel = 'small';
 	var mdParcel = 'medium';
 	var lgParcel = 'large';
@@ -40550,6 +40566,21 @@
 							format: 'ampm'
 						})
 					)
+				),
+				_react2.default.createElement('br', null),
+				_react2.default.createElement(
+					'div',
+					{ className: 'row' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'col-xs-6' },
+						_react2.default.createElement(_raisedButton2.default, {
+							primary: true,
+							label: 'RESET',
+							onClick: this.props.reset
+						})
+					),
+					_react2.default.createElement('div', { className: 'col-xs-6' })
 				)
 			);
 		}
@@ -40564,7 +40595,11 @@
 		};
 	};
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-		return {};
+		return {
+			reset: function reset() {
+				dispatch((0, _actions.reset)());
+			}
+		};
 	};
 
 	// Detail Container Component
@@ -49159,7 +49194,7 @@
 
 	var initialState = {
 		step: 1,
-		isLocal: false,
+		isLocal: true,
 		order: {}
 	};
 
@@ -49181,6 +49216,11 @@
 					step: state.step + 1,
 					order: action.data
 				};
+				if (state.order.dropoff.city.toUpperCase() === 'TORONTO') {
+					newState.isLocal = true;
+				} else {
+					newState.isLocal = false;
+				}
 				return Object.assign({}, state, newState);
 
 			default:
