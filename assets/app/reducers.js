@@ -7,7 +7,7 @@ import { combineReducers } from 'redux';
 
 const initialState = {
 	step: 1,
-	isLocal: true,
+	isLocal: false,
 	order: {}
 }
 
@@ -21,6 +21,13 @@ const orderApp = (state=initialState, action) => {
 			return Object.assign({}, state, newState)
 		case 'RESET':
 			return initialState
+		case 'NEXT':
+			var newState = {
+				step: state.step + 1,
+				order: action.data
+			}
+			return Object.assign({}, state, newState)
+
 		default:
 			return state
 	}

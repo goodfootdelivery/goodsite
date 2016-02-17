@@ -10,7 +10,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { reset } from '../actions.js';
+import { reset, nextStep } from '../actions.js';
 import Address from './address.js'
 import RaisedButton from 'material-ui/lib/raised-button'
 
@@ -19,12 +19,12 @@ import RaisedButton from 'material-ui/lib/raised-button'
  * Nested Component
  */
 const AddressPair = React.createClass({
-	next: function() {
+	set: function() {
 		let data = {
 			pickup: this.refs.pickup.build(),
 			dropoff: this.refs.dropoff.build()
 		}
-		console.log(data)
+		this.props.next(data)
 	},
 
 	render: function() {
@@ -55,7 +55,7 @@ const AddressPair = React.createClass({
 							<RaisedButton 
 								secondary={true}
 								label="Next"
-								onClick={this.next} 
+								onClick={this.set} 
 								/>
 						</div>
 					</div>
@@ -76,6 +76,9 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
 	return {
+		next: (data) => {
+			dispatch(nextStep(data))
+		},
 		reset: () => {
 			dispatch(reset())
 		}

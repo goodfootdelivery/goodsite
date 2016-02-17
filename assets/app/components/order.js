@@ -12,9 +12,9 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
-import AddressContainer from './addressPair.js'
-import GeoCode from './geoCode.js';
 import StartContainer from './start'
+import AddressContainer from './addressPair.js'
+import DetailsContainer from './details.js'
 /*
  * Allow Tap Event with Material UI
  */
@@ -28,6 +28,7 @@ const Order = ({step}) => (
 	<div>
 		{ step == 1 && <StartContainer /> }
 		{ step == 2 && <AddressContainer /> }
+		{ step == 3 && <DetailsContainer /> }
 	</div>
 )
 /*
