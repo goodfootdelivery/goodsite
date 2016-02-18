@@ -9,22 +9,28 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // My Components
 import { setAddresses } from '../actions.js';
-import GeoCode from './geoCode.js';
+import GeoCode from '../components/geoCode.js';
+import ButtonNav from '../components/buttonNav.js'
 import RaisedButton from 'material-ui/lib/raised-button';
 
 
 /*
  *	Nested Component
  */
-const Start = React.createClass({
-	setAddr: function(){
-		this.props.onSubmit({
-			pickup: this.refs.pickup.state.address,
-			dropoff: this.refs.dropoff.state.address
-		})
-	},
+class Start extends Component {
+	constructor(props) {
+		super(props)
+		this.next = this.next.bind(this)
+	}
 
-	render: function() {
+	next() {
+		this.props.onSubmit({
+			pickup: this.refs.pickup.getValue(),
+			dropoff: this.refs.dropoff.getValue()
+		})
+	}
+
+	render() {
 		return (
 			<div>
 				<div className="row">
@@ -44,20 +50,23 @@ const Start = React.createClass({
 
 				<br></br>
 				
-				<div className="row">
-					<div className="col-xs-6"> </div>
-					<div className="col-xs-6">
-						<RaisedButton 
-							secondary={true}
-							label='Next'
-							onClick={this.setAddr} 
-							/>
+				<ButtonNav next={this.next} />
+
+					<div className="row">
+						<div className="col-xs-6">
+						</div>
+						<div className="col-xs-6">
+							<RaisedButton 
+								secondary={true}
+								label="Next"
+								onClick={this.next} 
+								/>
+						</div>
 					</div>
-				</div>
 			</div>
 		);
 	}
-})
+}
 
 
 /*
@@ -74,9 +83,4 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 // Container Component
-const StartContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Start)
-
-export default StartContainer
+export default connect(mapStateToProps, mapDispatchToProps)(Start)

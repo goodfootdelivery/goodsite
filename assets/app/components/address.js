@@ -10,8 +10,13 @@ import TextField from 'material-ui/lib/text-field';
 /*
  * Address Form
  */
-const Address = React.createClass({
-	build: function() {
+class Address extends Component {
+	constructor(props) {
+		super(props)
+		this.build = this.build.bind(this)
+	}
+
+	build() {
 		return {
 			street: this.refs.street.getValue(),
 			unit: this.refs.unit.getValue(),
@@ -21,8 +26,9 @@ const Address = React.createClass({
 			name: this.refs.name.getValue(),
 			phone: this.refs.phone.getValue()
 		}	
-	},
-	render: function() {
+	}
+
+	render() {
 		return (
 				<div>
 					<div className="row">
@@ -90,6 +96,6 @@ const Address = React.createClass({
 				</div>
 		)
 	}
-})
+}
 
 export default Address

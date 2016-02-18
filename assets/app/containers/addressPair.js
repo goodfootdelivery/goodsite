@@ -11,23 +11,28 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { reset, nextStep } from '../actions.js';
-import Address from './address.js'
+import Address from '../components/address.js'
 import RaisedButton from 'material-ui/lib/raised-button'
 
 
 /*
  * Nested Component
  */
-const AddressPair = React.createClass({
-	set: function() {
+class AddressPair extends Component {
+	constructor(props) {
+		super(props)
+		this.set = this.set.bind(this)
+	}
+
+	set() {
 		let data = {
 			pickup: this.refs.pickup.build(),
 			dropoff: this.refs.dropoff.build()
 		}
 		this.props.next(data)
-	},
+	}
 
-	render: function() {
+	render() {
 		return (
 				<div>
 					<div className="row">
@@ -62,13 +67,14 @@ const AddressPair = React.createClass({
 				</div>
 		)
 	}
-})
+}
 
 
 /*
  *	Container Section
  */
 const mapStateToProps = (state) => {
+	console.log(state.order)
 	return {
 		pickup: state.order.pickup,
 		dropoff: state.order.dropoff
@@ -86,9 +92,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 // Container Component
-const AddressContainer = connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(AddressPair)
-
-export default AddressContainer
+export default connect(mapStateToProps, mapDispatchToProps)(AddressPair)

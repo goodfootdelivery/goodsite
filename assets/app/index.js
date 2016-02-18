@@ -6,18 +6,36 @@
 
 import React, { PropTypes } from 'react'
 import { render } from 'react-dom'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+// Reducers
+import step from './reducers/step'
+import order from './reducers/order'
+import isFetching from './reducers/isFetching'
+// Containers
+import DeliveryApp from './containers/deliveryApp'
 
-import OrderCon from './components/order.js'
-import orderApp from './reducers.js'
+
+/*
+ *	Reducer Dispatcher
+ */
+const store = createStore(
+	combineReducers({ 
+		step, 
+		order,
+		isFetching
+	}),
+	applyMiddleware(thunk)
+)
 
 
-let store = createStore(orderApp)
-
+/*
+ *	Root Render Function
+ */
 render(
 	<Provider store={store}>
-		<OrderCon />
+		<DeliveryApp />
 	</Provider>,
 	document.getElementById('order')
 )

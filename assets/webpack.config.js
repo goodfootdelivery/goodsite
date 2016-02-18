@@ -31,11 +31,11 @@ module.exports = {
 	plugins: [
 		new bundleTracker({filename: './webpack-stats.json'}),
 		// Include jQuery
-		new webpack.ProvidePlugin({
-			$: 'jquery',
-			jQuery: 'jquery',
-			'window.jQuery': 'jquery'
-		})
+		// new webpack.ProvidePlugin({
+		// 	$: 'jquery',
+		// 	jQuery: 'jquery',
+		// 	'window.jQuery': 'jquery'
+		// })
 	],
 
 	module: {
