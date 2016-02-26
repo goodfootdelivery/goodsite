@@ -49,14 +49,10 @@ INSTALLED_APPS = (
     'leaflet',
     'rest_framework',
     'api',
-    # Dev only:
-    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # Dev only:
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -102,7 +98,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'goodfoot',
-        'USER': 'root',
+        'USER': 'sully',
         'PASSWORD': 'koncluv102',
         'HOST': 'localhost',
     }
@@ -158,6 +154,3 @@ LEAFLET_CONFIG = {
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
-
-# DEV ONLY, CORS HEADERS
-CORS_ORIGIN_ALLOW_ALL = True

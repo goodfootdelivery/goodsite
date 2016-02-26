@@ -1,4 +1,4 @@
-#!/Users/connorsullivan/.virtualenvs/goodfoot/bin/python
+#! /Users/sully/.virtualenvs/goodfoot/bin/python
 
 import os
 import sys

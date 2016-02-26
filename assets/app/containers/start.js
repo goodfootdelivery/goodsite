@@ -52,17 +52,6 @@ class Start extends Component {
 				
 				<ButtonNav next={this.next} />
 
-					<div className="row">
-						<div className="col-xs-6">
-						</div>
-						<div className="col-xs-6">
-							<RaisedButton 
-								secondary={true}
-								label="Next"
-								onClick={this.next} 
-								/>
-						</div>
-					</div>
 			</div>
 		);
 	}
