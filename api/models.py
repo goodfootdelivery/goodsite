@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .delivery import SERVICES, STATUSES
+from .delivery import SERVICES, STATUSES, get_distance
 
 
 class Address(models.Model):
@@ -64,6 +64,8 @@ class Order(models.Model):
     parcel = models.ForeignKey(Parcel, null=True)
     order_date = models.DateField(auto_now_add=True)
     delivery_date = models.DateField(null=True)
+    delivery_time = models.TimeField(null=True)
+    local = models.BooleanField(default=True)
     # make local and EP prices
     price = models.FloatField(blank=True, null=True)
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
@@ -78,5 +80,25 @@ class Order(models.Model):
     def __str__(self):
         return "Order: #%s, Date: %s" % (str(self.id), str(self.order_date))
 
-    def get_price(self):
-        pass
+    def get_prices(self):
+        rates = []
+        seconds = get_distance(self.pickup.formatted(), self.dropoff.formatted())
+        hours = seconds % 3600
+
+        nd_rate = hours*20.00
+        if 8.50 > nd_rate:
+            rates.append({'service': 'ND', 'price': 8.50})
+        elif 60.00 < nd_rate:
+            rates.append({'service': 'ND', 'price': 60.00})
+        else:
+            rates.append({'service': 'ND', 'price': nd_rate})
+
+        ex_rate = hours*25.00
+        if 15.00 > nd_rate:
+            rates.append({'service': 'EX', 'price': 15.00})
+        elif 60.00 < nd_rate:
+            rates.append({'service': 'EX', 'price': 60.00})
+        else:
+            rates.append({'service': 'EX', 'price': ex_rate})
+
+        return rates

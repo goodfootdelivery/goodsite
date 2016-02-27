@@ -71,5 +71,5 @@ const mapDispatchToProps = (dispatch) => {
 		}
 	}
 }
-// Container Component
+// Container Loader
 export default connect(mapStateToProps, mapDispatchToProps)(Start)

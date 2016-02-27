@@ -18,16 +18,16 @@ TEST_EP_KEY = 'yARJbUTstAI0WNeVQLxK4g'
 
 class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-    #                       IsOwnerOrReadOnly)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly)
 
     def get_queryset(self):
         return Address.objects.all()
-        # user = self.request.user
-        # return Address.objects.filter(owner=user) # Use after angular auth.
+        user = self.request.user
+        return Address.objects.filter(owner=user) # Use after angular auth.
 
-    # def perform_create(self, serializer):
-    #     serializer.save(owner=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 # ORDER VIEWS
@@ -56,6 +56,11 @@ class OrderViewSet(viewsets.ModelViewSet):
             serializer = RateSerializer(order, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.validated_data)
+                response = {
+                    'order': serializer.validated_data,
+                    'rates': order.get_prices()
+                }
+                return Response(response)
             else:
                 return Response(serializer.errors, status=400)
+

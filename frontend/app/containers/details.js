@@ -7,7 +7,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { reset } from '../actions.js';
+import { reset, tester } from '../actions.js';
 // Material-UI
 import DatePicker from 'material-ui/lib/date-picker/date-picker';
 import TimePicker from 'material-ui/lib/time-picker/time-picker';
@@ -15,6 +15,7 @@ import RaisedButton from 'material-ui/lib/raised-button'
 import TextField from 'material-ui/lib/text-field'
 import RadioButtonGroup from 'material-ui/lib/radio-button-group';
 import RadioButton from 'material-ui/lib/radio-button';
+import ButtonNav from '../components/buttonNav.js'
 
 const styles = {
 	block: {
@@ -147,16 +148,10 @@ class Details extends Component {
 
 				<br></br>
 				
-				<div className="row">
-					<div className="col-xs-6">
-						<RaisedButton 
-							primary={true}
-							label="RESET"
-							onClick={this.props.reset} 
-							/>
-					</div>
-					<div className="col-xs-6"></div>
-				</div>
+				<ButtonNav 
+					back={this.props.reset} 
+					next={this.props.next(this.props.pickup)}
+					/>
 			</div>
 		)
 	}
@@ -168,13 +163,17 @@ class Details extends Component {
  */
 const mapStateToProps = (state) => {
 	return {
-		isLocal: state.order.isLocal
+		isLocal: state.order.isLocal,
+		pickup: state.order.pickup
 	}	
 }
 const mapDispatchToProps = (dispatch) => {
 	return {
 		reset: () => {
 			dispatch(reset())
+		},
+		next: (data) => {
+			dispatch(tester(data))
 		},
 		placeOrder: (data) => {
 			dispatch(place(data))

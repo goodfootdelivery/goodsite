@@ -40,6 +40,7 @@ class ParcelSerializer(serializers.HyperlinkedModelSerializer):
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='order-detail')
     shipping_id = serializers.ReadOnlyField()
+    tracking_code = serializers.ReadOnlyField()
     pickup = serializers.HyperlinkedRelatedField(
         view_name = 'address-detail',
         queryset = Address.objects.all()
@@ -53,7 +54,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Order
         fields = ( 'link', 'pickup', 'dropoff', 'parcel', 'order_date', 'shipping_id',
-                        'delivery_date', 'service', 'tracking_code' )
+                        'price', 'delivery_date', 'service', 'tracking_code' )
         depth = 1
 
     def create(self, validated_data):
@@ -152,3 +153,6 @@ class RateSerializer(serializers.BaseSerializer):
 
         instance.save()
         return instance
+
+###  ###
+

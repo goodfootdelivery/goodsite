@@ -33,11 +33,21 @@ const geoSet = (data) => {
 	}
 }
 
+const listCookies = () => {
+    var theCookies = document.cookie.split(';');
+    var aString = '';
+    for (var i = 1 ; i <= theCookies.length; i++) {
+        aString += i + ' ' + theCookies[i-1] + "\n";
+    }
+    return aString;
+}
+
 
 /*
  *	Action Creators
  */
 export const nextStep = (data) => {
+	console.log(listCookies())
 	return {
 		type: NEXT,
 		data
@@ -50,8 +60,23 @@ export const fetch = () => {
 	}	
 }
 
+export const tester = (data) => {
+	let url = 'http://localhost:8000/api/addresses/'
+	return (dispatch) => {
+		axios.post(
+			url,
+			data
+		)
+			.then((response) => {
+				console.log(response)
+			})
+			.catch((response) => {
+				console.log(response.data)
+			})
+	}
+}
+
 export const setAddresses = (data) => {
-	console.log(data)
 	let url = 'http://geocoder.ca'
 	return (dispatch) => {
 		//Fetching Indicator

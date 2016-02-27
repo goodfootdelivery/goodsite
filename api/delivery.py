@@ -23,7 +23,39 @@ STATUSES = (
         ('PD', 'Paid'),
     )
 
+def get_distance(pickup, dropoff):
+    client = googlemaps.Client(key=GKEY)
+    dist_mat = client.distance_matrix(pickup, dropoff, mode='transit')
 
+    if not dist_mat['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
+        return dist_mat['rows'][0]['elements'][0]['duration']['value']
+    else:
+        return None
+
+def get_prices():
+    rates = []
+    seconds = get_distance(self.pickup.formatted(), self.dropoff.formatted())
+    hours = seconds % 3600
+
+    nd_rate = hours*20.00
+    if 8.50 > nd_rate:
+        rates.append({'service': 'ND', 'price': 8.50})
+    elif 60.00 < nd_rate:
+        rates.append({'service': 'ND', 'price': 60.00})
+    else:
+        rates.append({'service': 'ND', 'price': nd_rate})
+
+    ex_rate = hours*25.00
+    if 15.00 > nd_rate:
+        rates.append({'service': 'EX', 'price': 15.00})
+    elif 60.00 < nd_rate:
+        rates.append({'service': 'EX', 'price': 60.00})
+    else:
+        rates.append({'service': 'EX', 'price': ex_rate})
+
+    return rates
+
+### TESTING ###
 if __name__ == '__main__':
     easypost.api_key = TEST_EP_KEY
 
