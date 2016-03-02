@@ -10,8 +10,15 @@
 
 {% block body_base %}
 
-    <section id="order" class="container">
+    <section class="container">
+		<div class="row">
+			<div class="col-xs-6">
+				<h2>WHAT</h2>
+			</div>
+			<div id="order" class="col-xs-6">
 				{% render_bundle 'order' %}
+			</div>
+		</div>
     </section>
 
     <section>

@@ -13,12 +13,10 @@ OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
 
 ### ADDRESS SERIALIZER ###
 
-class AddressSerializer(serializers.HyperlinkedModelSerializer):
-    link = serializers.HyperlinkedIdentityField(view_name='address-detail')
-
+class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ( 'link', 'street', 'postal', 'prov', 'country',
+        fields = ( 'street', 'postal', 'prov', 'country',
                   'city', 'name', 'phone', )
 
     def validate_country(self, value):
@@ -29,7 +27,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
 
 ### PARCEL SERIALIZER ###
 
-class ParcelSerializer(serializers.HyperlinkedModelSerializer):
+class ParcelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parcel
         fields = ('length', 'height', 'width', 'weight')
@@ -41,11 +39,11 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='order-detail')
     shipping_id = serializers.ReadOnlyField()
     tracking_code = serializers.ReadOnlyField()
-    pickup = serializers.HyperlinkedRelatedField(
+    pickup = serializers.PrimaryKeyRelatedField(
         view_name = 'address-detail',
         queryset = Address.objects.all()
     )
-    dropoff = serializers.HyperlinkedRelatedField(
+    dropoff = serializers.PrimaryKeyRelatedField(
         view_name = 'address-detail',
         queryset = Address.objects.all()
     )
@@ -153,6 +151,3 @@ class RateSerializer(serializers.BaseSerializer):
 
         instance.save()
         return instance
-
-###  ###
-

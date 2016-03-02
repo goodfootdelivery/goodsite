@@ -59,39 +59,51 @@ def get_prices():
 if __name__ == '__main__':
     easypost.api_key = TEST_EP_KEY
 
-    pickup = easypost.Address.create(
-        company = 'goodfoot',
-        street1 = '720 Bathurst St',
-        city = 'Toronto',
-        state = 'ON',
-        country = 'Canada',
-        zip = 'M5S 2R4',
-        phone = '519-365-7870'
-    )
+    # pickup = easypost.Address.create(
+    #     company = 'goodfoot',
+    #     # street1 = '720 Bathurst St',
+    #     city = 'Toronto',
+    #     state = 'ON',
+    #     country = 'Canada',
+    #     zip = 'M5S 2R4',
+    #     phone = '519-365-7870'
+    # )
 
-    dropoff = easypost.Address.create(
-        company = 'connor',
-        street1 = '17 Raglan Ave',
-        street2 = 'Unit 15',
-        city = 'Toronto',
-        state = 'ON',
-        country = 'CA',
-        zip = 'M6C 2K7',
-        phone = '519-351-0361'
-    )
 
-    parcel = easypost.Parcel.create(
-        length = 9.5,
-        width = 9.5,
-        height = 9.5,
-        weight = 9.5,
-    )
+    try:
+        pickup = easypost.Address.create(
+            street1 = '720 Bathurst St',
+            city = 'Toronto',
+            state = 'ON',
+            country = 'CA',
+            # zip = 'M5S 2R4'
+        )
 
-    shipment = easypost.Shipment.create(
-        to_address = dropoff,
-        from_address = pickup,
-        parcel = parcel
-    )
+        dropoff = easypost.Address.create(
+            company = 'connor',
+            street1 = '17 Raglan Ave',
+            street2 = 'Unit 15',
+            city = 'Toronto',
+            state = 'ON',
+            country = 'CA',
+            zip = 'M6C 2K7',
+            phone = '519-351-0361'
+        )
+
+        parcel = easypost.Parcel.create(
+            length = 9.5,
+            width = 9.5,
+            height = 9.5,
+            weight = 9.5,
+        )
+        shipment = easypost.Shipment.create(
+            to_address = dropoff,
+            from_address = pickup,
+            parcel = parcel
+        )
+        print shipment
+    except Exception as e:
+        print e
 
     if not shipment.rates:
         print 'Order Failed'

@@ -1,7 +1,5 @@
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
-from rest_framework.renderers import JSONRenderer
 # from rest_framework.reverse import reverse
 
 from rest_framework import permissions
@@ -62,4 +60,3 @@ class OrderViewSet(viewsets.ModelViewSet):
                 return Response(response)
             else:
                 return Response(serializer.errors, status=400)
-
