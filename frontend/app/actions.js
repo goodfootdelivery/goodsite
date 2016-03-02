@@ -5,11 +5,34 @@
  */
 
 import axios from 'axios'
+import Cookies from 'js-cookie'
+
+const API_BASE = 'http://localhost:8000/api'
+const GEO_BASE = 'http://geocoder.ca'
 
 const NEXT = 'NEXT'
+const PREVIOUS = 'PREVIOUS'
+const FETCHING = 'FETCHING'
 const SET_ADDRESSES = 'SET_ADDRESSES'
+const CHECK_ADDRESSES = 'CHECK_ADDRESSES'
 const RESET = 'RESET'
 const PLACE = 'PLACE'
+
+/*
+ *	API Axios Instance
+ */
+const API = axios.create({
+	baseURL: API_BASE,
+	timeout: 1000,
+	headers: {'X-CSRFToken': Cookies.get('csrftoken')}
+})
+
+/*
+ *	Geocoding Axios Instance
+ */
+const GEO = axios.create({
+	timeout: 1000
+})
 
 
 /*
@@ -26,7 +49,7 @@ const geoSet = (data) => {
 			latt: data.latt,
 			longt: data.longt
 		}	
-	} catch(err){
+	} catch(err) {
 		formattedAddr = {}
 	} finally {
 		return formattedAddr
@@ -46,27 +69,30 @@ const listCookies = () => {
 /*
  *	Action Creators
  */
-export const nextStep = (data) => {
-	console.log(listCookies())
+export const nextStep = () => {
 	return {
 		type: NEXT,
-		data
 	}
 }
 
+export const previousStep = () => {
+	return {
+		type: PREVIOUS
+	}
+}
+
+
 export const fetch = () => {
 	return {
-		type: 'FETCHING'
+		type: FETCHING
 	}	
 }
 
 export const tester = (data) => {
-	let url = 'http://localhost:8000/api/addresses/'
+	console.log(Cookies.get('csrftoken'))
+	let url = '/addresses/'
 	return (dispatch) => {
-		axios.post(
-			url,
-			data
-		)
+		API.post(url, data)
 			.then((response) => {
 				console.log(response)
 			})
@@ -77,14 +103,13 @@ export const tester = (data) => {
 }
 
 export const setAddresses = (data) => {
-	let url = 'http://geocoder.ca'
 	return (dispatch) => {
 		//Fetching Indicator
 		dispatch(fetch())
 		// Build Addresses
 		return axios.all([
-			axios.get(url, { params: { locate: data.pickup, json: 1 } }),
-			axios.get(url, { params: { locate: data.dropoff, json: 1 } })
+			GEO.get(GEO_BASE, { params: { locate: data.pickup, json: 1 } }),
+			GEO.get(GEO_BASE, { params: { locate: data.dropoff, json: 1 } })
 		])
 			.then(axios.spread(
 				(pickupResponse, dropoffResponse) => {
@@ -97,8 +122,16 @@ export const setAddresses = (data) => {
 						type: 'SET_ADDRESSES',
 						data: addrData
 					})	
+					dispatch(nextStep())
 				}
 			))
+	}
+}
+
+export const checkAddresses = (data) => {
+	return {
+		type: CHECK_ADDRESSES,
+		data
 	}
 }
 

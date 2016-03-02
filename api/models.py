@@ -10,15 +10,14 @@ class Address(models.Model):
     phone = models.CharField(max_length=12, blank=True)
     # Address
     street = models.CharField(max_length=100, null=True)
-    postal = models.CharField(max_length=10, null=True)
+    unit = models.CharField(max_length=20, blank=True)
     city = models.CharField(max_length=50, null=True)
     prov = models.CharField(max_length=2, null=True)
+    postal = models.CharField(max_length=10, null=True)
     country = models.CharField(max_length=2, null=True)
-    unit = models.CharField(max_length=20, blank=True)
     # Extra Info
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
-    comments = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return '%s, %s' % (self.street, self.prov)
@@ -36,6 +35,7 @@ class Address(models.Model):
             'zip': self.postal,
         }
 
+    @property
     def formatted(self):
         return self.street + ', ' + self.city + ', ' \
             + self.prov + ' ' + self.postal + ', ' \
@@ -57,15 +57,15 @@ class Order(models.Model):
     owner = models.ForeignKey('auth.User', null=True, blank=True, related_name='orders')
     courier = models.ForeignKey(User, null=True,
                                 limit_choices_to={'groups__name': 'Couriers'}, related_name='courier')
-
-    # CORE FIELDS
+    # Core Fields
     pickup = models.ForeignKey(Address, null=True, related_name='start')
     dropoff = models.ForeignKey(Address, null=True, related_name='end')
     parcel = models.ForeignKey(Parcel, null=True)
     order_date = models.DateField(auto_now_add=True)
     delivery_date = models.DateField(null=True)
     delivery_time = models.TimeField(null=True)
-    local = models.BooleanField(default=True)
+    comments = models.CharField(max_length=200, blank=True)
+
     # make local and EP prices
     price = models.FloatField(blank=True, null=True)
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')

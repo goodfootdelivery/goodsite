@@ -18,7 +18,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Address
-        fields = ( 'street', 'link', 'postal', 'prov', 'country',
+        fields = ( 'link', 'street', 'postal', 'prov', 'country',
                   'city', 'name', 'phone', )
 
     def validate_country(self, value):

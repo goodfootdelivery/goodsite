@@ -9,12 +9,11 @@ const initialState = 1
 
 const step = (state=initialState, action) => {
 	switch(action.type) {
-		case 'SET_ADDRESSES':
-			console.log(state + 1)
-			return state + 1
-
 		case 'NEXT':
 			return state + 1
+
+		case 'PREVIOUS':
+			return state - 1
 
 		case 'RESET':
 			return initialState

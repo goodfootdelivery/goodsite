@@ -19,7 +19,7 @@ const order = (state=initialState, action) => {
 		case 'RESET':
 			return initialState
 
-		case 'NEXT':
+		case 'CHECK_ADDRESSES':
 			(state.dropoff.city.toUpperCase() !== 'TORONTO')?
 				action.data.isLocal = false 
 			: 

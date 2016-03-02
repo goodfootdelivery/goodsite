@@ -10,7 +10,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { reset, nextStep } from '../actions.js';
+import { reset, checkAddresses } from '../actions.js';
 import Address from '../components/address.js'
 import RaisedButton from 'material-ui/lib/raised-button'
 
@@ -83,7 +83,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		next: (data) => {
-			dispatch(nextStep(data))
+			dispatch(checkAddresses(data))
 		},
 		reset: () => {
 			dispatch(reset())
