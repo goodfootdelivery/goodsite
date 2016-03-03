@@ -1,5 +1,5 @@
 #
-#       API Address
+#       Delivery API Address Model & Validators
 #
 #               Tue  1 Mar 21:10:18 2016
 #
@@ -44,12 +44,11 @@ class Address(models.Model):
         }
 
     def __str__(self):
-        return self.street + ', ' + self.city + ', ' \
-            + self.prov + ' ' + self.postal + ', ' \
-            + self.country
+        return "%s, %s, %s, %s, %s" % \
+                (self.street, self.city, self.prov, self.postal, self.country)
 
     def is_local(self):
-        if city.upper() is 'TORONTO':
+        if self.city.upper() is 'TORONTO':
             return True
         else:
             return False

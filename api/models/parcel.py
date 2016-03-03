@@ -22,8 +22,8 @@ class Parcel(models.Model):
 
     def easypost(self):
         return {
-            length: self.length,
-            width: self.width,
-            height: self.height,
-            weight: self.weight
+            'length': self.length,
+            'width': self.width,
+            'height': self.height,
+            'weight': self.weight
         }

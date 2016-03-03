@@ -1,3 +1,8 @@
+#
+#       Delivery API Views
+#
+#               Wed  2 Mar 17:05:09 2016
+#
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 # from rest_framework.reverse import reverse
@@ -43,20 +48,17 @@ class OrderViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['GET', 'POST'])
     def rates(self, request, pk=None):
         order = Order.objects.get(pk=pk)
-        # order = self.get_object()
 
         if request.method == 'GET':
             serializer = RateSerializer(order)
             return Response(serializer.data)
 
         if request.method == 'POST':
-            serializer = RateSerializer(order, data=request.data)
+            data = request.data.copy()
+            data['pk'] = pk
+
+            serializer = RateSerializer(order, data=data)
             if serializer.is_valid():
-                serializer.save()
-                response = {
-                    'order': serializer.validated_data,
-                    'rates': order.get_prices()
-                }
-                return Response(response)
+                return Response(serializer.validated_data)
             else:
                 return Response(serializer.errors, status=400)
