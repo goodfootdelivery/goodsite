@@ -25,7 +25,7 @@ class Address(models.Model):
     city = models.CharField(max_length=50, null=True)
     prov = models.CharField(max_length=2, null=True)
     postal = models.CharField(max_length=10, null=True, validators=[RegexValidator(regex=POSTAL_REGEX)])
-    country = models.CharField(max_length=2, null=True)
+    country = models.CharField(max_length=2, blank=True, default='CA')
 
     # Coordinates
     lat = models.FloatField(null=True, blank=True)

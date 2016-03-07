@@ -62,9 +62,11 @@ class AddressPair extends Component {
  *	Container Section
  */
 const mapStateToProps = (state) => {
+	console.log('addressPair.js')
+	console.log(state)
 	return {
-		pickup: state.order.pickup,
-		dropoff: state.order.dropoff
+		pickup: state.order.pickup.address,
+		dropoff: state.order.dropoff.address
 	}	
 }
 const mapDispatchToProps = (dispatch) => {

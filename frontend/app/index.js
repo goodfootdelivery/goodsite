@@ -10,9 +10,8 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 // Reducers
-import step from './reducers/step'
 import order from './reducers/order'
-import isFetching from './reducers/isFetching'
+import process from './reducers/process'
 // Containers
 import DeliveryApp from './containers/deliveryApp'
 
@@ -21,11 +20,7 @@ import DeliveryApp from './containers/deliveryApp'
  *	Reducer Dispatcher
  */
 const store = createStore(
-	combineReducers({ 
-		step, 
-		order,
-		isFetching
-	}),
+	combineReducers({ order, process }),
 	applyMiddleware(thunk)
 )
 

@@ -42,8 +42,8 @@ const DeliveryApp = ({step, isFetching}) => (
  */
 const mapStateToProps = (state) => {
 	return {
-		step: state.step,
-		isFetching: state.isFetching
+		step: state.process.step,
+		isFetching: state.process.isFetching
 	}
 }
 
