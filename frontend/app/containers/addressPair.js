@@ -10,8 +10,9 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { reset, checkAddresses } from '../actions.js';
+import { reset, setAddresses } from '../actions.js';
 import Address from '../components/address.js'
+import ButtonNav from '../components/buttonNav.js'
 import RaisedButton from 'material-ui/lib/raised-button'
 
 
@@ -25,11 +26,10 @@ class AddressPair extends Component {
 	}
 
 	set() {
-		let data = {
+		this.props.next({
 			pickup: this.refs.pickup.build(),
 			dropoff: this.refs.dropoff.build()
-		}
-		this.props.next(data)
+		})
 	}
 
 	render() {
@@ -48,22 +48,10 @@ class AddressPair extends Component {
 
 					<br></br>
 					
-					<div className="row">
-						<div className="col-xs-6">
-							<RaisedButton 
-								primary={true}
-								label="Back"
-								onClick={this.props.reset} 
-								/>
-						</div>
-						<div className="col-xs-6">
-							<RaisedButton 
-								secondary={true}
-								label="Next"
-								onClick={this.set} 
-								/>
-						</div>
-					</div>
+					<ButtonNav
+						back={this.props.reset}
+						next={this.set}
+						/>
 				</div>
 		)
 	}
@@ -74,7 +62,6 @@ class AddressPair extends Component {
  *	Container Section
  */
 const mapStateToProps = (state) => {
-	console.log(state.order)
 	return {
 		pickup: state.order.pickup,
 		dropoff: state.order.dropoff
@@ -83,7 +70,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		next: (data) => {
-			dispatch(checkAddresses(data))
+			dispatch(setAddresses(data))
 		},
 		reset: () => {
 			dispatch(reset())

@@ -41,7 +41,6 @@ const DeliveryApp = ({step, isFetching}) => (
  *	Container Component
  */
 const mapStateToProps = (state) => {
-	console.log(state.isFetching)
 	return {
 		step: state.step,
 		isFetching: state.isFetching

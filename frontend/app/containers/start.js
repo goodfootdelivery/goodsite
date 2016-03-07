@@ -8,7 +8,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 // My Components
-import { setAddresses } from '../actions.js';
+import { geoCodeAddresses } from '../actions.js';
 import GeoCode from '../components/geoCode.js';
 import ButtonNav from '../components/buttonNav.js'
 import RaisedButton from 'material-ui/lib/raised-button';
@@ -67,7 +67,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		onSubmit: (data) => {
-			dispatch(setAddresses(data))
+			dispatch(geoCodeAddresses(data))
 		}
 	}
 }

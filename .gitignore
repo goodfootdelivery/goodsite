@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 *.swo
+bundles
 bower_components
 node_modules
 errors.html

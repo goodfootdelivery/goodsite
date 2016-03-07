@@ -17,11 +17,6 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ( 'id', 'street', 'unit', 'postal', 'prov', 'country',
                   'city', 'name', 'phone', )
 
-    def validate_country(self, value):
-        if not value.upper() == 'CA':
-            raise serializers.ValidationError('We currently only ship within Canada.')
-        return value
-
 
 ### PARCEL SERIALIZER ###
 

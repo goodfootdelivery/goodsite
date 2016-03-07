@@ -7,7 +7,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { reset, tester } from '../actions.js';
+import { reset, setAddresses } from '../actions.js';
 // Material-UI
 import DatePicker from 'material-ui/lib/date-picker/date-picker';
 import TimePicker from 'material-ui/lib/time-picker/time-picker';
@@ -150,7 +150,12 @@ class Details extends Component {
 				
 				<ButtonNav 
 					back={this.props.reset} 
-					next={this.props.next(this.props.pickup)}
+					next={this.props.next(
+						{
+							"pickup": this.props.pickup,
+							"dropoff": this.props.dropoff
+						}	
+					)}
 					/>
 			</div>
 		)
@@ -173,7 +178,7 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(reset())
 		},
 		next: (data) => {
-			dispatch(tester(data))
+			dispatch(setAddresses(data))
 		},
 		placeOrder: (data) => {
 			dispatch(place(data))

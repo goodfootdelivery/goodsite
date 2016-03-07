@@ -13,8 +13,15 @@ const GEO_BASE = 'http://geocoder.ca'
 const NEXT = 'NEXT'
 const PREVIOUS = 'PREVIOUS'
 const FETCHING = 'FETCHING'
+
 const SET_ADDRESSES = 'SET_ADDRESSES'
 const CHECK_ADDRESSES = 'CHECK_ADDRESSES'
+
+const SET_PICKUP = 'SET_PICKUP'
+const SET_DROPOFF = 'SET_DROPOFF'
+const FIX_PICKUP = 'FIX_PICKUP'
+const FIX_DROPOFF = 'FIX_DROPOFF'
+
 const RESET = 'RESET'
 const PLACE = 'PLACE'
 
@@ -88,21 +95,30 @@ export const fetch = () => {
 	}	
 }
 
-export const tester = (data) => {
-	console.log(Cookies.get('csrftoken'))
+export const setAddresses = (data) => {
 	let url = '/addresses/'
 	return (dispatch) => {
-		API.post(url, data)
-			.then((response) => {
-				console.log(response)
+		dispatch(fetch())
+		// Try Pickup
+		API.post('/addresses/', data)
+			.then( (response) => {
+				dispatch({ type: SET_PICKUP, data: response })
 			})
-			.catch((response) => {
-				console.log(response.data)
+			.catch( (response) => {
+				dispatch({ type: FIX_PICKUP, data: response })
+			})
+		// Try Dropoff
+		API.post('/addresses/', data)
+			.then( (response) => {
+				dispatch({ type: SET_DROPOFF, data: response })
+			})
+			.catch( (response) => {
+				dispatch({ type: FIX_DROPOFF, data: response })
 			})
 	}
 }
 
-export const setAddresses = (data) => {
+export const geoCodeAddresses = (data) => {
 	return (dispatch) => {
 		//Fetching Indicator
 		dispatch(fetch())
@@ -118,20 +134,10 @@ export const setAddresses = (data) => {
 						dropoff: geoSet(dropoffResponse.data)
 					}
 					// End Debugging
-					dispatch({ 
-						type: 'SET_ADDRESSES',
-						data: addrData
-					})	
+					dispatch({ type: 'SET_ADDRESSES', data: addrData })	
 					dispatch(nextStep())
 				}
 			))
-	}
-}
-
-export const checkAddresses = (data) => {
-	return {
-		type: CHECK_ADDRESSES,
-		data
 	}
 }
 

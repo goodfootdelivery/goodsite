@@ -8,12 +8,22 @@
 // Requirements
 var gulp = require('gulp');
 var gulpLoadPlugins = require('gulp-load-plugins');
+var webpack = require('webpack-stream')
 var plug = gulpLoadPlugins();
 
-// Sass Source & Target
+// File and Dir Variables
+var APP = './app/index'
+var BUNDLES = '../assets/bundles'
 var SASS = './sass/*.scss'
 var STYLE = '../assets/stylesheets'
 
+gulp.task('pack', function(){
+	gulp.src(APP)
+	.pipe(webpack(
+		require('./webpack.config.js')
+	))
+	.pipe(gulp.dest(BUNDLES))
+})
  
 /*
  * Compile & File Sass
@@ -28,4 +38,4 @@ gulp.task('sass', function(){
 
 
 // Complete
-gulp.task('build', ['sass']);
+gulp.task('build', ['sass', 'pack']);

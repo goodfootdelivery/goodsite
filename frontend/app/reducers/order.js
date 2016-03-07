@@ -6,14 +6,19 @@
  */
 
 const initialState = {
-	isLocal: true	
+	isLocal: true,
+	pickup: {
+		country: 'CA'
+	},
+	dropoff: {
+		country: 'CA'
+	}
 }
 
 
 const order = (state=initialState, action) => {
 	switch(action.type) {
 		case 'SET_ADDRESSES':
-			console.log(action.data)
 			return Object.assign({}, state, action.data)
 
 		case 'RESET':
