@@ -11,77 +11,17 @@
 
 <!-- <PICKUP></PICKUP> -->
 
-		<div id='start' class="col-xs-6">
+		<form id='start' class="pickup col-xs-6">
 			<legend>Pickup</legend>
-			<div class="row">
-				<!-- <address></address> -->
-				<div class='col-xs-9 form-group'>
-					<label for="pickup-formatted">Address</label>
-					<input id="pickup-formatted" name="pickup-formatted" 
-					class="pickup form-control" type="text" placeholder="ie 1 Toronto St." >
-					<!-- <hidden></hidden> -->
-					<input geo="formatted_address" name="pickup-address" id="pickup-address" type="hidden">
-					<input geo="location" name="pickup-coords" type="hidden" />
-				</div>
-				<!-- <unit></unit> -->
-				<div class='form-group col-xs-3'>
-					<label for="pickup-unit">Unit</label>
-					<input id="pickup-unit" name="pickup-unit"
-						class="form-control" type="text" placeholder="#15" >
-				</div>
-			</div>
-
-			<!-- <namephone></namephone> -->
-
-			<div class="row">
-				<div class='col-xs-7 form-group'>
-					<label for="pickup-name">Name</label>
-					<input class="form-control" name="pickup-name"/>
-				</div>
-				<div class='form-group col-xs-5'>
-					<label for="pickup-phone">Phone</label>
-					<input id="pickup-phone" name="pickup-phone"
-						class="form-control" type="text" placeholder="#15" >
-				</div>
-			</div>
-		</div>
+			{% include "delivery/addressForm.html" %}
+		</form>
 
 <!-- <DROPOFF></DROPOFF> -->
 
-		<div id='end' class="col-xs-6">
+		<form id='end' class="col-xs-6">
 			<legend>Dropoff</legend>
-			<div class="row">
-				<!-- <address></address> -->
-				<div class='col-xs-9 form-group'>
-					<label for="dropoff-formatted">Address</label>
-					<input id="dropoff-formatted" name="dropoff-formatted" 
-					class="form-control dropoff" type="text" placeholder="ie 1 Toronto St." >
-					<!-- <hidden></hidden> -->
-					<input geo="formatted_address" name="dropoff-address" id="dropoff-address" type="hidden">
-					<input geo="location" name="dropoff-coords" type="hidden" />
-				</div>
-				<!-- <unit></unit> -->
-				<div class='form-group col-xs-3'>
-					<label for="dropoff-unit">Unit</label>
-					<input id="dropoff-unit" name="dropoff-unit"
-						class="form-control dropoff" type="text" placeholder="#15" >
-				</div>
-			</div>
-
-			<!-- <namephone></namephone> -->
-
-			<div class="row">
-				<div class='col-xs-7 form-group'>
-					<label for="dropoff-name">Name</label>
-					<input class="form-control" name="dropoff-name"/>
-				</div>
-				<div class='form-group col-xs-5'>
-					<label for="dropoff-phone">Phone</label>
-					<input id="dropoff-phone" name="dropoff-phone"
-						class="form-control" type="text" placeholder="#15" >
-				</div>
-			</div>
-		</div>
+			{% include "delivery/addressForm.html" %}
+		</form>
 	</div>
 
 <!-- <DATETIMEPARCEL></DATETIMEPARCEL> -->

@@ -34,7 +34,7 @@ function geoCode(addr) {
 			} finally {
 				return formattedAddr
 			}
-		}
+		},
 		error: function(error) {
 			console.log(error)
 		}
@@ -45,8 +45,22 @@ function geoCode(addr) {
  *	GOODFOOT API HELPERS
  */
 
+function callSuccess(data, form){
+	console.log(data + form)
+}
+
+function callError(data, form){
+	if ('name' in data) {
+		var selector = "#" + form + " input[name=name]"
+		$( selector ).closest('.form-group').addClass('has-error')
+	} 
+
+	var addrErr = "#" + form + " input[name=geocompleted]"
+	$( addrErr ).closest('.form-group').addClass('has-error')
+}
+
 // Throws an Object Error
-function callAPI(url, obj) {
+function callAPI(url, obj, form) {
 	$.ajax({
 		url: API_BASE + url +'/',
 		type: 'POST',
@@ -54,11 +68,11 @@ function callAPI(url, obj) {
 			'X-CSRFToken': $.cookie( 'csrftoken' )
 		},
 		data: obj,
-		success: function(response){
-			return response.id
+		success: function(data) {
+			callSuccess(data.responseJSON, form)
 		},
-		error: function(error){
-			throw error
+		error: function(data) {
+			callError(data.responseJSON, form)
 		}
 	})	
 };
@@ -77,7 +91,7 @@ function getRates(pk) {
 			throw error
 		}
 	})
-},
+}
 
 function purchase(pk, rate) {
 	$.ajax({

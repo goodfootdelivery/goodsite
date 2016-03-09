@@ -1,11 +1,11 @@
 $(document).ready(function(){
-	$( ".pickup" ).geocomplete({
+	$( "#start input[name=geocompleted]" ).geocomplete({
 		details: "#start",
 		detailsAttribute: "geo",
 		types: ["geocode"],
 	});
 
-	$( ".dropoff" ).geocomplete({
+	$( "#end input[name=geocompleted]" ).geocomplete({
 		details: "#end",
 		detailsAttribute: "geo",
 		types: ["geocode"],
@@ -20,14 +20,20 @@ $(document).ready(function(){
 	});
 
 	$( '#next' ).click(function(){
+		// Address Building
+		callAPI('addresses', $( '#start' ).serialize(), 'start')
+		callAPI('addresses', $( '#end' ).serialize(), 'end')
+
+
+		// Map Stuff
 		var pickup_url = $.staticMap({
-				address: $( '#pickup-address' ).val(),
+				address: $( '#start input[name=geocompleted]' ).val(),
 				zoom: 18,
 				height: 200,
 				width: 300
 			})
 		var dropoff_url = $.staticMap({
-				address: $( '#dropoff-address' ).val(),
+				address: $( '#end input[name=geocompleted]' ).val(),
 				zoom: 16,
 				height: 200,
 				width: 300
@@ -56,7 +62,7 @@ $(document).ready(function(){
 			}
 		});
 
-		$( '#stepOne' ).hide(300)
+		// $( '#stepOne' ).hide(300)
 		$( '#stepTwo' ).show(300)
 
 	})

@@ -13,19 +13,19 @@ POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKL
 #       Address Model
 #
 class Address(models.Model):
-    owner = models.ForeignKey('auth.User', null=True, blank=True, related_name='addresses')
+    owner = models.ForeignKey('auth.User', null=True, related_name='addresses')
 
     # Contact
     name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=12, blank=True, null=True)
+    phone = models.CharField(max_length=12, null=True)
 
     # Address
-    street = models.CharField(max_length=100, null=True)
-    unit = models.CharField(max_length=20, blank=True, null=True)
-    city = models.CharField(max_length=50, null=True)
-    prov = models.CharField(max_length=2, null=True)
-    postal = models.CharField(max_length=10, null=True, validators=[RegexValidator(regex=POSTAL_REGEX)])
-    country = models.CharField(max_length=2, blank=True, default='CA')
+    street = models.CharField(max_length=100)
+    unit = models.CharField(max_length=20, null=True)
+    city = models.CharField(max_length=50)
+    prov = models.CharField(max_length=20)
+    postal = models.CharField(max_length=10, validators=[RegexValidator(regex=POSTAL_REGEX)])
+    country = models.CharField(max_length=2, default='CA')
 
     # Coordinates
     lat = models.FloatField(null=True, blank=True)
