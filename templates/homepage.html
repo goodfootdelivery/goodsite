@@ -1,33 +1,36 @@
 {% extends 'site_base.html' %}
 
-{% load render_bundle from webpack_loader %}
 {% load i18n %}
 {% load staticfiles %}
 
-{% block head_title %}goodfoot delivery{% endblock %}
-
+{% block head_title %}Goodfoot Delivery{% endblock %}
 {% block body_class %}home{% endblock %}
 
+
+{% block css %}
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+{% endblock %}
+
+
 {% block body_base %}
+	<section id="stepOne">
+		{% include "delivery/placeOrder.html" %}
+	</section>
 
-    <section class="container">
-		<div class="row">
-			<div id="order" class="col-xs-12">
-				{% render_bundle 'order' %}
-			</div>
-		</div>
-    </section>
+	<section id="stepTwo" style="display:none">
+		{% include "delivery/chooseRate.html" %}
+	</section>
+{% endblock %}
 
-    <section>
-        <div class="container">
-            <p class="lead text-center">
-                {% blocktrans %}
-                See <a href="http://blog.goodfootdelivery.com/">blog.goodfootdelivery.com</a>
-                for more information.
-                {% endblocktrans %}
-            </p>
-        </div>
-    </section>
-	
 
+{% block foot_js %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+	<script type="text/javascript" src="http://goodfootdelivery.com/js/jquery.geocomplete.js"></script>
+
+	<script src="{% static "scripts/map.js" %}"></script>
+	<script src="{% static "scripts/ajaxHelpers.js" %}"></script>
+	<script src="{% static "scripts/orderProcess.js" %}"></script>
 {% endblock %}
