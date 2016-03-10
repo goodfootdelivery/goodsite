@@ -1,0 +1,35 @@
+{% extends 'site_base.html' %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block head_title %}Goodfoot Delivery{% endblock %}
+{% block body_class %}home{% endblock %}
+
+
+{% block css %}
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+{% endblock %}
+
+
+{% block body_base %}
+	<section class="container">
+		<h3>My Orders</h3>
+		{% for order in order_list %}
+		<div class="row">
+			<div class="col-xs-2">{{ order.id }}</div>
+			<div class="col-xs-2">{{ order.pickup }}</div>
+			<div class="col-xs-2">{{ order.dropoff }}</div>
+			<div class="col-xs-2">{{ order.parcel }}</div>
+			<div class="col-xs-2">{{ order.service }}</div>
+			<div class="col-xs-2">{{ order.is_local }}</div>
+		</div>
+		{% empty %}
+		<p>You Haven't Placed Any Order Yet!</p>
+		{% endfor %}
+	</section>
+{% endblock %}
+
+
+{% block foot_js %}
+{% endblock %}

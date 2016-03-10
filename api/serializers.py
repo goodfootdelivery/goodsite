@@ -49,23 +49,12 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         package = validated_data.pop('parcel', None)
         parcel = Parcel.objects.create(**package)
-        order = Order.objects.create(parcel=parcel, **validated_data)
-        return order
+        return Order(parcel=parcel, **validated_data)
 
 
 ### RATE SERIALIZER ###
 
 class RateSerializer(serializers.BaseSerializer):
-    def to_representation(self, instance):
-        if instance.is_local():
-            raise ValidationError('Shipment Doesn\'t require Easypost')
-
-        rates = instance.easypost()
-        if not rates:
-            raise ValidationError('Invalid Shipment')
-        instance.save()
-        return rates
-
     def to_internal_value(self, data):
         rate_id = data.get('rate_id')
         # Apply Regex for Local and Easypost Rate Formats
@@ -76,11 +65,7 @@ class RateSerializer(serializers.BaseSerializer):
         if instance.purchase(rate):
             instance.save()
             return {
-                'rate_id': instance.rate_id,
-                'easypost_id': instance.easypost_id,
-                'tracking_code': instance.tracking_code,
-                'postal_label': instance.postal_label,
-                'status': 'SUCCESS'
+                'status': 'SUCCESS',
             }
         else:
             return { 'error': 'Invalid Rate' }

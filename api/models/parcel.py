@@ -5,11 +5,9 @@
 #
 
 from django.db import models
-from api.delivery import TEST_EP_KEY
 
-#
-#       Parcel Model
-#
+### PARCEL MODEL ###
+
 class Parcel(models.Model):
     length = models.FloatField()
     width = models.FloatField()

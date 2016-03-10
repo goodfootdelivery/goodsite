@@ -6,4 +6,5 @@ bower_components
 node_modules
 errors.html
 test.json
+.ropeproject
 .DS_Store

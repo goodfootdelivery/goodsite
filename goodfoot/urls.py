@@ -5,6 +5,8 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
+
 from . import views
 
 
@@ -19,6 +21,6 @@ urlpatterns = [
     url(r'^api/', include('api.urls')),
 
     # Goodfoot
-    url(r'^$', views.HomeView.as_view(), name='home'),
-    url(r'^delivery/$', views.DeliveryView.as_view(), name='delivery'),
+    url(r'^$', login_required(views.HomeView.as_view()), name='home'),
+    url(r'^hub/$', login_required(views.HubView.as_view()), name='hub')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

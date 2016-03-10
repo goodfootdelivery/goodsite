@@ -48,7 +48,7 @@ class Address(models.Model):
                 (self.street, self.city, self.prov, self.postal, self.country)
 
     def is_local(self):
-        if self.city.upper() is 'TORONTO':
+        if self.city.upper() == 'TORONTO':
             return True
         else:
             return False
