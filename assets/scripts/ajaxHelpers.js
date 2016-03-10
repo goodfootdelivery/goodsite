@@ -5,6 +5,19 @@
 
 var API_BASE = 'http://localhost:8000/api/'
 
+var isLocal = true
+
+var orderMain = {
+	pickup: null,
+	dropoff: null,
+	parcel: {
+		"length": 1.00,
+		"width": 1.00,
+		"height": 1.00,
+		"weight": 1.00
+	}
+}
+
 /*
  * GEOCODE HELPER
  */
@@ -46,7 +59,14 @@ function geoCode(addr) {
  */
 
 function callSuccess(data, form){
-	console.log(data + form)
+	console.log(data)
+	if (form === 'start') {
+		orderMain.pickup = data.id
+	} else if (form === 'end') {
+		orderMain.dropoff = data.id;
+		( data.city != "Toronto" )? isLocal = false : isLocal = true
+	}
+	console.log(orderMain)
 }
 
 function callError(data, form){
@@ -57,6 +77,8 @@ function callError(data, form){
 
 	var addrErr = "#" + form + " input[name=geocompleted]"
 	$( addrErr ).closest('.form-group').addClass('has-error')
+
+	console.log(data)
 }
 
 // Throws an Object Error
@@ -69,7 +91,7 @@ function callAPI(url, obj, form) {
 		},
 		data: obj,
 		success: function(data) {
-			callSuccess(data.responseJSON, form)
+			callSuccess(data, form)
 		},
 		error: function(data) {
 			callError(data.responseJSON, form)
@@ -77,15 +99,31 @@ function callAPI(url, obj, form) {
 	})	
 };
 
-function getRates(pk) {
+function placeOrder(data, isLocal) {
 	$.ajax({
-		url: API_BASE + 'orders/' + pk + '/rates/',
-		type: 'GET',
+		url: API_BASE + 'orders/',
+		type: 'POST',
 		headers: {
 			'X-CSRFToken': $.cookie( 'csrftoken' )
 		},
+		data: data,
 		success: function(response){
-			return response
+			var trHTML = '';
+			if (isLocal){
+				$.each(response, function (_, rate) {
+					trHTML += '<tr><td><input type="radio" name=rate value="' + rate.id + '"></td><td>'
+						+ rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service + 
+						'</td><td>' + rate.days + '</td></tr>';
+				});
+			} else {
+				$.each(response, function (_, rate) {
+					trHTML += '<tr><td><input type="radio" name=rate value="' + rate.service + '"></td><td>'
+						+ rate.price + '</td></tr>';
+				});
+			}
+			// Build Table
+			$( '#rates-head' ).show(300)
+			$('#rates').append(trHTML);
 		},
 		error: function(error){
 			throw error
@@ -95,8 +133,8 @@ function getRates(pk) {
 
 function purchase(pk, rate) {
 	$.ajax({
-		url: API_BASE + 'orders/' + pk + '/rates/',
-		type: 'POST',
+		url: API_BASE + 'orders/' + pk + '/',
+		type: 'PUT',
 		headers: {
 			'X-CSRFToken': $.cookie( 'csrftoken' )
 		},
@@ -105,7 +143,7 @@ function purchase(pk, rate) {
 			return response
 		},
 		error: function(error){
-			throw error
+			console.log(error)
 		}
 	})
 }
