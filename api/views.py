@@ -45,20 +45,12 @@ class OrderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    @detail_route(methods=['GET', 'POST'])
-    def rates(self, request, pk=None):
+    def update(self, request, pk=None):
         order = Order.objects.get(pk=pk)
+        serializer = RateSerializer(order)
 
-        if request.method == 'GET':
-            serializer = RateSerializer(order)
-            return Response(serializer.data)
-
-        if request.method == 'POST':
-            data = request.data.copy()
-            data['pk'] = pk
-
-            serializer = RateSerializer(order, data=data)
-            if serializer.is_valid():
-                return Response(serializer.validated_data)
-            else:
-                return Response(serializer.errors, status=400)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data)
+        else:
+            return Response(serializer.errors, status=400)

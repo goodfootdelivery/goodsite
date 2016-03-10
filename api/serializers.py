@@ -68,10 +68,12 @@ class RateSerializer(serializers.BaseSerializer):
 
     def to_internal_value(self, data):
         rate_id = data.get('rate_id')
-        instance = Order.objects.get(pk=data.get('pk'))
-        if not instance.purchase(rate_id):
-            raise ValidationError('Invalid Rate')
-        else:
+        # Apply Regex for Local and Easypost Rate Formats
+        return { 'rate_id': rate_id }
+
+    def update(self, instance, validated_data):
+        rate = validated_data.get('rate_id')
+        if instance.purchase(rate):
             instance.save()
             return {
                 'rate_id': instance.rate_id,
@@ -80,3 +82,6 @@ class RateSerializer(serializers.BaseSerializer):
                 'postal_label': instance.postal_label,
                 'status': 'SUCCESS'
             }
+        else:
+            return { 'error': 'Invalid Rate' }
+

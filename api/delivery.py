@@ -11,8 +11,7 @@ PRICE_VECTOR = [0.0075, 0.005, 0.004]
 
 SERVICES = (
         ('EX', 'Express'),
-        ('SD', 'Same Day'),
-        ('ND', 'Next Day'),
+        ('BA', 'Basic'),
     )
 
 STATUSES = (
@@ -23,25 +22,6 @@ STATUSES = (
         ('PD', 'Paid'),
     )
 
-# def validate(self, data):
-#     pickup = data.get('pickup')
-#     dropoff = data.get('dropoff')
-#     client = googlemaps.Client(key=GKEY)
-#     if not dropoff.city == 'Toronto':
-#         destination = OFFICE
-#     else:
-#         destination = dropoff.__str__()
-#     trip = client.distance_matrix(
-#         pickup.__str__(),
-#         destination,
-#         mode = 'transit'
-#     )
-#     if not trip['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
-#         return data
-#     else:
-#         raise serializers.ValidationError(
-#             'Please Ensure both addresses are valid and try again'
-#         )
 
 def get_distance(pickup, dropoff):
     client = googlemaps.Client(key=GKEY)

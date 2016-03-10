@@ -31,22 +31,22 @@ class Order(models.Model):
     dropoff = models.ForeignKey(Address, null=True, related_name='end')
     parcel = models.ForeignKey(Parcel, null=True)
     order_date = models.DateField(auto_now_add=True)
-    delivery_date = models.DateField(null=True)
-    delivery_time = models.TimeField(null=True)
+    delivery_date = models.DateField(blank=True, null=True)
+    delivery_time = models.TimeField(blank=True, null=True)
     comments = models.CharField(max_length=200, blank=True)
 
     # make local and EP prices
     price = models.FloatField(blank=True, null=True)
+    service = models.CharField(max_length=2, choices=SERVICES, null=True)
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
-    service = models.CharField(max_length=2, choices=SERVICES, default=None)
 
     # EasyPost ONLY
-    easypost_id = models.CharField(max_length=200, blank=True, null=True)
-    rate_id = models.CharField(max_length=200, blank=True, null=True)
+    easypost_id = models.CharField(max_length=200, null=True)
+    rate_id = models.CharField(max_length=200, null=True)
 
     # Purchased Only
-    tracking_code = models.CharField(max_length=100, null=True, blank=True)
-    postal_label = models.URLField(max_length=200, null=True, blank=True)
+    tracking_code = models.CharField(max_length=100, null=True)
+    postal_label = models.URLField(max_length=200, null=True)
 
     def __str__(self):
         return "Order: #%s, Date: %s" % (str(self.id), str(self.order_date))
