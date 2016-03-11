@@ -55,8 +55,13 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Order.objects.filter(owner=user)
 
     def update(self, request, pk=None):
+        print 'start view'
         order = Order.objects.get(pk=pk)
-        serializer = RateSerializer(order, request.data)
+        serializer = RateSerializer(order, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        order = serializer.save()
+        data = {
+            "order": order.id,
+            "price": order.price
+        }
+        return Response(data)

@@ -30,7 +30,7 @@ class Order(models.Model):
     dropoff = models.ForeignKey(Address, null=True, related_name='end')
     parcel = models.ForeignKey(Parcel, null=True)
     order_date = models.DateField(auto_now_add=True)
-    delivery_date = models.DateField(null=True)
+    delivery_date = models.DateField()
     delivery_time = models.TimeField(null=True)
     comments = models.CharField(max_length=200, blank=True)
 

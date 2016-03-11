@@ -15,6 +15,7 @@ $(document).ready(function(){
 
 	$( '#date' ).datepicker({
 		defaultDate: new Date(),
+		dateFormat: "yy-mm-dd",
 		changeMonth: true,
 		changeYear: false,
 		minDate: new Date(),
@@ -25,6 +26,7 @@ $(document).ready(function(){
 		// Address Building
 		callAPI('addresses', $( '#start' ).serialize(), 'start')
 		callAPI('addresses', $( '#end' ).serialize(), 'end')
+		placeOrder()
 
 
 		// Map Stuff
@@ -33,21 +35,19 @@ $(document).ready(function(){
 				zoom: 18,
 				height: 200,
 				width: 300
-			})
+			}); $( '#pickup-map' ).attr('src', pickup_url)
+
 		var dropoff_url = $.staticMap({
 				address: $( '#end input[name=geocompleted]' ).val(),
 				zoom: 16,
 				height: 200,
 				width: 300
-			})
-		$( '#pickup-map' ).attr('src', pickup_url)
-		$( '#dropoff-map' ).attr('src', dropoff_url)
+			}); $( '#dropoff-map' ).attr('src', dropoff_url)
 
-		// API ADDRESS TEST CALL
+	})
 
-
-		// $( '#stepOne' ).hide(300)
-		$( '#stepTwo' ).show(300)
-
+	$( '#submit' ).click(function(){
+		chosenRate = $( '#rates input[name=rate]' ).val()
+		purchaseOrder(chosenRate)
 	})
 })

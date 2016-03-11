@@ -24,20 +24,34 @@
 
 	<div class="row">
 		<div class="col-xs-12">
-			<legend>Rates</legend>
 			<table class="table table-hover">
-				<thead id="rates-head" style="display:none">
+				<thead id="non-local-rates" style="display:none">
 					<tr>
 						<th></th>
 						<th>Carrier</th>
-						<th>Rate</th>
+						<th>Price</th>
 						<th>Service</th>
 						<th>ETA.</th>
+					</tr>
+				</thead>
+				<thead id="local-rates" style="display:none">
+					<tr>
+						<th></th>
+						<th>Service</th>
+						<th>Price</th>
 					</tr>
 				</thead>
 				<tbody id="rates">
 				</tbody>
 			</table>
+		</div>
+	</div>
+
+<!-- <PLACEORDER></PLACEORDER> -->
+
+	<div class="row">
+		<div class="col-xs-12">
+			<button id="submit" style="float:right" type="button" class="btn btn-primary">Place</button>
 		</div>
 	</div>
 </div>

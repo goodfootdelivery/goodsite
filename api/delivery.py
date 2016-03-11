@@ -36,11 +36,9 @@ def get_distance(pickup, dropoff):
 def get_prices(pickup, dropoff):
     prices = []
     seconds = get_distance(pickup, dropoff)
-    print float( seconds )
     hours = seconds / 3600.00
-    print hours
 
-    nd_rate = hours*20.00
+    nd_rate = round( hours*20.00, 3 )
     if 8.50 > nd_rate:
         prices.append({'service': 'BA', 'price': 8.50})
     elif 60.00 < nd_rate:
@@ -48,7 +46,7 @@ def get_prices(pickup, dropoff):
     else:
         prices.append({'service': 'BA', 'price': nd_rate})
 
-    ex_rate = hours*25.00
+    ex_rate = round( hours*25.00, 3 )
     if 15.00 > nd_rate:
         prices.append({'service': 'EX', 'price': 15.00})
     elif 60.00 < nd_rate:
