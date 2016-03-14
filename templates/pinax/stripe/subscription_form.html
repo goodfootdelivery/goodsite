@@ -28,13 +28,36 @@
             {% csrf_token %}
             {{ form|bootstrap }}
             {% if not request.user.customer.default_source %}
-                <div class="card">
+                <div class="form-group card">
                     <div class="errors"></div>
                     <input type="text" size="20" data-stripe="number" placeholder="Card number"/>
                     <input type="text" size="2" data-stripe="exp-month"/>
                     <input type="text" size="4" data-stripe="exp-year"/>
                     <input type="text" size="4" data-stripe="cvc" placeholder="CVC"/>
                 </div>
+
+				<!-- <div class="card">
+					<div class="errors"></div>
+					<div class="form-group">
+						<label for="number" class="col-sm-2 control-label">Card Number</label>
+						<div class="col-sm-7 form-group">
+						<input type="text" class="form-control" size="20" data-stripe="number" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="expMonth" class="col-sm-2 control-label">Expiration</label>
+						<div class="col-sm-1">
+							<input type="text" size="2" class="form-control" data-stripe="exp-month"/>
+						</div>
+						<div class="col-sm-2">
+							<input type="text" size="4" class="form-control" data-stripe="exp-year"/>
+						</div>
+						<label for="cvc" class="col-sm-2 control-label">CVC</label>
+						<div class="col-sm-2">
+						<input type="text" size="4" class="form-control" data-stripe="cvc" />
+						</div>
+					</div>
+				</div> -->
             {% endif %}
             <button class="btn btn-primary">{% if object %}Update{% else %}Subscribe{% endif %}</button>
         </form>

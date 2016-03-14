@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'account',
     # Webpack
     'webpack_loader',
+    'pinax.stripe',
     'leaflet',
     'rest_framework',
     'api',
@@ -154,3 +155,6 @@ LEAFLET_CONFIG = {
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
+
+PINAX_STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY", "pk_test_xwlVF9Va1dl7IrSIwWlIdmV6")
+PINAX_STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_WpCSTKtWTUtBKg7HlaZsH5nu")

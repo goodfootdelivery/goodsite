@@ -68,6 +68,9 @@
                 </header>
             {% endblock %}
 
+            {% block content %}
+            {% endblock %}
+
             {% block body_base %}
                 <section id="content_body">
                     <div class="container">
@@ -89,7 +92,10 @@
 
 
 		{% include "_scripts.html" %}
+
 		{% block foot_js %}{% endblock %}
+		{% block javascript %}{% endblock %}
+
 
             </body>
 </html>
