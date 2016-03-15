@@ -3,10 +3,10 @@ from delivery.models import Order
 
 
 class DeliveryView(TemplateView):
-    template_name = 'orderForm.html'
+    template_name = 'delivery/orderForm.html'
     title = 'home'
 
 class HubView(ListView):
-    template_name = 'orderHub.html'
+    template_name = 'delivery/orderHub.html'
     model = Order
     title = 'My Orders'

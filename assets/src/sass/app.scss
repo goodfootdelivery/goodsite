@@ -1,0 +1,25 @@
+@import "customVariables";
+@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Prevent Navbar from Overlapping
+body{
+	padding-top: $navbar-height;
+}
+
+// edit for main logo
+#logo-container{
+	position: relative;
+	overflow: hidden;
+	height: 75px;
+	width: 100px;
+}
+
+#logo-container img {
+    max-height:100%;
+	max-width:100%;
+}
+
+img {
+	border-radius: 10px;
+}
+// end edit for main logo
