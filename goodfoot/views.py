@@ -1,12 +1,12 @@
 from django.views.generic import TemplateView, ListView
-from api.models import Order
+from delivery.models import Order
 
 
-class HomeView(TemplateView):
-    template_name = 'homepage.html'
+class DeliveryView(TemplateView):
+    template_name = 'orderForm.html'
     title = 'home'
 
 class HubView(ListView):
-    template_name = 'my_orders.html'
+    template_name = 'orderHub.html'
     model = Order
     title = 'My Orders'

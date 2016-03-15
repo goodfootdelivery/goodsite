@@ -1,28 +1,27 @@
-# Root URLs for Goodfoot
-# Sat Jan  9 16:34:39 2016
-
+from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
-from django.conf import settings
-from django.contrib import admin
+# from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
+from django.contrib import admin
 from . import views
 
 
 urlpatterns = [
-    # Overhead
+    # url(r"^$", TemplateView.as_view(template_name="homepage.html"), name="home"),
+    url(r'^$', login_required(views.DeliveryView.as_view()), name='home'),
     url(r'^grappelli/', include('grappelli.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^account/', include('account.urls')),
-    url(r'^billing/', include('pinax.stripe.urls')),
+    url(r"^admin/", include(admin.site.urls)),
+    url(r"^account/", include("account.urls")),
+    url(r"^payments/", include("pinax.stripe.urls")),
 
     # API
-    url(r'^api/', include('api.urls')),
+    url(r'^api/', include('delivery.urls')),
+    url(r'^placeorder/$', login_required(views.DeliveryView.as_view()), name='delivery'),
     url(r'^hub/$', login_required(views.HubView.as_view()), name='hub'),
 
     # Goodfoot
-    url(r'^$', login_required(views.HomeView.as_view()), name='home'),
+]
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
