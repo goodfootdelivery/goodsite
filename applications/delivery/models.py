@@ -1,17 +1,15 @@
 #
-#       Delivery API Order Model & Validators
+#       Delivery API Address Model & Validators
 #
 #               Tue  1 Mar 21:10:18 2016
 #
 
 from django.db import models
+from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
-from delivery.delivery import SERVICES, STATUSES, get_distance, get_prices, OFFICE
-from .address import Address
-from .parcel import Parcel
+from .delivery import SERVICES, STATUSES, get_prices, OFFICE
 
 import easypost
-import googlemaps
 
 TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 
@@ -19,7 +17,80 @@ TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 easypost.api_key = TEST_EP_KEY
 
 
+POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"
+
+
+### ADDRESS MODEL ###
+
+
+class Address(models.Model):
+    owner = models.ForeignKey('auth.User', null=True, related_name='addresses')
+
+    # Contact
+    name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=12, null=True)
+
+    # Address
+    street = models.CharField(max_length=100)
+    unit = models.CharField(max_length=20, null=True)
+    city = models.CharField(max_length=50)
+    prov = models.CharField(max_length=20)
+    postal = models.CharField(max_length=10, validators=[RegexValidator(regex=POSTAL_REGEX)])
+    country = models.CharField(max_length=2, default='CA')
+
+    # Coordinates
+    lat = models.FloatField(null=True, blank=True)
+    lng = models.FloatField(null=True, blank=True)
+
+    def easypost(self):
+        return {
+            'name': self.name,
+            'phone': self.phone or None,
+            'street1': self.street,
+            'street2': self.unit or None,
+            'city': self.city,
+            'state': self.prov,
+            'country': self.country,
+            'zip': self.postal,
+        }
+
+    def __str__(self):
+        return "%s, %s, %s, %s, %s" % \
+                (self.street, self.city, self.prov, self.postal, self.country)
+
+    def is_local(self):
+        if self.city.upper() == 'TORONTO':
+            return True
+        else:
+            return False
+
+
+
+### PARCEL MODEL ###
+
+
+class Parcel(models.Model):
+    length = models.FloatField()
+    width = models.FloatField()
+    height = models.FloatField()
+    weight = models.FloatField()
+
+    def __str__(self):
+        return '%f" x %f" x %f", %foz' % \
+            (self.length, self.width, self.height, self.weight)
+
+    def easypost(self):
+        return {
+            'length': self.length,
+            'width': self.width,
+            'height': self.height,
+            'weight': self.weight
+        }
+
+
+
 ### ORDER MODEL ###
+
 
 class Order(models.Model):
     owner = models.ForeignKey('auth.User', null=True, blank=True, related_name='orders')

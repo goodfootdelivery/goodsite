@@ -4,7 +4,7 @@
  *						Sun 13 Mar 13:32:31 2016
  */
 
-import { isLocal, orderMain } from './ajaxHelpers'
+import { isLocal, orderMain, callAPI, placeOrder, purchaseOrder } from './ajaxHelpers'
 import { datepicker } from 'jquery-ui'
 import 'geocomplete'
 import 'jquery.cookie'
@@ -62,7 +62,7 @@ $(() => {
 	})
 
 	$( '#submit' ).click(function(){
-		chosenRate = $( '#rates input[name=rate]' ).val()
+		let chosenRate = $( '#rates input[name=rate]' ).val()
 		purchaseOrder(chosenRate)
 	})
 

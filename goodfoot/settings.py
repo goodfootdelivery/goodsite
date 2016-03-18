@@ -146,8 +146,8 @@ INSTALLED_APPS = [
 
     # project
     "goodfoot",
-    'delivery',
-    'invoicing',
+    'applications.delivery',
+    'applications.invoicing',
 ]
 
 # Go to https://stripe.com/ and grab your keys and put here

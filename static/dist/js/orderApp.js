@@ -85,9 +85,9 @@
 
 		$('#next').click(function () {
 			// Address Building
-			callAPI('addresses', $('#start').serialize(), 'start');
-			callAPI('addresses', $('#end').serialize(), 'end');
-			placeOrder();
+			(0, _ajaxHelpers.callAPI)('addresses', $('#start').serialize(), 'start');
+			(0, _ajaxHelpers.callAPI)('addresses', $('#end').serialize(), 'end');
+			(0, _ajaxHelpers.placeOrder)();
 
 			// Map Stuff
 			var pickup_url = $.staticMap({
@@ -106,8 +106,8 @@
 		});
 
 		$('#submit').click(function () {
-			chosenRate = $('#rates input[name=rate]').val();
-			purchaseOrder(chosenRate);
+			var chosenRate = $('#rates input[name=rate]').val();
+			(0, _ajaxHelpers.purchaseOrder)(chosenRate);
 		});
 
 		// document.ready() end..
@@ -9975,6 +9975,9 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	exports.callAPI = callAPI;
+	exports.placeOrder = placeOrder;
+	exports.purchaseOrder = purchaseOrder;
 	/*
 	 *		AJAX HELPERS FOR GOODFOOT API
 	 *					Wed  9 Mar 12:39:04 2016
@@ -9987,6 +9990,7 @@
 	var LRG_PARCEL = { "length": 3.00, "width": 3.00, "height": 3.00, "weight": 3.00 };
 
 	var orderPK = null;
+
 	var isLocal = exports.isLocal = true;
 
 	var orderMain = exports.orderMain = {
@@ -10091,7 +10095,7 @@
 	 */
 
 	function getParcel() {
-		size = $('#details select[name=parcel]').val();
+		var size = $('#details select[name=parcel]').val();
 		switch (size) {
 			case "small":
 				return SML_PARCEL;
@@ -10124,7 +10128,7 @@
 			success: function success(response) {
 				// Set Order ID
 				orderPK = response.order.id;
-				rates = response.rates;
+				var rates = response.rates;
 				// Table Header and Row Initializers
 				var trHTML = '';
 				var trHEAD = 'local-rates';

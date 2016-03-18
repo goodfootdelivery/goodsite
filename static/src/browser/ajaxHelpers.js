@@ -10,6 +10,7 @@ const MED_PARCEL = { "length": 2.00, "width": 2.00, "height": 2.00, "weight": 2.
 const LRG_PARCEL = { "length": 3.00, "width": 3.00, "height": 3.00, "weight": 3.00 }
 
 let orderPK = null
+
 export let isLocal = true
 
 export const orderMain = {
@@ -93,7 +94,7 @@ function callError(data, form){
 }
 
 // Throws an Object Error
-function callAPI(url, obj, form) {
+export function callAPI(url, obj, form) {
 	$.ajax({
 		url: API_BASE + url +'/',
 		type: 'POST',
@@ -115,7 +116,7 @@ function callAPI(url, obj, form) {
  */
 
 function getParcel() {
-	size = $( '#details select[name=parcel]' ).val()
+	let size = $( '#details select[name=parcel]' ).val()
 	switch (size) {
 		case "small":
 			return SML_PARCEL
@@ -131,7 +132,7 @@ function getParcel() {
 	}	
 }
 
-function placeOrder() {
+export function placeOrder() {
 	orderMain.parcel = getParcel()
 	orderMain.delivery_date = $( '#details input[name=date]' ).val()
 	orderMain.delivery_time = $( '#details select[name=time]' ).val()
@@ -148,10 +149,10 @@ function placeOrder() {
 		success: function(response){
 			// Set Order ID
 			orderPK = response.order.id
-			rates = response.rates
+			let rates = response.rates
 			// Table Header and Row Initializers
-			var trHTML = '';
-			var trHEAD = 'local-rates';
+			let trHTML = '';
+			let trHEAD = 'local-rates';
 			if (!isLocal){
 				$.each(rates, function (_, rate) {
 					trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>'
@@ -179,7 +180,7 @@ function placeOrder() {
 	})
 }
 
-function purchaseOrder(rate) {
+export function purchaseOrder(rate) {
 	console.log(rate)
 	$.ajax({
 		url: API_BASE + 'orders/' + orderPK + '/',

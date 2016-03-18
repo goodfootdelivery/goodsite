@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView, ListView
-from delivery.models import Order
+from applications.delivery.models import Order
 
 
 class DeliveryView(TemplateView):
