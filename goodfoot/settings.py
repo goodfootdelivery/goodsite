@@ -1,5 +1,10 @@
-import os
+#
+#       GoodFoot Delivery Settings File
+#
+#         Fri 18 Mar 15:10:51 2016
+#
 
+import os
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -63,7 +68,7 @@ STATIC_URL = "/site_media/static/"
 
 # Additional locations of static files
 STATICFILES_DIRS = [
-    os.path.join(PROJECT_ROOT, "assets", "dist"),
+    os.path.join(PROJECT_ROOT, "static", "dist"),
 ]
 
 # List of finder classes that know how to find static files in
@@ -142,6 +147,7 @@ INSTALLED_APPS = [
     # project
     "goodfoot",
     'delivery',
+    'invoicing',
 ]
 
 # Go to https://stripe.com/ and grab your keys and put here

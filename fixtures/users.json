@@ -1,0 +1,38 @@
+[
+{
+    "fields": {
+        "username": "sully",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": null,
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$20000$ACMDrHCjpEUO$Xmh+R5/tYYA0uu9lFicqrY04tfgXqbpQfjjAApf48LI=",
+        "email": "sully4792@gmail.com",
+        "date_joined": "2016-03-18T19:24:11.100Z"
+    },
+    "model": "auth.user",
+    "pk": 1
+},
+{
+    "fields": {
+        "username": "greg",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": null,
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$20000$1eRmGYaMzPod$68JKGkxv/PvzFqwt8oFvPt0lLRHwCn2dr5s2WRg3Z00=",
+        "email": "greg@goodfootdelivery.com",
+        "date_joined": "2016-03-18T19:24:38.060Z"
+    },
+    "model": "auth.user",
+    "pk": 2
+}
+]
