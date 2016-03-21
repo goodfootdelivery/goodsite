@@ -63,17 +63,34 @@ function geoCode(addr) {
  */
 
 function callSuccess(data, form){
+	// Apply Validation & Initiate Next Request
 	switch (form) {
 		case "start":
 			orderMain.pickup = data.id
+			callAPI('addresses', $( '#end' ).serialize(), 'end')
 			break;
 		case "end":
 			orderMain.dropoff = data.id;
 			( data.city != "Toronto" )? isLocal = false : isLocal = true
+			// place order when request are complete
+			placeOrder()
 			break;
 		default:
 			console.log('Form Name Not Recognized')
 	}
+
+	// Initialize Map
+	let selector = '#' + form + ' '
+	let pickup_url = $.staticMap({
+			address: $( selector + ' input[name=geocompleted]' ).val(),
+			zoom: 18,
+			height: 200,
+			width: 300
+		}); $( selector + ' .address-map' ).attr('src', pickup_url)
+
+	// Swap Form for Map
+	$( selector + '.stepOne' ).hide(300)
+	$( selector + '.stepTwo' ).show(300)
 }
 
 function callError(data, form){
@@ -169,8 +186,7 @@ export function placeOrder() {
 			// Build Table
 			$( '#' + trHEAD ).show(300)
 			$('#rates').append(trHTML);
-			$( '#stepOne' ).hide(300)
-			$( '#stepTwo' ).show(300)
+			$( '.stepTwo' ).show(300)
 		},
 		error: function(error){
 			if ('delivery_date' in error.responseJSON) {
@@ -190,8 +206,8 @@ export function purchaseOrder(rate) {
 		},
 		data: { "rate_id": rate },
 		success: function(response){
-			$( '#stepTwo' ).hide(300)
-			$( '#stepThree' ).show(300)
+			$( '.stepOne, .stepTwo' ).hide(300)
+			$( '.stepThree' ).show(300)
 		},
 		error: function(error){
 			console.log(error)

@@ -86,23 +86,22 @@
 		$('#next').click(function () {
 			// Address Building
 			(0, _ajaxHelpers.callAPI)('addresses', $('#start').serialize(), 'start');
-			(0, _ajaxHelpers.callAPI)('addresses', $('#end').serialize(), 'end');
-			(0, _ajaxHelpers.placeOrder)();
+			// placeOrder()
 
 			// Map Stuff
-			var pickup_url = $.staticMap({
-				address: $('#start input[name=geocompleted]').val(),
-				zoom: 18,
-				height: 200,
-				width: 300
-			});$('#pickup-map').attr('src', pickup_url);
+			// let pickup_url = $.staticMap({
+			// 		address: $( '#start input[name=geocompleted]' ).val(),
+			// 		zoom: 18,
+			// 		height: 200,
+			// 		width: 300
+			// 	}); $( '#start .address-map' ).attr('src', pickup_url)
 
-			var dropoff_url = $.staticMap({
-				address: $('#end input[name=geocompleted]').val(),
-				zoom: 16,
-				height: 200,
-				width: 300
-			});$('#dropoff-map').attr('src', dropoff_url);
+			// let dropoff_url = $.staticMap({
+			// 		address: $( '#end input[name=geocompleted]' ).val(),
+			// 		zoom: 16,
+			// 		height: 200,
+			// 		width: 300
+			// 	}); $( '#end .address-map' ).attr('src', dropoff_url)
 		});
 
 		$('#submit').click(function () {
@@ -10042,17 +10041,34 @@
 	 */
 
 	function callSuccess(data, form) {
+		// Apply Validation & Initiate Next Request
 		switch (form) {
 			case "start":
 				orderMain.pickup = data.id;
+				callAPI('addresses', $('#end').serialize(), 'end');
 				break;
 			case "end":
 				orderMain.dropoff = data.id;
 				data.city != "Toronto" ? exports.isLocal = isLocal = false : exports.isLocal = isLocal = true;
+				// place order when request are complete
+				placeOrder();
 				break;
 			default:
 				console.log('Form Name Not Recognized');
 		}
+
+		// Initialize Map
+		var selector = '#' + form + ' ';
+		var pickup_url = $.staticMap({
+			address: $(selector + ' input[name=geocompleted]').val(),
+			zoom: 18,
+			height: 200,
+			width: 300
+		});$(selector + ' .address-map').attr('src', pickup_url);
+
+		// Swap Form for Map
+		$(selector + '.stepOne').hide(300);
+		$(selector + '.stepTwo').show(300);
 	}
 
 	function callError(data, form) {
@@ -10145,8 +10161,7 @@
 				// Build Table
 				$('#' + trHEAD).show(300);
 				$('#rates').append(trHTML);
-				$('#stepOne').hide(300);
-				$('#stepTwo').show(300);
+				$('.stepTwo').show(300);
 			},
 			error: function error(_error2) {
 				if ('delivery_date' in _error2.responseJSON) {
@@ -10166,8 +10181,8 @@
 			},
 			data: { "rate_id": rate },
 			success: function success(response) {
-				$('#stepTwo').hide(300);
-				$('#stepThree').show(300);
+				$('.stepOne, .stepTwo').hide(300);
+				$('.stepThree').show(300);
 			},
 			error: function error(_error3) {
 				console.log(_error3);

@@ -13,15 +13,40 @@
 
 
 {% block body_base %}
-	<section id="stepOne">
-		{% include "delivery/placeOrder.html" %}
+	<section>
+		<div class="container">
+			<div class="row">
+		<!-- <pickup></pickup> -->
+				<form id='start' class="pickup col-xs-6">
+					<legend>Pickup</legend>
+					{% include "delivery/addressform.html" %}
+				</form>
+		<!-- <dropoff></dropoff> -->
+				<form id='end' class="col-xs-6">
+					<legend>Dropoff</legend>
+					{% include "delivery/addressform.html" %}
+				</form>
+			</div>
+
+		<!-- <datetimeparcel></datetimeparcel> -->
+
+			<form id="details">
+					{% include "delivery/detailForm.html" %}
+			</form>
+
+			<div class="row">
+				<div class="col-xs-12">
+					<button id="next" style="float:right" type="button" class="btn btn-primary">place</button>
+				</div>
+			</div>
+		</div>
 	</section>
 
-	<section id="stepTwo" style="display:none">
+	<section class='stepTwo' style="display:none">
 		{% include "delivery/chooseRate.html" %}
 	</section>
 
-	<section id="stepThree" style="display:none">
+	<section class='stepThree' style="display:none">
 		{% include "delivery/confirmOrder.html" %}
 	</section>
 {% endblock %}

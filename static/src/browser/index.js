@@ -40,24 +40,23 @@ $(() => {
 	$( '#next' ).click(function(){
 		// Address Building
 		callAPI('addresses', $( '#start' ).serialize(), 'start')
-		callAPI('addresses', $( '#end' ).serialize(), 'end')
-		placeOrder()
+		// placeOrder()
 
 
 		// Map Stuff
-		var pickup_url = $.staticMap({
-				address: $( '#start input[name=geocompleted]' ).val(),
-				zoom: 18,
-				height: 200,
-				width: 300
-			}); $( '#pickup-map' ).attr('src', pickup_url)
+		// let pickup_url = $.staticMap({
+		// 		address: $( '#start input[name=geocompleted]' ).val(),
+		// 		zoom: 18,
+		// 		height: 200,
+		// 		width: 300
+		// 	}); $( '#start .address-map' ).attr('src', pickup_url)
 
-		var dropoff_url = $.staticMap({
-				address: $( '#end input[name=geocompleted]' ).val(),
-				zoom: 16,
-				height: 200,
-				width: 300
-			}); $( '#dropoff-map' ).attr('src', dropoff_url)
+		// let dropoff_url = $.staticMap({
+		// 		address: $( '#end input[name=geocompleted]' ).val(),
+		// 		zoom: 16,
+		// 		height: 200,
+		// 		width: 300
+		// 	}); $( '#end .address-map' ).attr('src', dropoff_url)
 
 	})
 
