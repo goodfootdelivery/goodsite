@@ -10127,6 +10127,29 @@
 		}
 	}
 
+	var buildRates = function buildRates(rates) {
+		// Table Header and Row Initializers
+		var trHTML = '';
+		var trHEAD = 'local-rates';
+		if (!isLocal) {
+			$.each(rates, function (_, rate) {
+				trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>' + rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service + '</td><td>' + rate.days + '</td></tr>';
+			});
+			trHEAD = 'non-local-rates';
+		} else {
+			$.each(rates, function (_, rate) {
+				trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.service + '"></td><td>' + rate.service + '</td><td>' + rate.price + '</td></tr>';
+			});
+		}
+		// Build Table
+		$('#' + trHEAD).show(300);
+		$('#rates').append(trHTML);
+		$('.stepTwo').show(300);
+	};
+
+	/**
+	 *	Place Order
+	 */
 	function placeOrder() {
 		orderMain.parcel = getParcel();
 		orderMain.delivery_date = $('#details input[name=date]').val();
@@ -10145,23 +10168,8 @@
 				// Set Order ID
 				orderPK = response.order.id;
 				var rates = response.rates;
-				// Table Header and Row Initializers
-				var trHTML = '';
-				var trHEAD = 'local-rates';
-				if (!isLocal) {
-					$.each(rates, function (_, rate) {
-						trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>' + rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service + '</td><td>' + rate.days + '</td></tr>';
-					});
-					trHEAD = 'non-local-rates';
-				} else {
-					$.each(rates, function (_, rate) {
-						trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.service + '"></td><td>' + rate.service + '</td><td>' + rate.price + '</td></tr>';
-					});
-				}
-				// Build Table
-				$('#' + trHEAD).show(300);
-				$('#rates').append(trHTML);
-				$('.stepTwo').show(300);
+				buildRates(rates);
+				$('.stepOne').hide(300);
 			},
 			error: function error(_error2) {
 				if ('delivery_date' in _error2.responseJSON) {
