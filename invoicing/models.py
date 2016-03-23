@@ -1,5 +1,5 @@
 from django.db import models
-from applications.delivery.models import Address
+from delivery.models import Address
 
 import refreshbooks
 
