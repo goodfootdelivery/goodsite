@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^api/', include('delivery.urls')),
     url(r'^placeorder/$', login_required(views.DeliveryView.as_view()), name='delivery'),
     url(r'^hub/$', login_required(views.HubView.as_view()), name='hub'),
+    url(r'^invoicing/', include('invoicing.urls', namespace='invoicing')),
 
     # Goodfoot
 ]

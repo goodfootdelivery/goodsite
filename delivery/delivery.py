@@ -16,13 +16,12 @@ SERVICES = (
     )
 
 STATUSES = (
-        ('RE', 'Recieved'),
-        ('AS', 'Assigned'),
-        ('TR', 'In Transit'),
-        ('DE', 'Delivered'),
-        ('PD', 'Paid'),
+        ('RE', 'Recieved'),     #
+        ('AS', 'Assigned'),     ## Active
+        ('TR', 'In Transit'),   #
+        ('DE', 'Delivered'),    # Outstanding
+        ('PD', 'Paid'),         # Cleared
     )
-
 
 def get_distance(pickup, dropoff):
     client = googlemaps.Client(key=GKEY)
