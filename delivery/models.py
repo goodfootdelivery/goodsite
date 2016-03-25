@@ -8,6 +8,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from .delivery import SERVICES, STATUSES, get_prices, OFFICE
+from .signals import order_purchased
 
 import easypost
 
@@ -148,7 +149,12 @@ class Order(models.Model):
                 self.rate_id = rate
                 self.tracking_code = purchase.tracking_code
                 self.postal_label = purchase.postage_label.label_url
-                self.price = float(purchase.selected_rate) + price[0]['price']
+                self.price = float(purchase.selected_rate) + prices[0]['price']
+                order_purchased.send(
+                    sender = self.__class__,
+                    order_id = self.id,
+                    order_str = self.__str__
+                )
                 return True
 
             except Exception as e:
