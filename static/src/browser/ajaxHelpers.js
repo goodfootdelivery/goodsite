@@ -3,8 +3,8 @@
  *					Wed  9 Mar 12:39:04 2016
  */
 
-//const API_BASE = 'http://localhost:8000/api/'
-const API_BASE = 'http://69c420b0.ngrok.io/api/'
+const API_BASE = 'http://localhost:8000/api/'
+// const API_BASE = 'http://69c420b0.ngrok.io/api/'
 
 const SML_PARCEL = { "length": 1.00, "width": 1.00, "height": 1.00, "weight": 1.00 }
 const MED_PARCEL = { "length": 2.00, "width": 2.00, "height": 2.00, "weight": 2.00 }

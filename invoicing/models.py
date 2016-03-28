@@ -1,7 +1,8 @@
 from django.db import models
 from delivery.models import Address, Order
 
-import refreshbooks
+from .invoice import FB_URL, API_KEY, COMPANY
+from refreshbooks import api
 
 
 STATUSES = (
@@ -22,8 +23,29 @@ class Client(models.Model):
     organization = models.CharField(max_length=10000)
     phone = models.CharField(max_length=10000)
 
-    def register(self):
-        pass
+    def register(self, user):
+        try:
+            fb = api.TokenClient(FB_URL, API_KEY, user_agent=COMPANY)
+            client = fb.client.create(
+                client={
+                    'email': user.email,
+                    'username': user.username,
+                    'password': user.password
+                }
+            )
+            self.user = user
+            self.email = user.email
+            self.freshbooks_id =  client.client_id
+        except Exception as e:
+            print e
+
+    def new_invoice(self):
+        fb = api.TokenClient(FB_URL, API_KEY, user_agent=COMPANY)
+        response = fb.invoice.create(
+            invoice=dict(
+                client_id= self.freshbooks_id,
+            )
+        )
 
 
 # Freshbooks Invoice information

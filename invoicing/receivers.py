@@ -17,7 +17,7 @@ def handle_order_purchased(sender, **kwargs):
         action="ORDER_PURCHSED",
         extra={}
     )
-    pass
+
 
 # Create New Client on Initial Login
 @receiver(user_signed_up)
@@ -27,4 +27,3 @@ def handle_client_creation(sender, **kwargs):
         action="USER_SIGNED_UP",
         extra={}
     )
-    pass
