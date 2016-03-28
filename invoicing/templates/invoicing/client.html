@@ -14,7 +14,7 @@
 
 {% block body %}
 
-<section class="container">
+<section class="col-xs-10">
 	<form role="form">
 		{% csrf_token %}
 		<legend>Invoicing Information</legend>
@@ -28,10 +28,11 @@
 		</div>
 		<div class="row">
 			<div class="col-xs-7">{{ form.organization | bootstrap }}</div>
-			<div class="col-xs-5">
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary">Submit</button>
-				</div>
+			<div class="col-xs-5"></div>
+		</div>
+		<div class="row">
+			<div class="form-group col-xs-12">
+				<button style="float:right" type="submit" class="btn btn-primary">Submit</button>
 			</div>
 		</div>
 	</form>

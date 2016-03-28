@@ -1,1 +1,51 @@
 {% extends 'invoicing/base.html' %}
+
+{% block body %}
+	<section class="col-xs-12">
+		<div class="row">
+			<div class="col-xs-8">
+				<h3>Outstanding Orders</h3>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Order</th>
+							<th>Pickup</th>
+							<th>Dropoff</th>
+							<th>Parcel</th>
+							<th>Service</th>
+							<th>Price.</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for order in lines %}
+						<tr>
+							<td class="col-xs-2">{{ order.id }}</td>
+							<td class="col-xs-2">{{ order.pickup }}</td>
+							<td class="col-xs-2">{{ order.dropoff }}</td>
+							<td class="col-xs-2">{{ order.parcel }}</td>
+							<td class="col-xs-2">{{ order.service }}</td>
+							<td class="col-xs-2">{{ order.price }}</td>
+						</tr>
+						{% empty %}
+						<p>You Haven't Placed Any Orders Yet!</p>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="col-xs-4">
+				<h3>My Balance</h3>
+				<h4 style="color:blue">
+					${{ balance }}
+				</h4>
+				<div class="row">
+					<a style="float:right" href="">Pay Via Card</a>
+				</div>
+				<div class="row">
+					<a style="float:right" href="">Pay Via Invoice</a>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+

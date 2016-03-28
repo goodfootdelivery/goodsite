@@ -57,14 +57,12 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class RateSerializer(serializers.BaseSerializer):
     def to_internal_value(self, data):
-        print 'start slzr'
         rate_id = data.get('rate_id')
         # Apply Regex for Local and Easypost Rate Formats
         return { 'rate_id': rate_id }
 
     def update(self, instance, validated_data):
         rate = validated_data.get('rate_id')
-        print 'end slzr'
         if instance.purchase(rate):
             instance.save()
             return instance

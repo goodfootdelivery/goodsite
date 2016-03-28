@@ -8,6 +8,9 @@
 <div class="panel panel-default">
     <div class="panel-heading"><strong>{% trans "Invoicing" %}</strong></div>
     <div class="list-group">
+        <a class="list-group-item account-settings" href="{% url "invoicing:balance" %}">
+		{% trans "Balance" %}
+        </a>
         <a class="list-group-item account-settings" href="{% url "invoicing:history" %}">
 		{% trans "History" %}
         </a>

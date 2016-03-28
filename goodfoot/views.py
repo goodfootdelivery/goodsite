@@ -1,6 +1,11 @@
 from django.views.generic import TemplateView, ListView
 from delivery.models import Order
+from account import views, forms
 
+
+# Login View
+class LoginView(views.LoginView):
+    form_class = forms.LoginEmailForm
 
 # Delivery Form View
 

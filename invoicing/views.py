@@ -8,17 +8,19 @@ from .forms import ClientForm
 # Create your views here.
 
 
-class BalanceView(View):
-    def get(self, request, *args, **kwargs):
-        orders = Order.objects.exclude(price__isnull=True).filter(status='DE')
+class BalanceView(TemplateView):
+    template_name = 'invoicing/balance.html'
+
+    def get_context_data(self, **kwargs):
+        orders = Order.objects.exclude(price__isnull=True)#.filter(status='DE')
         balance = 0
         for order in orders:
             balance += order.price
+            print order
         return {
-            'invoices': orders,
+            'lines': orders,
             'balance': balance
         }
-        pass
 
     def post(self, request, *args, **kwargs):
         pass
@@ -29,7 +31,7 @@ class ClientView(FormView):
     form_class = ClientForm
 
 
-class HistoryView(TemplateView):
+class HistoryView(ListView):
     template_name = 'invoicing/history.html'
-    # model = Invoice
+    model = Invoice
     title = 'My Invoices'

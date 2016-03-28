@@ -129,6 +129,14 @@ class Order(models.Model):
         else:
             return False
 
+    def dispatch_purchase(self):
+        order_purchased.send(
+            sender = self.__class__,
+            order_id = self.id,
+            order_str = self.__str__
+        )
+
+
     def purchase(self, rate):
         if self.is_local:
             prices = get_prices( self.pickup.__str__(), self.dropoff.__str__() )
@@ -138,6 +146,7 @@ class Order(models.Model):
             elif rate == 'EX':
                 self.price = prices[1]['price']
             self.service = rate
+            self.dispatch_purchase()
             return True
         else:
             prices = get_prices( self.pickup.__str__(), OFFICE )
@@ -150,11 +159,7 @@ class Order(models.Model):
                 self.tracking_code = purchase.tracking_code
                 self.postal_label = purchase.postage_label.label_url
                 self.price = float(purchase.selected_rate) + prices[0]['price']
-                order_purchased.send(
-                    sender = self.__class__,
-                    order_id = self.id,
-                    order_str = self.__str__
-                )
+                self.dispatch_purchase()
                 return True
 
             except Exception as e:
