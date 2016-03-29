@@ -1,38 +1,42 @@
 from django.dispatch import receiver
 
-from account.signals import password_changed
-from account.signals import user_sign_up_attempt, user_signed_up
-from account.signals import user_login_attempt, user_logged_in
-
+from account.signals import email_confirmed, user_signed_up
 from pinax.eventlog.models import log
 
 from delivery.models import Order
-from delivery.signals import order_purchased, test_signal
-from invoicing.models import Client
+from delivery.signals import order_purchased
+from invoicing.models import Client, Invoice
 
 
 # Handle When Order Is Purchased
 
 @receiver(order_purchased, sender=Order)
 def handle_order_purchased(sender, **kwargs):
+    order = kwargs.get('order'),
+    owner = order.owner
     log(
-        user=kwargs.get("user"),
+        user=owner,
         action="ORDER_PURCHSED",
-        extra={}
+        extra={ 'order': order.id }
     )
-
-
-@receiver(test_signal)
-def handle_test_signal(sender, **kwargs):
-    print '\n'
-    print 'TEST SIGNAL RECEIVED'
-    print '\n'
+    latest_invoice = Invoice.objects.pending(owner)
+    latest_invoice.add_line(order)
 
 
 # Create New Client on Initial Login
-
 @receiver(user_signed_up)
-def handle_client_creation(sender, **kwargs):
+def handle_user_signed_up(sender, **kwargs):
+    log(
+        user=kwargs.get("user"),
+        action="USER_SIGNED_UP",
+        extra={}
+    )
+    Client.register(kwargs.get("user"))
+
+
+# Verify Client upon Email Confirmation
+@receiver(email_confirmed)
+def handle_email_confirmed(sender, **kwargs):
     log(
         user=kwargs.get("user"),
         action="USER_SIGNED_UP",

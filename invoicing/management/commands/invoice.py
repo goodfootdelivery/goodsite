@@ -3,8 +3,9 @@ from invoicing.models import Invoice
 
 
 class Command(BaseCommand):
+    help = 'Send all outstanding invoices via email.'
     def add_arguments(self, parser):
         pass
 
     def handle(self, *args, **options):
-        pass
+        Invoice.objects.send_bills()
