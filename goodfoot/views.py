@@ -1,22 +1,33 @@
 from django.views.generic import TemplateView, ListView
+from django.views.generic.detail import DetailView
 from delivery.models import Order
 from account import views, forms
 
 
-# Login View
+# Account Views
+
 class LoginView(views.LoginView):
     form_class = forms.LoginEmailForm
 
-# Delivery Form View
 
-class DeliveryView(TemplateView):
+# Delivery Views
+
+class DeliveryDetailView(DetailView):
+    template_name = 'delivery/orderDetail.html'
+    model = Order
+
+
+
+class DeliveryFormView(TemplateView):
     template_name = 'delivery/orderForm.html'
     title = 'home'
 
 
+
+
 # Account Page View
 
-class HubView(ListView):
+class DeliveryHubView(ListView):
     template_name = 'delivery/orderHub.html'
     model = Order
     title = 'My Orders'
