@@ -23,7 +23,8 @@ class BalanceView(TemplateView):
         }
 
     def post(self, request, *args, **kwargs):
-        pass
+        latest_invoice = Invoice.objects.pending(self.request.user)
+        latest_invoice.send_bill()
 
 
 class ClientView(FormView):

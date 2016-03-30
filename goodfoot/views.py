@@ -12,20 +12,15 @@ class LoginView(views.LoginView):
 
 # Delivery Views
 
-class DeliveryDetailView(DetailView):
-    template_name = 'delivery/orderDetail.html'
-    model = Order
-
-
-
 class DeliveryFormView(TemplateView):
     template_name = 'delivery/orderForm.html'
     title = 'home'
 
 
+class DeliveryDetailView(DetailView):
+    template_name = 'delivery/orderDetail.html'
+    model = Order
 
-
-# Account Page View
 
 class DeliveryHubView(ListView):
     template_name = 'delivery/orderHub.html'
@@ -33,7 +28,9 @@ class DeliveryHubView(ListView):
     title = 'My Orders'
 
     def get_context_data(self, **kwargs):
-        orders = Order.objects.exclude(price__isnull=True)
+        orders = Order.objects.filter(
+            owner=self.request.user,
+        ).exclude(price__isnull=True)
         balance = 0
         for order in orders:
             balance += order.price

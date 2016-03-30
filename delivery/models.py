@@ -90,6 +90,10 @@ class Parcel(models.Model):
 
 
 
+### SHIPMENT MODEL ###
+
+class Shipment(models.Model)
+
 ### ORDER MODEL ###
 
 
@@ -130,11 +134,7 @@ class Order(models.Model):
             return False
 
     def dispatch_purchase(self):
-        order_purchased.send(
-            sender = self.__class__,
-            order_id = self.id,
-            order_str = self.__str__
-        )
+        order_purchased.send(sender=self.__class__, order=self)
 
 
     def purchase(self, rate):

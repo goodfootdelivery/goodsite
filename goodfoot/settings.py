@@ -5,19 +5,37 @@
 #
 
 import os
+import socket
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = PACKAGE_ROOT
 
-DEBUG = True
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "dev.db",
+# Production vs. Local Settings
+if socket.gethostname() == 'box3045.bluehost.com':
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "goodfop0_gamma",
+            'USER': 'goodfop0',
+            'PASSWORD': 'Redmond2013!',
+            'HOST': 'localhost'
+        }
     }
-}
+
+    DEBUG = False
+    STATIC_ROOT = os.path.join('/home2/goodfop0/public_html/gamma/static')
+
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "dev.db",
+        }
+    }
+
+    DEBUG = True
+    STATIC_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "static")
 
 ALLOWED_HOSTS = []
 
@@ -55,12 +73,6 @@ MEDIA_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "media")
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = "/site_media/media/"
-
-# Absolute path to the directory static files should be collected to.
-# Don"t put anything in this directory yourself; store your static files
-# in apps" "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "static")
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"

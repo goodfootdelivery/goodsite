@@ -2,7 +2,7 @@ from importlib import import_module
 from django.apps import AppConfig as BaseAppConfig
 
 
-class InvoicingConfig(BaseAppConfig):
+class AppConfig(BaseAppConfig):
     name = "invoicing"
 
     def ready(self):

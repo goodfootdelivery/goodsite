@@ -36,7 +36,8 @@ class Client(models.Model):
                 }
             )
             # create instance
-            cls(user=user, email=user.email, freshbooks_id=client.client_id)
+            client = cls(user=user, email=user.email, freshbooks_id=client.client_id)
+            return client
         except Exception as e:
             print e
             return None
@@ -63,6 +64,10 @@ class InvoiceManager(models.Manager):
                     client_id= client.freshbooks_id,
                 )
             )
+            new_invoice = self.create(
+                client = client,
+                freshbooks_id = resp.invoice_id,
+            )
             return resp
         except ObjectDoesNotExist:
             return None
@@ -87,7 +92,6 @@ class InvoiceManager(models.Manager):
 
 
 # Freshbooks Invoice Model
-
 
 class Invoice(models.Model):
     client = models.ForeignKey(Client)
@@ -117,16 +121,11 @@ class Invoice(models.Model):
         self.status = 'BL'
 
     def send_bill(self):
-        if self.is_billable():
+        if self.status == 'BL':
             fb = api.TokenClient(FB_URL, API_KEY, user_agent=COMPANY)
             fb.invoice.sendByEmail(invoice_id= self.freshbooks_id)
             self.status = 'SE'
-
-    def is_billable(self):
-        if self.status == 'BL':
-            return True
-        else:
-            return False
+            self.date_sent = datetime.date.today()
 
     def is_pending(self):
         if self.status == 'CR' or 'BL':
