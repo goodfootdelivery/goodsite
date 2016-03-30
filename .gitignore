@@ -4,6 +4,7 @@
 node_modules/
 _build/
 dev.db
+config.sh
 site_media/
 bundles/
 bower_components/
