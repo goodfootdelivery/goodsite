@@ -92,7 +92,16 @@ class Parcel(models.Model):
 
 ### SHIPMENT MODEL ###
 
-class Shipment(models.Model)
+# class Shipment(models.Model):
+#     easypost_id = models.CharField(max_length=200, blank=True, null=True)
+#     rate_id = models.CharField(max_length=200, blank=True, null=True)
+#     # Purchased Only
+#     tracking_code = models.CharField(max_length=100, blank=True, null=True)
+#     postal_label = models.URLField(max_length=200, blank=True, null=True)
+
+#     def is_purchased(self):
+#         pass
+
 
 ### ORDER MODEL ###
 
@@ -116,12 +125,12 @@ class Order(models.Model):
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
 
     # EasyPost ONLY
-    easypost_id = models.CharField(max_length=200, null=True)
-    rate_id = models.CharField(max_length=200, null=True)
+    easypost_id = models.CharField(max_length=200, blank=True, null=True)
+    rate_id = models.CharField(max_length=200, blank=True, null=True)
 
     # Purchased Only
-    tracking_code = models.CharField(max_length=100, null=True)
-    postal_label = models.URLField(max_length=200, null=True)
+    tracking_code = models.CharField(max_length=100, blank=True, null=True)
+    postal_label = models.URLField(max_length=200, blank=True, null=True)
 
     def __str__(self):
         return "Order: #%s, Date: %s" % (str(self.id), str(self.order_date))
@@ -161,7 +170,6 @@ class Order(models.Model):
                 self.price = float(purchase.selected_rate) + prices[0]['price']
                 self.dispatch_purchase()
                 return True
-
             except Exception as e:
                 print e
                 return False
