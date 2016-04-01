@@ -37,7 +37,7 @@ else:
     DEBUG = True
     STATIC_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "static")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.goodfootdelivery.com']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
