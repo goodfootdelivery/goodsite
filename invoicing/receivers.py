@@ -12,20 +12,19 @@ from invoicing.models import Client, Invoice
 
 @receiver(order_purchased, sender=Order)
 def handle_order_purchased(sender, **kwargs):
-    order = kwargs.get('order'),
-    print order
-    print type(order)
-    # owner = order.owner
-    # log(
-    #     user=owner,
-    #     action="ORDER_PURCHSED",
-    #     extra={ 'order': order.id }
-    # )
-    # latest_invoice = Invoice.objects.pending(owner)
-    # latest_invoice.add_line(order)
+    order = kwargs.get('order')
+    owner = order.owner
+    log(
+        user=owner,
+        action="ORDER_PURCHSED",
+        extra={ 'order': order.id }
+    )
+    latest_invoice = Invoice.objects.pending(owner)
+    latest_invoice.add_line(order)
 
 
 # Create New Client on Initial Login
+
 @receiver(user_signed_up)
 def handle_user_signed_up(sender, **kwargs):
     log(
@@ -38,6 +37,7 @@ def handle_user_signed_up(sender, **kwargs):
 
 
 # Verify Client upon Email Confirmation
+
 @receiver(email_confirmed)
 def handle_email_confirmed(sender, **kwargs):
     log(
