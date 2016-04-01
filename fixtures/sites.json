@@ -4,14 +4,14 @@
         "model": "sites.site",
         "fields": {
             "domain": "localhost:8000",
-            "name": "GoodFoot Delivery [localhost]"
+            "name": "GoodFoot Delivery"
         }
     },
     {
         "pk": 2,
         "model": "sites.site",
         "fields": {
-            "domain": "example.com",
+            "domain": "goodfootdelivery.com",
             "name": "GoodFoot Delivery"
         }
     }

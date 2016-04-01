@@ -18,7 +18,6 @@ env.password = 'Redmond2013!'
 # Local Tasks TBE Before Deployment
 def prepare():
     local('./manage.py check')
-    local('./manage.py makemigrations')
     local('pip freeze > requirements.txt')
 
 
@@ -26,9 +25,11 @@ def prepare():
 def deploy():
     prepare()
     with cd(SERVER), prefix('workon goodfoot'):
-        run('workon goodfoot')
         run('git checkout .')
         run('git pull')
+        # Install Python Packages
         with settings(warn_only=True):
             run('pip install -r requirements.txt')
+        # run('./manage.py makemigrations --merge')
         run('./manage.py migrate')
+        run('./manage.py loaddata fixtures/*')
