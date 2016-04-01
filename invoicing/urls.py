@@ -11,5 +11,5 @@ from .views import BalanceView, HistoryView, ClientView
 urlpatterns = [
     url(r'^balance/$', login_required(BalanceView.as_view()), name='balance'),
     url(r'^history/$', login_required(HistoryView.as_view()), name='history'),
-    url(r'^client/$', login_required(ClientView.as_view()), name='client'),
+    url(r'^client/(?P<pk>\d+)/$', login_required(ClientView.as_view()), name='client'),
 ]

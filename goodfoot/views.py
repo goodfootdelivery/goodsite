@@ -6,11 +6,13 @@ from account import views, forms
 
 # Account Views
 
+
 class LoginView(views.LoginView):
     form_class = forms.LoginEmailForm
 
 
 # Delivery Views
+
 
 class DeliveryFormView(TemplateView):
     template_name = 'delivery/orderForm.html'

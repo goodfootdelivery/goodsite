@@ -1,11 +1,9 @@
-from django.views.generic import View, ListView, FormView, TemplateView
+from django.views.generic import View, ListView, UpdateView, TemplateView
 from django.shortcuts import render
 
 from delivery.models import Order
 from .models import Invoice
 from .forms import ClientForm
-
-# Create your views here.
 
 
 class BalanceView(TemplateView):
@@ -25,14 +23,28 @@ class BalanceView(TemplateView):
     def post(self, request, *args, **kwargs):
         latest_invoice = Invoice.objects.pending(self.request.user)
         latest_invoice.send_bill()
+        # Change Order statuses
+        orders = Order.objects.filter(
+            owner=self.request.user,
+        ).exclude(price__isnull=True)
+        for order in orders:
+            order.status = 'PD'
+            order.save()
 
 
-class ClientView(FormView):
+class ClientView(UpdateView):
     template_name = 'invoicing/client.html'
     form_class = ClientForm
+    # success_url = '/something/'
+
+    def form_valid(self, form):
+        pass
 
 
 class HistoryView(ListView):
     template_name = 'invoicing/history.html'
     model = Invoice
     title = 'My Invoices'
+
+    def get_context_data(self):
+        pass
