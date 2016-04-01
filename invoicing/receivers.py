@@ -24,6 +24,7 @@ def handle_order_purchased(sender, **kwargs):
 
 
 # Create New Client on Initial Login
+
 @receiver(user_signed_up)
 def handle_user_signed_up(sender, **kwargs):
     log(
@@ -36,6 +37,7 @@ def handle_user_signed_up(sender, **kwargs):
 
 
 # Verify Client upon Email Confirmation
+
 @receiver(email_confirmed)
 def handle_email_confirmed(sender, **kwargs):
     log(

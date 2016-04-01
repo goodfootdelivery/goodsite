@@ -39,7 +39,7 @@ class Client(models.Model):
             client = cls(user=user, email=user.email, freshbooks_id=client.client_id)
             return client
         except Exception as e:
-            print e
+            print 'Freshbook Client Registration Error: %s' % (e)
             return None
 
     def update_info(self, **kwargs):
@@ -83,6 +83,7 @@ class InvoiceManager(models.Manager):
     def pending(self, user):
         try:
             client = Client.objects.get(user=user)
+            print 'got client'
             latest = self.filter(client=client).latest('date_created')
             if latest.is_pending():
                 return latest
@@ -90,8 +91,10 @@ class InvoiceManager(models.Manager):
                 new_invoice = self.create_invoice(user)
                 return new_invoice
         except ObjectDoesNotExist as e:
-            print 'Invoice Creation Error %s' % (e)
-            return None
+            print 'Invoice Pending Creation Error %s' % (e)
+            new_invoice = self.create_invoice(user)
+            return new_invoice
+            # return None
 
 
 # Freshbooks Invoice Model
@@ -100,7 +103,7 @@ class Invoice(models.Model):
     client = models.ForeignKey(Client)
     freshbooks_id = models.CharField(max_length=10000)
     date_created = models.DateField(auto_now=True)
-    date_sent = models.DateField()
+    date_sent = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=2, choices=STATUSES, default='CR')
     objects = InvoiceManager()
 
