@@ -11,8 +11,8 @@ OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
 PRICE_VECTOR = [0.0075, 0.005, 0.004]
 
 SERVICES = (
-        ('EX', 'Express'),
-        ('BA', 'Basic'),
+        ('EXPRESS', 'Express'),
+        ('BASIC', 'Basic'),
     )
 
 STATUSES = (

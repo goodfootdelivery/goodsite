@@ -21,7 +21,7 @@ easypost.api_key = TEST_EP_KEY
 POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"
 
 
-### ADDRESS MODEL ###
+# Address Model
 
 
 class Address(models.Model):
@@ -66,8 +66,7 @@ class Address(models.Model):
             return False
 
 
-
-### PARCEL MODEL ###
+# Parcel Model
 
 
 class Parcel(models.Model):
@@ -89,12 +88,73 @@ class Parcel(models.Model):
         }
 
 
+# Shipment Model
 
-### SHIPMENT MODEL ###
 
-class Shipment(models.Model)
+class Shipment(models.Model):
+    easypost_id = models.CharField(max_length=200, null=True)
+    rate_id = models.CharField(max_length=200, null=True)
+    # Purchased Only
+    tracking_code = models.CharField(max_length=100, null=True)
+    postal_label = models.URLField(max_length=200, null=True)
+    status = models.CharField(max_length=200, null=True)
+    price = models.FloatField(blank=True, null=True)
 
-### ORDER MODEL ###
+    def __str__(self):
+        return 'Shipment: %s' % (self.id)
+
+    def get_rates(self, pickup, dropoff, parcel):
+        try:
+            shipment = easypost.Shipment.create(
+                from_address = pickup,
+                to_address = dropoff,
+                parcel= parcel
+            )
+            if not shipment.rates:
+                raise Exception
+            self.easypost_id = shipment.id
+            return shipment.rates
+        except Exception as e:
+            print 'EasyPost Rates Issue: %s' % (e)
+            return []
+
+    def purchase_label(self, rate):
+        try:
+            shipment = easypost.Shipment.retrieve(self.easypost_id)
+            purchase = shipment.buy(rate={ 'id': rate })
+            # Initialize EasyPost Fields
+            self.rate_id = rate
+            self.tracking_code = purchase.tracking_code
+            self.postal_label = purchase.postage_label.label_url
+            self.price = float(purchase.selected_rate.rate)
+            # Return Instance
+            return self
+        except Exception as e:
+            print 'EasyPost Purchase Issue: %s' % (e)
+            print e
+            # Return None, Indicating Error
+            return None
+
+    def get_price(self):
+        try:
+            shipment = easypost.Shipment.retrieve(self.easypost_id)
+            self.price = shipment.selected_rate.rate
+            return self.price
+        except Exception as e:
+            print e
+            return None
+
+    def get_status(self):
+        try:
+            shipment = easypost.Shipment.retrieve(self.easypost_id)
+            self.status = shipment.tracker.status
+            return self.status
+        except Exception as e:
+            print e
+            return None
+
+
+# Order Model
 
 
 class Order(models.Model):
@@ -113,15 +173,8 @@ class Order(models.Model):
     # make local and EP prices
     price = models.FloatField(null=True)
     service = models.CharField(max_length=2, choices=SERVICES, null=True)
-    status = models.CharField(max_length=2, choices=STATUSES, default='RE')
-
-    # EasyPost ONLY
-    easypost_id = models.CharField(max_length=200, null=True)
-    rate_id = models.CharField(max_length=200, null=True)
-
-    # Purchased Only
-    tracking_code = models.CharField(max_length=100, null=True)
-    postal_label = models.URLField(max_length=200, null=True)
+    status = models.CharField(max_length=10, choices=STATUSES, default='RE')
+    shipment = models.OneToOneField(Shipment, blank=True, null=True)
 
     def __str__(self):
         return "Order: #%s, Date: %s" % (str(self.id), str(self.order_date))
@@ -133,9 +186,8 @@ class Order(models.Model):
         else:
             return False
 
-    def dispatch_purchase(self):
-        order_purchased.send(sender=self.__class__, order=self)
-
+    def dispatch_purchase(self, instance):
+        order_purchased.send(sender=self.__class__, order=instance)
 
     def purchase(self, rate):
         if self.is_local:
@@ -146,51 +198,43 @@ class Order(models.Model):
             elif rate == 'EX':
                 self.price = prices[1]['price']
             self.service = rate
-            self.dispatch_purchase()
-            return True
+            self.dispatch_purchase(self)
+            return self
         else:
             prices = get_prices( self.pickup.__str__(), OFFICE )
-            try:
-                shipment = easypost.Shipment.retrieve(self.easypost_id)
-                purchase = shipment.buy(rate={ 'id': rate })
-
-                # Initialize EasyPost Fields
-                self.rate_id = rate
-                self.tracking_code = purchase.tracking_code
-                self.postal_label = purchase.postage_label.label_url
-                self.price = float(purchase.selected_rate) + prices[0]['price']
-                self.dispatch_purchase()
-                return True
-
-            except Exception as e:
-                print e
-                return False
+            purchase = self.shipment.purchase_label(rate)
+            if purchase is not None:
+                purchase.save()
+                self.price = purchase.price + prices[0]['price']
+                self.dispatch_purchase(self)
+                return self
+            else:
+                return None
 
     def get_rates(self):
         if self.is_local:
             return get_prices( self.pickup.__str__(), self.dropoff.__str__() )
         else:
+            self.shipment = Shipment.objects.create()
+            ep_rates = self.shipment.get_rates(
+                self.pickup.easypost(),
+                self.dropoff.easypost(),
+                self.parcel.easypost()
+            )
+            # Initialize Final Rates Array
             rates = []
-            try:
-                shipment = easypost.Shipment.create(
-                    from_address = self.pickup.easypost(),
-                    to_address = self.dropoff.easypost(),
-                    parcel= self.parcel.easypost()
-                )
-                if not shipment.rates:
-                    raise Exception
-                else:
-                    prices = get_prices( self.pickup.__str__(), OFFICE )
-                    for rate in shipment.rates:
-                        price = float(rate.rate) + prices[0]['price']
-                        rates.append({
-                            'id': rate.id,
-                            'carrier': rate.carrier,
-                            'service': rate.service,
-                            'rate': str(price),
-                            'days': rate.delivery_days
-                        })
-                self.easypost_id = shipment.id
-            except Exception as e:
-                print e
+            if ep_rates:
+                prices = get_prices( self.pickup.__str__(), OFFICE )
+                for rate in ep_rates:
+                    price = float(rate.rate) + prices[0]['price']
+                    rates.append({
+                        'id': rate.id,
+                        'carrier': rate.carrier,
+                        'service': rate.service,
+                        'rate': str(price),
+                        'days': rate.delivery_days
+                    })
+                # Save Shipment
+                self.shipment.save()
+            # Return Final Rates Array
             return rates

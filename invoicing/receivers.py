@@ -12,17 +12,15 @@ from invoicing.models import Client, Invoice
 
 @receiver(order_purchased, sender=Order)
 def handle_order_purchased(sender, **kwargs):
-    order = kwargs.get('order'),
-    print order
-    print type(order)
-    # owner = order.owner
-    # log(
-    #     user=owner,
-    #     action="ORDER_PURCHSED",
-    #     extra={ 'order': order.id }
-    # )
-    # latest_invoice = Invoice.objects.pending(owner)
-    # latest_invoice.add_line(order)
+    order = kwargs.get('order')
+    owner = order.owner
+    log(
+        user=owner,
+        action="ORDER_PURCHSED",
+        extra={ 'order': order.id }
+    )
+    latest_invoice = Invoice.objects.pending(owner)
+    latest_invoice.add_line(order)
 
 
 # Create New Client on Initial Login

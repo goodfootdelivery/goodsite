@@ -63,9 +63,8 @@ class RateSerializer(serializers.BaseSerializer):
 
     def update(self, instance, validated_data):
         rate = validated_data.get('rate_id')
-        if instance.purchase(rate):
+        if instance.purchase(rate) is not None:
             instance.save()
             return instance
         else:
             return instance
-

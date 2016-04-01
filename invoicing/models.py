@@ -68,10 +68,12 @@ class InvoiceManager(models.Manager):
                 client = client,
                 freshbooks_id = resp.invoice_id,
             )
-            return resp
-        except ObjectDoesNotExist:
+            return new_invoice
+        except ObjectDoesNotExist as e:
+            print 'Invoice Creation Error %s' % (e)
             return None
-        except Exception:
+        except Exception as e:
+            print 'Invoice Creation Error %s' % (e)
             return None
 
     def send_bills(self):
@@ -85,9 +87,10 @@ class InvoiceManager(models.Manager):
             if latest.is_pending():
                 return latest
             else:
-                new_invoice = self.create_invoice(client)
+                new_invoice = self.create_invoice(user)
                 return new_invoice
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist as e:
+            print 'Invoice Creation Error %s' % (e)
             return None
 
 
