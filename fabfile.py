@@ -30,7 +30,7 @@ def deploy():
         # Install Python Packages
         with settings(warn_only=True):
             run('pip install -r requirements.txt')
-        # run('./manage.py makemigrations --merge')
+        run('./manage.py makemigrations --merge')
         run('./manage.py migrate')
         run('./manage.py loaddata fixtures/*')
         run('./manage.py collectstatic')

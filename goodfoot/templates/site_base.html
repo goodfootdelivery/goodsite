@@ -14,15 +14,25 @@
 {% block site_brand %}
 	<a class="navbar-brand" href="{% url "home" %}">
 		<img id="head-logo" src="{% static 'images/GoodFootLogo.png' %}" alt="">
-		{{ client }}
+		<p>{{ client }}</p>
 	</a>
 {% endblock %}
 
 
 {% block extra_head_base %}
     {% block extra_head %}
-		<div style='background-color:blue;height:70px'>
-		</div>
+	<br>
+	<div class="container">
+		{% if is_open %}
+			<div class="alert alert-info">
+				<p>Well Done We are Open!</p>
+			</div>
+		{% else %}
+			<div class="alert alert-danger">
+				<p>We are currently not open</p>
+			</div>
+		{% endif %}
+	</div>
 	{% endblock %}
 {% endblock %}
 

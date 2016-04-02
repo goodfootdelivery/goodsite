@@ -5,9 +5,6 @@
 <ul class="nav navbar-nav pull-right">
     {% if request.user.is_authenticated %}
         <li>
-            <a href="{% url 'delivery' %}"><i class="fa fa-truck"></i> Place Order</a>
-        </li>
-        <li>
             <a href="{% url 'hub' %}"><i class="fa fa-user"></i> {% user_display request.user %}</a>
         </li>
         <li>
