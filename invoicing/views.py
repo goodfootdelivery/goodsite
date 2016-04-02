@@ -25,7 +25,7 @@ class BalanceView(TemplateView):
         latest_invoice.send_bill()
         # Change Order statuses
         orders = Order.objects.filter(
-            owner=self.request.user,
+            user=self.request.user,
         ).exclude(price__isnull=True)
         for order in orders:
             order.status = 'PD'

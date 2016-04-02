@@ -11,8 +11,19 @@
 {% endblock %}
 
 
+{% block site_brand %}
+	<a class="navbar-brand" href="{% url "home" %}">
+		<img id="head-logo" src="{% static 'images/GoodFootLogo.png' %}" alt="">
+		{{ client }}
+	</a>
+{% endblock %}
+
+
 {% block extra_head_base %}
-    {% block extra_head %}{% endblock %}
+    {% block extra_head %}
+		<div style='background-color:blue;height:70px'>
+		</div>
+	{% endblock %}
 {% endblock %}
 
 

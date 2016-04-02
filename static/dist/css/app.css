@@ -5820,15 +5820,10 @@ button.close {
 body {
   padding-top: 100px; }
 
-#logo-container {
-  position: relative;
-  overflow: hidden;
-  height: 75px;
-  width: 100px; }
-
-#logo-container img {
-  max-height: 100%;
-  max-width: 100%; }
+#head-logo {
+  height: 100px;
+  position: absolute;
+  top: 0px; }
 
 img {
   border-radius: 10px; }

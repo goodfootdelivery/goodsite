@@ -6,17 +6,10 @@ body{
 	padding-top: $navbar-height;
 }
 
-// edit for main logo
-#logo-container{
-	position: relative;
-	overflow: hidden;
-	height: 75px;
-	width: 100px;
-}
-
-#logo-container img {
-    max-height:100%;
-	max-width:100%;
+#head-logo {
+	height: $navbar-height;
+	position: absolute;
+	top: 0px;
 }
 
 img {

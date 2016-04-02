@@ -111,19 +111,28 @@ class Invoice(models.Model):
             order_type = 'Local'
         else:
             order_type = 'Non-Local'
-        fb = api.TokenClient(FB_URL, API_KEY, user_agent=COMPANY)
-        fb.invoice.lines.add(
-            invoice_id = self.freshbooks_id,
-            lines = [
-                api.types.line(
-                    name = order_type + ' Delivery',
-                    description = str(order),
-                    unit_cost = order.price,
-                    quantity=1
-                )
-            ]
-        )
-        self.status = 'BL'
+        try:
+            fb = api.TokenClient(FB_URL, API_KEY, user_agent=COMPANY)
+            resp = fb.invoice.lines.add(
+                invoice_id = self.freshbooks_id,
+                lines = [
+                    api.types.line(
+                        name = order_type + ' Delivery',
+                        description = str(order),
+                        unit_cost = order.price,
+                        quantity=1
+                    )
+                ]
+            )
+            self.status = 'BL'
+            order.invoice_line = resp#rest
+            order.invoice_id = self
+            return order
+        except FailedRequest as e:
+            # add handling
+            return None
+        except:
+            return None
 
     def send_bill(self):
         if self.status == 'BL':

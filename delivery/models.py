@@ -9,6 +9,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from .delivery import SERVICES, STATUSES, get_prices, OFFICE
 from .signals import order_purchased
+from invoicing.models import Invoice
 
 import easypost
 
@@ -25,7 +26,7 @@ POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKL
 
 
 class Address(models.Model):
-    owner = models.ForeignKey('auth.User', null=True, related_name='addresses')
+    user = models.ForeignKey('auth.User', null=True, related_name='addresses')
 
     # Contact
     name = models.CharField(max_length=50)
@@ -158,7 +159,7 @@ class Shipment(models.Model):
 
 
 class Order(models.Model):
-    owner = models.ForeignKey('auth.User', null=True, blank=True, related_name='orders')
+    user = models.ForeignKey('auth.User', null=True, blank=True, related_name='orders')
     courier = models.ForeignKey(User, null=True,
                                 limit_choices_to={'groups__name': 'Couriers'}, related_name='courier')
     # Core Fields
@@ -174,6 +175,8 @@ class Order(models.Model):
     price = models.FloatField(null=True)
     service = models.CharField(max_length=10, choices=SERVICES, null='BASIC')
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
+    invoice_line = models.CharField(max_length=5000, null=True)
+    invoice_id = models.ForeignKey(Invoice, null=True, blank=True)
     shipment = models.OneToOneField(Shipment, blank=True, null=True)
 
     def __str__(self):
