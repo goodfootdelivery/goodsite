@@ -33,4 +33,4 @@ def deploy():
         run('./manage.py makemigrations --merge')
         run('./manage.py migrate')
         run('./manage.py loaddata fixtures/*')
-        run('./manage.py collectstatic')
+        run('./manage.py collectstatic --no-input')

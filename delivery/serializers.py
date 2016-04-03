@@ -29,14 +29,10 @@ class ParcelSerializer(serializers.ModelSerializer):
 ### ORDER SERIALIZER ###
 
 class OrderSerializer(serializers.ModelSerializer):
-    pickup = serializers.PrimaryKeyRelatedField(
-        queryset = Address.objects.all()
-    )
-    dropoff = serializers.PrimaryKeyRelatedField(
-        queryset = Address.objects.all()
-    )
+    # pickup = serializers.AddressSerializer()
+    # dropoff = serializers.AddressSerializer()
+    # parcel = ParcelSerializer()
     service = serializers.ReadOnlyField()
-    parcel = ParcelSerializer()
     price = serializers.ReadOnlyField()
     easypost_id = serializers.ReadOnlyField()
     tracking_code = serializers.ReadOnlyField()
@@ -48,9 +44,16 @@ class OrderSerializer(serializers.ModelSerializer):
         depth = 1
 
     def create(self, validated_data):
+        # Pop off Nested Fields
+        pickup = validated_data.pop('pickup', None)
+        dropoff = validated_data.pop('dropoff', None)
         package = validated_data.pop('parcel', None)
+        # Create Nested Object
         parcel = Parcel.objects.create(**package)
         return Order(parcel=parcel, **validated_data)
+
+    def validate_pickup(self, validated_data):
+        pass
 
 
 ### RATE SERIALIZER ###
