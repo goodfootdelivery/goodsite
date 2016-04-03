@@ -24,7 +24,7 @@ if socket.gethostname() == 'box3045.bluehost.com':
     }
 
     DEBUG = False
-    STATIC_ROOT = os.path.join('/home2/goodfop0/public_html/gamma/static')
+    STATIC_ROOT = os.path.join('/home2/goodfop0/public_html/gamma/site_media/static')
 
 else:
     DATABASES = {
