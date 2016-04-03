@@ -25,10 +25,12 @@
 	<div class="container">
 		{% if is_open %}
 			<div class="alert alert-info">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 				<p>Well Done We are Open!</p>
 			</div>
 		{% else %}
 			<div class="alert alert-danger">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 				<p>We are currently not open</p>
 			</div>
 		{% endif %}
@@ -44,6 +46,8 @@
 
 {% block scripts %}
     {% include "_scripts.html" %}
+	{% block js %}
+	{% endblock %}
 {% endblock %}
 
 {% block extra_body_base %}

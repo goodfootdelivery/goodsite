@@ -150,6 +150,7 @@ INSTALLED_APPS = [
     # theme
     "bootstrapform",
     "pinax_theme_bootstrap",
+    'twitter_tag',
 
     # external
     "account",
@@ -226,3 +227,9 @@ LOGIN_URL = '/account/login'
 REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
+
+# Twitter API Settings
+TWITTER_OAUTH_TOKEN = '716510571416395776-dEOs4LadoxjcWTv1aLvjywDf5vXTvCj'
+TWITTER_OAUTH_SECRET = 'QNDPgm2u9evoLgRG949pfwglWx1W62QKIVkSq6aycpZgC'
+TWITTER_CONSUMER_KEY = '5NtWawCQr4jRQNcxHltofbH5B'
+TWITTER_CONSUMER_SECRET = 'AIvZjSWPXCAn3EiWeO3Sc7VGnClrIOHPQH3MIBe5yZ6kUJdGkm'

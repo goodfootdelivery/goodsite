@@ -3,6 +3,11 @@ from django.views.generic.detail import DetailView
 from delivery.models import Order
 from account import views, forms
 
+# Homepage
+
+class HomeView(TemplateView):
+    template_name = 'homepage.html'
+
 
 # Account Views
 
@@ -31,7 +36,7 @@ class DeliveryHubView(ListView):
 
     def get_context_data(self, **kwargs):
         orders = Order.objects.filter(
-            owner=self.request.user,
+            user=self.request.user,
         ).exclude(price__isnull=True)
         balance = 0
         for order in orders:
