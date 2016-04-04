@@ -93,7 +93,7 @@ class Parcel(models.Model):
 
 
 class Shipment(models.Model):
-    easypost_id = models.CharField(max_length=200, null=True)
+    easypost_id = models.CharField(max_length=200)
     rate_id = models.CharField(max_length=200, null=True)
     # Purchased Only
     tracking_code = models.CharField(max_length=100, null=True)
@@ -170,14 +170,14 @@ class Order(models.Model):
     delivery_date = models.DateField()
     delivery_time = models.TimeField(null=True)
     comments = models.CharField(max_length=200, blank=True)
-
-    # make local and EP prices
     price = models.FloatField(null=True)
     service = models.CharField(max_length=10, choices=SERVICES, null='BASIC')
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
     invoice_line = models.CharField(max_length=5000, null=True)
     invoice_id = models.ForeignKey(Invoice, null=True, blank=True)
     shipment = models.OneToOneField(Shipment, blank=True, null=True)
+    # Extra Field For Serialization Purposes
+    rates = []
 
     def __str__(self):
         return "Order: #%s, Date: %s" % (str(self.id), str(self.order_date))

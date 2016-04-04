@@ -41,14 +41,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        order = serializer.save(user=self.request.user)
-        rates = order.get_rates()
-        order.save()
-        data = {
-            'order': serializer.data,
-            'rates': rates,
-        }
-        return Response(data, status=201)
+        serializer.save(user=self.request.user)
+        return Response(serializer.data, status=201)
 
     def get_queryset(self):
         user = self.request.user

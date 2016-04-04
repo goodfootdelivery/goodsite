@@ -6,8 +6,14 @@
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from .models import Address, Parcel, Order
+from .models import Address, Parcel, Shipment, Order
+from .delivery import get_prices, OFFICE
 
+import easypost
+
+# Authenticate EasyPost Instance
+TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
+easypost.api_key = TEST_EP_KEY
 
 ### ADDRESS SERIALIZER ###
 
@@ -29,31 +35,74 @@ class ParcelSerializer(serializers.ModelSerializer):
 ### ORDER SERIALIZER ###
 
 class OrderSerializer(serializers.ModelSerializer):
-    # pickup = serializers.AddressSerializer()
-    # dropoff = serializers.AddressSerializer()
-    # parcel = ParcelSerializer()
+    pickup = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
+    dropoff = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
+    # pickup = AddressSerializer()
+    # dropoff = AddressSerializer()
+    parcel = ParcelSerializer()
     service = serializers.ReadOnlyField()
     price = serializers.ReadOnlyField()
-    easypost_id = serializers.ReadOnlyField()
-    tracking_code = serializers.ReadOnlyField()
+    rates = serializers.ReadOnlyField()
 
     class Meta:
         model = Order
-        fields = ( 'id', 'pickup', 'dropoff', 'parcel', 'order_date', 'easypost_id',
-                        'price', 'delivery_date', 'service', 'tracking_code' )
+        fields = ( 'id', 'pickup', 'dropoff', 'parcel', 'order_date',
+                        'price', 'delivery_date', 'service', 'rates')
         depth = 1
 
     def create(self, validated_data):
+        print "\n Create Object: \n"
+        print type(validated_data)
+        print validated_data
         # Pop off Nested Fields
-        pickup = validated_data.pop('pickup', None)
-        dropoff = validated_data.pop('dropoff', None)
-        package = validated_data.pop('parcel', None)
+        package = validated_data.pop('parcel')
+        easypost_id = validated_data.pop('easypost_id', None)
+        rates = validated_data.pop('rates', None)
+        if easypost_id:
+            shipment = Shipment.objects.create(easypost_id=easypost_id)
+        else:
+            shipment = None
         # Create Nested Object
         parcel = Parcel.objects.create(**package)
-        return Order(parcel=parcel, **validated_data)
+        order = Order.objects.create(parcel=parcel, shipment=shipment, **validated_data)
+        order.rates = rates
+        return order
 
-    def validate_pickup(self, validated_data):
-        pass
+    def validate_pickup(self, value):
+        if not value.is_local():
+            raise ValidationError('Pickup Address Not Local')
+        return value
+
+    def validate(self, data):
+        pickup = data.get('pickup')
+        dropoff = data.get('dropoff')
+        if dropoff.is_local():
+            data['rates'] = get_prices(pickup.__str__(), dropoff.__str__())
+        else:
+            try:
+                shipment = easypost.Shipment.create(
+                    from_address = pickup.easypost(),
+                    to_address = dropoff.easypost(),
+                    parcel = data.get('parcel')
+                )
+                if not shipment.rates:
+                    raise Exception
+                prices = get_prices(pickup.__str__(), OFFICE)
+                # Polish Rate Function
+                def format_rates(rate):
+                    price = float(rate.rate) + prices[0]['price']
+                    return {
+                        'id': rate.id,
+                        'carrier': rate.carrier,
+                        'service': rate.service,
+                        'rate': str(price),
+                        'days': rate.delivery_days
+                    }
+                data['easypost_id'] = shipment.id
+                data['rates'] = map(format_rates, shipment.rates)
+            except Exception as e:
+                raise ValidationError(e)
+        return data
 
 
 ### RATE SERIALIZER ###
