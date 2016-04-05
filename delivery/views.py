@@ -46,7 +46,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Order.objects.filter(user=user)
+        return Order.objects.filter(user=user).defer('row')
 
     def update(self, request, pk=None):
         order = Order.objects.get(pk=pk)
