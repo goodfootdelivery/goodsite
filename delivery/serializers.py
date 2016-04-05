@@ -4,10 +4,12 @@
 #               Wed  2 Mar 17:05:09 2016
 #
 
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import Address, Parcel, Shipment, Order
 from .delivery import get_prices, OFFICE
+from re import match
 
 import easypost
 
@@ -110,11 +112,38 @@ class OrderSerializer(serializers.ModelSerializer):
 class RateSerializer(serializers.BaseSerializer):
     def to_internal_value(self, data):
         rate_id = data.get('rate_id')
+        service = data.get('service')
+        order_id = data.get('order_id')
+        try:
+            order = Order.objects.get(id=order_id)
+            if match(r'rate_.*', rate_id):
+                if order.is_local:
+                    raise ValidationError('Invalid Rate: Local Order')
+                prices = get_prices(str(order.pickup), OFFICE)
+                shipment = easypost.Shipment.retrieve(self.easypost_id)
+                purchase = shipment.buy(rate={ 'id': rate_id })
+            if not order.is_local:
+                raise ValidationError('Invalid Rate: Non-Local Order')
+            prices = get_prices(str(order.pickup), str(order.dropoff))
+            if service == 'BASIC':
+                rate = prices[0]['price']
+            elif rate_id == 'EXPRESS':
+                rate = prices[1]['price']
+            else:
+                raise ValidationError('Incorrect Rate Format')
         # Apply Regex for Local and Easypost Rate Formats
-        return { 'rate_id': rate_id }
+            return {
+                'rate': rate
+            }
+        except easypost.Error as e:
+            raise ValidationError(e)
+        except ObjectDoesNotExist as e:
+            raise ValidationError(e)
+        except Exception as e:
+            raise ValidationError(e)
 
     def update(self, instance, validated_data):
-        rate = validated_data.get('rate_id')
+        rate = validated_data.get('rate')
         if instance.purchase(rate) is not None:
             instance.save()
             return instance

@@ -1,14 +1,11 @@
-#
-#   Delivery Module
-#
-#           Thu 10 Mar 11:46:13 2016
-#
-
+import easypost
 import googlemaps
 
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
 OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
-PRICE_VECTOR = [0.0075, 0.005, 0.004]
+TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
+
+easypost.api_key = TEST_EP_KEY
 
 SERVICES = (
         ('BASIC', 'Basic'),
@@ -53,3 +50,5 @@ def get_prices(pickup, dropoff):
     else:
         prices.append({'service': 'EXPRESS', 'price': ex_rate})
     return prices
+
+
