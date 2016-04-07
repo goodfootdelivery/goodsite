@@ -1,3 +1,5 @@
+from restframework.exceptions import APIException
+from .models import Order, Address, Parcel, Shipment
 import easypost
 import googlemaps
 
@@ -7,19 +9,24 @@ TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 
 easypost.api_key = TEST_EP_KEY
 
-SERVICES = (
-        ('BASIC', 'Basic'),
-        ('EXPRESS', 'Express'),
-    )
+# Raising Assertion Errors If Service Functions are the Wrong Type
+def accepts(*types):
+    def check_accepts(f):
+        assert len(types) == f.func_code.co_argcount
+        def new_f(*args, **kwds):
+            for (a, t) in zip(args, types):
+                assert isinstance(a, t), \
+                       "arg %r does not match %s" % (a,t)
+            return f(*args, **kwds)
+        new_f.func_name = f.func_name
+        return new_f
+    return check_accepts
 
-STATUSES = (
-        ('RE', 'Recieved'),     #
-        ('AS', 'Assigned'),     ## Active
-        ('TR', 'In Transit'),   #
-        ('DE', 'Delivered'),    # Outstanding
-        ('PD', 'Paid'),         # Cleared
-    )
 
+# Google Services
+
+
+@accepts(str, str)
 def get_distance(pickup, dropoff):
     client = googlemaps.Client(key=GKEY)
     dist_mat = client.distance_matrix(pickup, dropoff, mode='transit')
@@ -29,7 +36,9 @@ def get_distance(pickup, dropoff):
     else:
         return None
 
-def get_prices(pickup, dropoff):
+
+@accepts(str, str)
+def get_prices(pickup, dropoff=OFFICE):
     prices = []
     seconds = get_distance(pickup, dropoff)
     hours = seconds / 3600.00
@@ -52,3 +61,38 @@ def get_prices(pickup, dropoff):
     return prices
 
 
+# EasyPost Services
+
+
+@accepts(str, str, dict)
+def get_non_local_rates(pickup, dropoff, parcel):
+    shipment = easypost.Shipment.create(from_address=pickup, to_address=dropoff, parcel=parcel)
+    if not shipment.rates:
+        raise Exception('Invalid Shipment')
+    prices = get_prices(pickup.__str__(), OFFICE)
+    # Polish Rate Function
+    def format_rates(rate):
+        price = float(rate.rate) + prices[0]['price']
+        return {
+            'id': rate.id,
+            'carrier': rate.carrier,
+            'service': rate.service,
+            'rate': str(price),
+            'days': rate.delivery_days
+        }
+    return {
+        'easypost_id': shipment.id,
+        'rates': map(format_rates, shipment.rates)
+    }
+
+
+# returns dict of
+@accepts(str, str)
+def purchase_label(easypost_id, rate_id):
+    shipment = easypost.Shipment.retrieve(self.easypost_id)
+    purchase = shipment.buy(rate={ 'id': rate_id })
+    return {
+        'tracking_code': purchase.tracking_code,
+        'postal_label': purchase.postage_label.label_url,
+        'price': float(purchase.selected_rate.rate)
+    }

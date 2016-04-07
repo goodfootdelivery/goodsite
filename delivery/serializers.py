@@ -9,6 +9,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import Address, Parcel, Shipment, Order
 from .delivery import get_prices, OFFICE
+from . import services
 from re import match
 
 import easypost
@@ -53,20 +54,14 @@ class OrderSerializer(serializers.ModelSerializer):
         depth = 1
 
     def create(self, validated_data):
-        print "\n Create Object: \n"
-        print type(validated_data)
-        print validated_data
-        # Pop off Nested Fields
         package = validated_data.pop('parcel')
         easypost_id = validated_data.pop('easypost_id', None)
         rates = validated_data.pop('rates', None)
-        if easypost_id:
-            shipment = Shipment.objects.create(easypost_id=easypost_id)
-        else:
-            shipment = None
         # Create Nested Object
         parcel = Parcel.objects.create(**package)
-        order = Order.objects.create(parcel=parcel, shipment=shipment, **validated_data)
+        order = Order.objects.create(parcel=parcel, **validated_data)
+        if easypost_id:
+            shipment = Shipment.objects.create(easypost_id=easypost_id)
         order.rates = rates
         return order
 
@@ -78,32 +73,42 @@ class OrderSerializer(serializers.ModelSerializer):
     def validate(self, data):
         pickup = data.get('pickup')
         dropoff = data.get('dropoff')
-        if dropoff.is_local():
-            data['rates'] = get_prices(pickup.__str__(), dropoff.__str__())
-        else:
-            try:
-                shipment = easypost.Shipment.create(
+        try:
+            # shipment = easypost.Shipment.create(
+            #     from_address = pickup.easypost(),
+            #     to_address = dropoff.easypost(),
+            #     parcel = data.get('parcel')
+            # )
+            # if not shipment.rates:
+            #     raise Exception
+            # prices = get_prices(pickup.__str__(), OFFICE)
+            # # Polish Rate Function
+            # def format_rates(rate):
+            #     price = float(rate.rate) + prices[0]['price']
+            #     return {
+            #         'id': rate.id,
+            #         'carrier': rate.carrier,
+            #         'service': rate.service,
+            #         'rate': str(price),
+            #         'days': rate.delivery_days
+            #     }
+            # data['easypost_id'] = shipment.id
+            # data['rates'] = map(format_rates, shipment.rates)
+        # except Exception as e:
+            # raise ValidationError(e)
+            if dropoff.is_local():
+                # data['rates'] = get_local_rates(pickup, dropoff)
+                # data['rates'] = get_prices(str(pickup), str(dropoff))
+                data['rates'] = services.get_local_rates(str(pickup), str(dropoff))
+            else:
+                easypost_data = services.get_non_local_rates(
                     from_address = pickup.easypost(),
                     to_address = dropoff.easypost(),
                     parcel = data.get('parcel')
                 )
-                if not shipment.rates:
-                    raise Exception
-                prices = get_prices(pickup.__str__(), OFFICE)
-                # Polish Rate Function
-                def format_rates(rate):
-                    price = float(rate.rate) + prices[0]['price']
-                    return {
-                        'id': rate.id,
-                        'carrier': rate.carrier,
-                        'service': rate.service,
-                        'rate': str(price),
-                        'days': rate.delivery_days
-                    }
-                data['easypost_id'] = shipment.id
-                data['rates'] = map(format_rates, shipment.rates)
-            except Exception as e:
-                raise ValidationError(e)
+                data.update(easypost_data)
+        except easypost.Error as e:
+            raise ValidationError(e)
         return data
 
 
@@ -119,22 +124,22 @@ class RateSerializer(serializers.BaseSerializer):
             if match(r'rate_.*', rate_id):
                 if order.is_local:
                     raise ValidationError('Invalid Rate: Local Order')
-                prices = get_prices(str(order.pickup), OFFICE)
-                shipment = easypost.Shipment.retrieve(self.easypost_id)
-                purchase = shipment.buy(rate={ 'id': rate_id })
+                prices = get_prices(str(order.pickup))
+                # shipment = easypost.Shipment.retrieve(self.easypost_id)
+                # purchase = shipment.buy(rate={ 'id': rate_id })
+                purchase = services.purchase_label(order.easypost_id, rate_id)
+                data.update(purchase)
             if not order.is_local:
                 raise ValidationError('Invalid Rate: Non-Local Order')
             prices = get_prices(str(order.pickup), str(order.dropoff))
             if service == 'BASIC':
-                rate = prices[0]['price']
+                data['rate'] = prices[0]['price']
             elif rate_id == 'EXPRESS':
-                rate = prices[1]['price']
+                data['rate'] = prices[1]['price']
             else:
                 raise ValidationError('Incorrect Rate Format')
-        # Apply Regex for Local and Easypost Rate Formats
-            return {
-                'rate': rate
-            }
+            # Apply Regex for Local and Easypost Rate Formats
+            return data
         except easypost.Error as e:
             raise ValidationError(e)
         except ObjectDoesNotExist as e:

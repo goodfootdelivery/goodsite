@@ -7,7 +7,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
-from .delivery import SERVICES, STATUSES, get_prices, OFFICE
+from .delivery import get_prices, OFFICE
 from .signals import order_purchased
 from invoicing.models import Invoice
 
@@ -27,11 +27,9 @@ POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKL
 
 class Address(models.Model):
     user = models.ForeignKey('auth.User', null=True, related_name='addresses')
-
     # Contact
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=12, null=True)
-
     # Address
     street = models.CharField(max_length=100)
     unit = models.CharField(max_length=20, null=True)
@@ -39,10 +37,11 @@ class Address(models.Model):
     prov = models.CharField(max_length=20)
     postal = models.CharField(max_length=10, validators=[RegexValidator(regex=POSTAL_REGEX)])
     country = models.CharField(max_length=2, default='CA')
-
     # Coordinates
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
+    # Easypost
+    easypost_id = models.CharField(max_length=200, null=True)
 
     def easypost(self):
         return {
@@ -71,94 +70,35 @@ class Address(models.Model):
 
 
 class Parcel(models.Model):
+    # Dimensions
     length = models.FloatField()
     width = models.FloatField()
     height = models.FloatField()
     weight = models.FloatField()
+    # Easypost
+    easypost_id = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return '%f" x %f" x %f", %foz' % \
             (self.length, self.width, self.height, self.weight)
-
-    def easypost(self):
-        return {
-            'length': self.length,
-            'width': self.width,
-            'height': self.height,
-            'weight': self.weight
-        }
-
-
-# Shipment Model
-
-
-class Shipment(models.Model):
-    easypost_id = models.CharField(max_length=200)
-    rate_id = models.CharField(max_length=200, null=True)
-    # Purchased Only
-    tracking_code = models.CharField(max_length=100, null=True)
-    postal_label = models.URLField(max_length=200, null=True)
-    status = models.CharField(max_length=200, null=True)
-    price = models.FloatField(blank=True, null=True)
-
-    def __str__(self):
-        return 'Shipment: %s' % (self.id)
-
-    def get_rates(self, pickup, dropoff, parcel):
-        try:
-            shipment = easypost.Shipment.create(
-                from_address = pickup,
-                to_address = dropoff,
-                parcel= parcel
-            )
-            if not shipment.rates:
-                raise Exception
-            self.easypost_id = shipment.id
-            return shipment.rates
-        except Exception as e:
-            print 'EasyPost Rates Issue: %s' % (e)
-            return []
-
-    def purchase_label(self, rate):
-        try:
-            shipment = easypost.Shipment.retrieve(self.easypost_id)
-            purchase = shipment.buy(rate={ 'id': rate })
-            # Initialize EasyPost Fields
-            self.rate_id = rate
-            self.tracking_code = purchase.tracking_code
-            self.postal_label = purchase.postage_label.label_url
-            self.price = float(purchase.selected_rate.rate)
-            # Return Instance
-            return self
-        except Exception as e:
-            print 'EasyPost Purchase Issue: %s' % (e)
-            print e
-            # Return None, Indicating Error
-            return None
-
-    def get_price(self):
-        try:
-            shipment = easypost.Shipment.retrieve(self.easypost_id)
-            self.price = shipment.selected_rate.rate
-            return self.price
-        except Exception as e:
-            print e
-            return None
-
-    def get_status(self):
-        try:
-            shipment = easypost.Shipment.retrieve(self.easypost_id)
-            self.status = shipment.tracker.status
-            return self.status
-        except Exception as e:
-            print e
-            return None
 
 
 # Order Model
 
 
 class Order(models.Model):
+    SERVICES = (
+            ('BASIC', 'Basic'),
+            ('EXPRESS', 'Express'),
+        )
+
+    STATUSES = (
+            ('RE', 'Recieved'),     #
+            ('AS', 'Assigned'),     ## Active
+            ('TR', 'In Transit'),   #
+            ('DE', 'Delivered'),    # Outstanding
+            ('PD', 'Paid'),         # Cleared
+        )
     user = models.ForeignKey('auth.User', null=True, blank=True, related_name='orders')
     courier = models.ForeignKey(User, null=True,
                                 limit_choices_to={'groups__name': 'Couriers'}, related_name='courier')
@@ -175,7 +115,6 @@ class Order(models.Model):
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
     invoice_line = models.CharField(max_length=5000, null=True)
     invoice_id = models.ForeignKey(Invoice, null=True, blank=True)
-    shipment = models.OneToOneField(Shipment, blank=True, null=True)
     # Extra Field For Serialization Purposes
     rates = []
 
@@ -241,3 +180,70 @@ class Order(models.Model):
                 self.shipment.save()
             # Return Final Rates Array
             return rates
+
+
+# Shipment Model
+
+
+class Shipment(models.Model):
+    order = models.OneToOneField(Order, blank=True, null=True)
+    easypost_id = models.CharField(max_length=200)
+    # Purchased Only
+    rate_id = models.CharField(max_length=200, null=True)
+    price = models.FloatField(blank=True, null=True)
+    tracking_code = models.CharField(max_length=100, null=True)
+    postal_label = models.URLField(max_length=200, null=True)
+    status = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return 'Shipment: %s' % (self.id)
+
+    def get_rates(self, pickup, dropoff, parcel):
+        try:
+            shipment = easypost.Shipment.create(
+                from_address = pickup,
+                to_address = dropoff,
+                parcel= parcel
+            )
+            if not shipment.rates:
+                raise Exception
+            self.easypost_id = shipment.id
+            return shipment.rates
+        except Exception as e:
+            print 'EasyPost Rates Issue: %s' % (e)
+            return []
+
+    def purchase_label(self, rate):
+        try:
+            shipment = easypost.Shipment.retrieve(self.easypost_id)
+            purchase = shipment.buy(rate={ 'id': rate })
+            # Initialize EasyPost Fields
+            self.rate_id = rate
+            self.tracking_code = purchase.tracking_code
+            self.postal_label = purchase.postage_label.label_url
+            self.price = float(purchase.selected_rate.rate)
+            # Return Instance
+            return self
+        except Exception as e:
+            print 'EasyPost Purchase Issue: %s' % (e)
+            print e
+            # Return None, Indicating Error
+            return None
+
+    def get_price(self):
+        try:
+            shipment = easypost.Shipment.retrieve(self.easypost_id)
+            self.price = shipment.selected_rate.rate
+            return self.price
+        except Exception as e:
+            print e
+            return None
+
+    def get_status(self):
+        try:
+            shipment = easypost.Shipment.retrieve(self.easypost_id)
+            self.status = shipment.tracker.status
+            return self.status
+        except Exception as e:
+            print e
+            return None
