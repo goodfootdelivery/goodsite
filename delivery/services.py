@@ -1,4 +1,4 @@
-from restframework.exceptions import APIException
+from rest_framework.exceptions import APIException
 from .models import Order, Address, Parcel, Shipment
 import easypost
 import googlemaps
@@ -34,11 +34,12 @@ def get_distance(pickup, dropoff):
     if not dist_mat['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
         return dist_mat['rows'][0]['elements'][0]['duration']['value']
     else:
-        return None
+        raise Exception('googlemaps error')
+
 
 
 @accepts(str, str)
-def get_prices(pickup, dropoff=OFFICE):
+def get_local_rates(pickup, dropoff=OFFICE):
     prices = []
     seconds = get_distance(pickup, dropoff)
     hours = seconds / 3600.00
@@ -64,13 +65,36 @@ def get_prices(pickup, dropoff=OFFICE):
 # EasyPost Services
 
 
-@accepts(str, str, dict)
+# create Easypost Address
+def create_address(**kwargs):
+    address = easypost.Address.create(
+            name = kwargs.get('name'),
+            phone = kwargs.get('phone'),
+            street1 = kwargs.get('street'),
+            street2 = kwargs.get('unit'),
+            city = kwargs.get('city'),
+            state = kwargs.get('prov'),
+            country = kwargs.get('country'),
+            zip = kwargs.get('postal'),
+    )
+    return address.id
+
+
+# creates easypost shipment, grabs rates and operates on them
+@accepts(Address, Address, dict)
 def get_non_local_rates(pickup, dropoff, parcel):
-    shipment = easypost.Shipment.create(from_address=pickup, to_address=dropoff, parcel=parcel)
+    shipment = easypost.Shipment.create(
+        from_address = pickup.easypost_id,
+        to_address = dropoff.easypost_id,
+        parcel = parcel
+    )
+    print
+    print shipment
+    print
     if not shipment.rates:
         raise Exception('Invalid Shipment')
-    prices = get_prices(pickup.__str__(), OFFICE)
-    # Polish Rate Function
+    prices = get_local_rates(str(pickup))
+    # rate operator function
     def format_rates(rate):
         price = float(rate.rate) + prices[0]['price']
         return {
@@ -86,13 +110,13 @@ def get_non_local_rates(pickup, dropoff, parcel):
     }
 
 
-# returns dict of
+# returns dict of easypost object fields available after purchase
 @accepts(str, str)
 def purchase_label(easypost_id, rate_id):
-    shipment = easypost.Shipment.retrieve(self.easypost_id)
+    shipment = easypost.Shipment.retrieve(easypost_id)
     purchase = shipment.buy(rate={ 'id': rate_id })
     return {
         'tracking_code': purchase.tracking_code,
         'postal_label': purchase.postage_label.label_url,
-        'price': float(purchase.selected_rate.rate)
+        'cost': float(purchase.selected_rate.rate)
     }

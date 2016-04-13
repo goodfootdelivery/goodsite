@@ -38,15 +38,11 @@ class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,
                           IsOwnerOrReadOnly)
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save(user=self.request.user)
-    #     return Response(serializer.data, status=201)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        user = self.request.user
-        return Order.objects.filter(user=user).defer('row')
+        return Order.objects.filter(user=self.request.user.id)
 
     def update(self, request, pk=None):
         order = Order.objects.get(pk=pk)
@@ -54,6 +50,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         order = serializer.save()
         data = {
+            'status': 'ORDER_PURCHASED',
             "order": order.id,
             "price": order.price
         }

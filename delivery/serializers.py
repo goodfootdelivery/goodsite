@@ -8,7 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import Address, Parcel, Shipment, Order
-from .delivery import get_prices, OFFICE
 from . import services
 from re import match
 
@@ -21,10 +20,22 @@ easypost.api_key = TEST_EP_KEY
 ### ADDRESS SERIALIZER ###
 
 class AddressSerializer(serializers.ModelSerializer):
+    easypost_id = serializers.ReadOnlyField()
     class Meta:
         model = Address
-        fields = ( 'id', 'street', 'unit', 'postal', 'prov', 'country',
+        fields = ( 'id', 'easypost_id', 'street', 'unit', 'postal', 'prov', 'country',
                   'city', 'name', 'phone', )
+
+    def validate(self, data):
+        # if self.city.upper() == 'TORONTO':
+        #     return data
+        # else:
+        try:
+            easypost_id = services.create_address(**data)
+            data.update({'easypost_id':easypost_id})
+        except Exception as e:
+            raise ValidationError({'Easypost Address Error': e})
+        return data
 
 
 ### PARCEL SERIALIZER ###
@@ -61,7 +72,7 @@ class OrderSerializer(serializers.ModelSerializer):
         parcel = Parcel.objects.create(**package)
         order = Order.objects.create(parcel=parcel, **validated_data)
         if easypost_id:
-            shipment = Shipment.objects.create(easypost_id=easypost_id)
+            Shipment.objects.create(order=order, easypost_id=easypost_id)
         order.rates = rates
         return order
 
@@ -74,41 +85,21 @@ class OrderSerializer(serializers.ModelSerializer):
         pickup = data.get('pickup')
         dropoff = data.get('dropoff')
         try:
-            # shipment = easypost.Shipment.create(
-            #     from_address = pickup.easypost(),
-            #     to_address = dropoff.easypost(),
-            #     parcel = data.get('parcel')
-            # )
-            # if not shipment.rates:
-            #     raise Exception
-            # prices = get_prices(pickup.__str__(), OFFICE)
-            # # Polish Rate Function
-            # def format_rates(rate):
-            #     price = float(rate.rate) + prices[0]['price']
-            #     return {
-            #         'id': rate.id,
-            #         'carrier': rate.carrier,
-            #         'service': rate.service,
-            #         'rate': str(price),
-            #         'days': rate.delivery_days
-            #     }
-            # data['easypost_id'] = shipment.id
-            # data['rates'] = map(format_rates, shipment.rates)
-        # except Exception as e:
-            # raise ValidationError(e)
             if dropoff.is_local():
-                # data['rates'] = get_local_rates(pickup, dropoff)
-                # data['rates'] = get_prices(str(pickup), str(dropoff))
                 data['rates'] = services.get_local_rates(str(pickup), str(dropoff))
             else:
+                print
+                print 'Address Types:', type(pickup), type(dropoff)
+                print 'Address Values:', pickup, dropoff
+                print
                 easypost_data = services.get_non_local_rates(
-                    from_address = pickup.easypost(),
-                    to_address = dropoff.easypost(),
+                    pickup = pickup,
+                    dropoff = dropoff,
                     parcel = data.get('parcel')
                 )
                 data.update(easypost_data)
         except easypost.Error as e:
-            raise ValidationError(e)
+            raise ValidationError({'Easypost Shipment Error': e})
         return data
 
 
@@ -124,14 +115,12 @@ class RateSerializer(serializers.BaseSerializer):
             if match(r'rate_.*', rate_id):
                 if order.is_local:
                     raise ValidationError('Invalid Rate: Local Order')
-                prices = get_prices(str(order.pickup))
-                # shipment = easypost.Shipment.retrieve(self.easypost_id)
-                # purchase = shipment.buy(rate={ 'id': rate_id })
+                prices = services.get_local_rates(str(order.pickup), services.OFFICE)
                 purchase = services.purchase_label(order.easypost_id, rate_id)
                 data.update(purchase)
             if not order.is_local:
                 raise ValidationError('Invalid Rate: Non-Local Order')
-            prices = get_prices(str(order.pickup), str(order.dropoff))
+            prices = services.get_local_rates(str(order.pickup), str(order.dropoff))
             if service == 'BASIC':
                 data['rate'] = prices[0]['price']
             elif rate_id == 'EXPRESS':
@@ -141,16 +130,19 @@ class RateSerializer(serializers.BaseSerializer):
             # Apply Regex for Local and Easypost Rate Formats
             return data
         except easypost.Error as e:
-            raise ValidationError(e)
+            raise ValidationError({'Easypost Purchase Error': e})
         except ObjectDoesNotExist as e:
-            raise ValidationError(e)
-        except Exception as e:
-            raise ValidationError(e)
+            raise ValidationError({'order': 'Order id required.'})
+        except TypeError as e:
+            raise ValidationError({'rate': e})
 
     def update(self, instance, validated_data):
-        rate = validated_data.get('rate')
-        if instance.purchase(rate) is not None:
-            instance.save()
-            return instance
-        else:
-            return instance
+        if instance.is_local:
+            Shipment.objects.filter(order=instance).update(
+                cost = validated_data.pop('cost', None),
+                postal_label = validated_data.pop('postal_label', None),
+                tracking_code = validated_data.pop('tracking_code', None),
+            )
+        instance.price = validated_data.pop('rate', None)
+        instance.save()
+        return instance
