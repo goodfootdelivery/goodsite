@@ -121,7 +121,7 @@ class RateSerializer(serializers.BaseSerializer):
             if not order.is_local:
                 raise ValidationError('Invalid Rate: Non-Local Order')
             prices = services.get_local_rates(str(order.pickup), str(order.dropoff))
-            if service == 'BASIC':
+            if rate_id == 'BASIC':
                 data['rate'] = prices[0]['price']
             elif rate_id == 'EXPRESS':
                 data['rate'] = prices[1]['price']
