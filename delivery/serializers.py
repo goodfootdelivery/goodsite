@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import Address, Parcel, Shipment, Order
-from . import services
+from .services import GoogleService, EasypostService
 from re import match
 
 import easypost
@@ -31,7 +31,7 @@ class AddressSerializer(serializers.ModelSerializer):
         #     return data
         # else:
         try:
-            easypost_id = services.create_address(**data)
+            easypost_id = EasypostService.create_address(**data)
             data.update({'easypost_id':easypost_id})
         except Exception as e:
             raise ValidationError({'Easypost Address Error': e})
@@ -86,10 +86,10 @@ class OrderSerializer(serializers.ModelSerializer):
         dropoff = data.get('dropoff')
         try:
             if dropoff.is_local():
-                data['rates'] = services.get_local_rates(str(pickup), str(dropoff))
+                data['rates'] = GoogleService.get_local_rates(str(pickup), str(dropoff))
             else:
-                local_prices = services.get_local_rates(str(pickup))
-                easypost_data = services.get_shipment_rates(
+                local_prices = GoogleService.get_local_rates(str(pickup))
+                easypost_data = EasypostService.get_shipment_rates(
                     pickup = pickup.easypost_id,
                     dropoff = dropoff.easypost_id,
                     parcel = data.get('parcel'),
@@ -124,7 +124,7 @@ class RateSerializer(serializers.BaseSerializer):
         #
         try:
             if order.is_local:
-                prices = services.get_local_rates(str(order.pickup), str(order.dropoff))
+                prices = GoogleService.get_local_rates(str(order.pickup), str(order.dropoff))
                 if rate_id == 'BASIC':
                     data['rate'] = prices[0]['price']
                 elif rate_id == 'EXPRESS':
@@ -134,20 +134,11 @@ class RateSerializer(serializers.BaseSerializer):
             else:
                 if not match(r'rate_.*', rate_id):
                     raise ValidationError('Invalid Rate: Non-Local Order')
-                prices = services.get_local_rates(str(order.pickup))
-                purchase = services.purchase_label(shipment.easypost_id, rate_id)
-                print
-                print purchase
-                print
+                prices = GoogleService.get_local_rates(str(order.pickup))
+                purchase = EasypostService.purchase_label(shipment.easypost_id, rate_id)
                 data.update(purchase)
                 data['price'] = purchase['cost'] + prices[0]['price']
-            # print data
-            # return data
         except easypost.Error as e:
-            print
-            print 'EASYPOST ERROR'
-            print e
-            print
             raise ValidationError({
                 'Easypost Error': e.json_body['error']['message']
             })
@@ -158,7 +149,6 @@ class RateSerializer(serializers.BaseSerializer):
         except TypeError as e:
             raise ValidationError({'rate': e})
         else:
-            print data
             return data
         # except Exception as e:
         #     raise ValidationError({'ERROR': e})
