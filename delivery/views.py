@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import viewsets
 
-from .models import Address, Order
+from .models import Address, Order, Shipment
 from .serializers import AddressSerializer, OrderSerializer, RateSerializer
 from .permissions import IsOwnerOrReadOnly
 
@@ -46,7 +46,11 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         order = Order.objects.get(pk=pk)
-        serializer = RateSerializer(order, data=request.data)
+        shipment = Shipment.objects.get(order=order)
+        # Add Order Identifier
+        data = {'order': order, 'shipment': shipment}
+        data.update(request.data)
+        serializer = RateSerializer(order, data=data)
         serializer.is_valid(raise_exception=True)
         order = serializer.save()
         data = {

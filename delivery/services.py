@@ -1,32 +1,30 @@
 from rest_framework.exceptions import APIException
 from .models import Order, Address, Parcel, Shipment
-import easypost
 import googlemaps
+import easypost
 
 GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
-OFFICE = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
 TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
 
 easypost.api_key = TEST_EP_KEY
 
-# Raising Assertion Errors If Service Functions are the Wrong Type
-def accepts(*types):
-    def check_accepts(f):
-        assert len(types) == f.func_code.co_argcount
-        def new_f(*args, **kwds):
-            for (a, t) in zip(args, types):
-                assert isinstance(a, t), \
-                       "arg %r does not match %s" % (a,t)
-            return f(*args, **kwds)
-        new_f.func_name = f.func_name
-        return new_f
-    return check_accepts
+OFFICE_SHORT = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
+OFFICE_LONG = {
+    'name' : 'GoodFoot Delivery Office',
+    'phone' : '416 572 3771',
+    'street1' : '720 Bathurst St',
+    'street2' : '411',
+    'city' : 'Toronto',
+    'state' : 'ON',
+    'country' : 'Canada',
+    'zip' : 'M5S 2R4'
+}
 
 
 # Google Services
 
 
-@accepts(str, str)
+# Accepts Two Strings
 def get_distance(pickup, dropoff):
     client = googlemaps.Client(key=GKEY)
     dist_mat = client.distance_matrix(pickup, dropoff, mode='transit')
@@ -34,11 +32,10 @@ def get_distance(pickup, dropoff):
     if not dist_mat['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
         return dist_mat['rows'][0]['elements'][0]['duration']['value']
     else:
-        raise Exception('googlemaps error')
+        raise Exception('Googlemaps Error')
 
 
-@accepts(str, str)
-def get_local_rates(pickup, dropoff=OFFICE):
+def get_local_rates(pickup, dropoff=OFFICE_SHORT):
     prices = []
     seconds = get_distance(pickup, dropoff)
     hours = seconds / 3600.00
@@ -65,6 +62,7 @@ def get_local_rates(pickup, dropoff=OFFICE):
 
 
 # create Easypost Address
+# Accepts a Dict of Strs
 def create_address(**kwargs):
     address = easypost.Address.create(
             name = kwargs.get('name'),
@@ -80,16 +78,10 @@ def create_address(**kwargs):
 
 
 # creates easypost shipment, grabs rates and operates on them
-@accepts(Address, Address, dict)
-def get_non_local_rates(pickup, dropoff, parcel):
-    print
-    print pickup.easypost_id
-    print dropoff.easypost_id
-    print dict( parcel )
-    print
+def get_shipment_rates(pickup, dropoff, parcel, local_price):
     shipment = easypost.Shipment.create(
-        from_address = pickup.easypost_id,
-        to_address = dropoff.easypost_id,
+        from_address = OFFICE_LONG,
+        to_address = { 'id': dropoff },
         parcel = {
             'length': parcel.get('length'),
             'width': parcel.get('width'),
@@ -99,10 +91,9 @@ def get_non_local_rates(pickup, dropoff, parcel):
     )
     if not shipment.rates:
         raise Exception('Invalid Shipment')
-    prices = get_local_rates(str(pickup))
     # rate operator function
     def format_rates(rate):
-        price = float(rate.rate) + prices[0]['price']
+        price = float(rate.rate) + local_price
         return {
             'id': rate.id,
             'carrier': rate.carrier,
@@ -117,7 +108,6 @@ def get_non_local_rates(pickup, dropoff, parcel):
 
 
 # returns dict of easypost object fields available after purchase
-@accepts(str, str)
 def purchase_label(easypost_id, rate_id):
     shipment = easypost.Shipment.retrieve(easypost_id)
     purchase = shipment.buy(rate={ 'id': rate_id })

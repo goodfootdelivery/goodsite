@@ -88,53 +88,80 @@ class OrderSerializer(serializers.ModelSerializer):
             if dropoff.is_local():
                 data['rates'] = services.get_local_rates(str(pickup), str(dropoff))
             else:
-                print
-                print 'Address Types:', type(pickup), type(dropoff)
-                print 'Address Values:', pickup, dropoff
-                print
-                easypost_data = services.get_non_local_rates(
-                    pickup = pickup,
-                    dropoff = dropoff,
-                    parcel = data.get('parcel')
+                local_prices = services.get_local_rates(str(pickup))
+                easypost_data = services.get_shipment_rates(
+                    pickup = pickup.easypost_id,
+                    dropoff = dropoff.easypost_id,
+                    parcel = data.get('parcel'),
+                    local_price = local_prices[0]['price']
                 )
+                print
+                print easypost_data
+                print
                 data.update(easypost_data)
         except easypost.Error as e:
-            raise ValidationError({'Easypost Shipment Error': e})
-        return data
+            print e.json_body['error']['code']
+            # raise ValidationError({'Easypost Shipment Error': e})
+            raise ValidationError({
+                'Easypost Error': e.json_body['error']['message']
+            })
+        except Exception as e:
+            raise ValidationError({'Shipment Creation Error': e})
+        else:
+            return data
 
 
 ### RATE SERIALIZER ###
 
 class RateSerializer(serializers.BaseSerializer):
     def to_internal_value(self, data):
+        print data
         rate_id = data.get('rate_id')
-        service = data.get('service')
-        order_id = data.get('order_id')
+        order = data.get('order')
+        shipment = data.get('shipment')
+        #
+        # Add Logic To Ensure Order Hasn't Been Purchased
+        #
         try:
-            order = Order.objects.get(id=order_id)
-            if match(r'rate_.*', rate_id):
-                if order.is_local:
+            if order.is_local:
+                prices = services.get_local_rates(str(order.pickup), str(order.dropoff))
+                if rate_id == 'BASIC':
+                    data['rate'] = prices[0]['price']
+                elif rate_id == 'EXPRESS':
+                    data['rate'] = prices[1]['price']
+                else:
                     raise ValidationError('Invalid Rate: Local Order')
-                prices = services.get_local_rates(str(order.pickup), services.OFFICE)
-                purchase = services.purchase_label(order.easypost_id, rate_id)
-                data.update(purchase)
-            if not order.is_local:
-                raise ValidationError('Invalid Rate: Non-Local Order')
-            prices = services.get_local_rates(str(order.pickup), str(order.dropoff))
-            if rate_id == 'BASIC':
-                data['rate'] = prices[0]['price']
-            elif rate_id == 'EXPRESS':
-                data['rate'] = prices[1]['price']
             else:
-                raise ValidationError('Incorrect Rate Format')
-            # Apply Regex for Local and Easypost Rate Formats
-            return data
+                if not match(r'rate_.*', rate_id):
+                    raise ValidationError('Invalid Rate: Non-Local Order')
+                prices = services.get_local_rates(str(order.pickup))
+                purchase = services.purchase_label(shipment.easypost_id, rate_id)
+                print
+                print purchase
+                print
+                data.update(purchase)
+                data['price'] = purchase['cost'] + prices[0]['price']
+            # print data
+            # return data
         except easypost.Error as e:
-            raise ValidationError({'Easypost Purchase Error': e})
+            print
+            print 'EASYPOST ERROR'
+            print e
+            print
+            raise ValidationError({
+                'Easypost Error': e.json_body['error']['message']
+            })
+
+
         except ObjectDoesNotExist as e:
             raise ValidationError({'order': 'Order id required.'})
         except TypeError as e:
             raise ValidationError({'rate': e})
+        else:
+            print data
+            return data
+        # except Exception as e:
+        #     raise ValidationError({'ERROR': e})
 
     def update(self, instance, validated_data):
         if instance.is_local:
