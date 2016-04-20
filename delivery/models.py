@@ -101,7 +101,7 @@ class Order(models.Model):
     order_date = models.DateField(auto_now_add=True)
     delivery_date = models.DateField()
     ready_time_start = models.TimeField()
-    # ready_time_end = models.TimeField(default)
+    ready_time_end = models.TimeField(default="6:00 PM")
     comments = models.CharField(max_length=200, blank=True)
     price = models.FloatField(null=True)
     service = models.CharField(max_length=10, choices=SERVICES, null='BASIC')
