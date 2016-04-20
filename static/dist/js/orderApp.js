@@ -106,6 +106,12 @@
 
 		$('#submit').click(function () {
 			var chosenRate = $('#rates input[name=rate]').val();
+			var obj = {
+				"rate_id": chosenRate
+			};
+			console.log('CHOSEN RATE \n');
+			console.log(obj);
+			console.log('\n');
 			(0, _ajaxHelpers.purchaseOrder)(chosenRate);
 		});
 
@@ -9998,7 +10004,7 @@
 		dropoff: null,
 		parcel: SML_PARCEL,
 		delivery_date: null,
-		delivery_time: null
+		ready_time_start: null
 	};
 
 	/*
@@ -10154,7 +10160,7 @@
 	function placeOrder() {
 		orderMain.parcel = getParcel();
 		orderMain.delivery_date = $('#details input[name=date]').val();
-		orderMain.delivery_time = $('#details select[name=time]').val();
+		orderMain.ready_time_start = $('#details select[name=time]').val();
 		console.log(orderMain);
 
 		$.ajax({
@@ -10177,6 +10183,9 @@
 				$('.stepOne').hide(300);
 			},
 			error: function error(_error2) {
+				console.log('ERROR IN ORDER CALL: \n');
+				console.log(_error2.responseText);
+				console.log('\n');
 				if ('delivery_date' in _error2.responseJSON) {
 					$('#details input[name=date]').closest('.form-group').addClass('has-error');
 				}
@@ -10185,19 +10194,24 @@
 	}
 
 	function purchaseOrder(rate) {
-		console.log(rate);
 		$.ajax({
 			url: API_BASE + 'orders/' + orderPK + '/',
 			type: 'PUT',
 			headers: {
 				'X-CSRFToken': $.cookie('csrftoken')
 			},
-			data: { "rate_id": rate },
+			contentType: 'application/json',
+			data: JSON.stringify({
+				"rate_id": rate
+			}),
 			success: function success(response) {
 				$('.stepOne, .stepTwo').hide(300);
 				$('.stepThree').show(300);
 			},
 			error: function error(_error3) {
+				console.log('ERROR IN PURCHASE CALL: \n');
+				console.log(_error3.responseText);
+				console.log('\n');
 				console.log(_error3);
 			}
 		});

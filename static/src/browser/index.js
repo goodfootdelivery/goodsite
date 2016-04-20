@@ -62,6 +62,12 @@ $(() => {
 
 	$( '#submit' ).click(function(){
 		let chosenRate = $( '#rates input[name=rate]' ).val()
+		let obj = {
+			"rate_id": chosenRate
+		}
+		console.log('CHOSEN RATE \n')
+		console.log(obj)
+		console.log('\n')
 		purchaseOrder(chosenRate)
 	})
 

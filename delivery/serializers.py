@@ -154,7 +154,9 @@ class RateSerializer(serializers.BaseSerializer):
         #     raise ValidationError({'ERROR': e})
 
     def update(self, instance, validated_data):
-        if instance.is_local:
+        if not instance.is_local:
+            print 'NONE LOCAL ORDER'
+            print instance
             Shipment.objects.filter(order=instance).update(
                 cost = validated_data.pop('cost', None),
                 postal_label = validated_data.pop('postal_label', None),

@@ -46,7 +46,10 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         order = Order.objects.get(pk=pk)
-        shipment = Shipment.objects.get(order=order)
+        if not order.is_local:
+            shipment = Shipment.objects.get(order=order)
+        else:
+            shipment = None
         # Add Order Identifier
         data = {'order': order, 'shipment': shipment}
         data.update(request.data)

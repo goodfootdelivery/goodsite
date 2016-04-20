@@ -19,7 +19,7 @@ export const orderMain = {
 	dropoff: null,
 	parcel: SML_PARCEL,
 	delivery_date: null,
-	delivery_time: null
+	ready_time_start: null
 }
 
 
@@ -179,7 +179,7 @@ const buildRates = (rates) => {
 export function placeOrder() {
 	orderMain.parcel = getParcel()
 	orderMain.delivery_date = $( '#details input[name=date]' ).val()
-	orderMain.delivery_time = $( '#details select[name=time]' ).val()
+	orderMain.ready_time_start = $( '#details select[name=time]' ).val()
 	console.log(orderMain)
 
 	$.ajax({
@@ -202,6 +202,9 @@ export function placeOrder() {
 			$( '.stepOne' ).hide(300)
 		},
 		error: function(error){
+			console.log('ERROR IN ORDER CALL: \n')
+			console.log(error.responseText)
+			console.log('\n')
 			if ('delivery_date' in error.responseJSON) {
 				$( '#details input[name=date]' ).closest('.form-group').addClass('has-error')
 			}
@@ -210,19 +213,24 @@ export function placeOrder() {
 }
 
 export function purchaseOrder(rate) {
-	console.log(rate)
 	$.ajax({
 		url: API_BASE + 'orders/' + orderPK + '/',
 		type: 'PUT',
 		headers: {
 			'X-CSRFToken': $.cookie( 'csrftoken' )
 		},
-		data: { "rate_id": rate },
+		contentType: 'application/json',
+		data: JSON.stringify({
+			"rate_id": rate
+		}),
 		success: function(response){
 			$( '.stepOne, .stepTwo' ).hide(300)
 			$( '.stepThree' ).show(300)
 		},
 		error: function(error){
+			console.log('ERROR IN PURCHASE CALL: \n')
+			console.log(error.responseText)
+			console.log('\n')
 			console.log(error)
 		}
 	})
