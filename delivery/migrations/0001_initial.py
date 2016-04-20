@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('invoicing', '0003_auto_20160401_1403'),
     ]
 
     operations = [
@@ -27,7 +28,8 @@ class Migration(migrations.Migration):
                 ('country', models.CharField(default=b'CA', max_length=2)),
                 ('lat', models.FloatField(null=True, blank=True)),
                 ('lng', models.FloatField(null=True, blank=True)),
-                ('owner', models.ForeignKey(related_name='addresses', to=settings.AUTH_USER_MODEL, null=True)),
+                ('easypost_id', models.CharField(max_length=200, null=True)),
+                ('user', models.ForeignKey(related_name='addresses', to=settings.AUTH_USER_MODEL, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -36,18 +38,15 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('order_date', models.DateField(auto_now_add=True)),
                 ('delivery_date', models.DateField()),
-                ('delivery_time', models.TimeField(null=True)),
+                ('ready_time_start', models.TimeField()),
                 ('comments', models.CharField(max_length=200, blank=True)),
                 ('price', models.FloatField(null=True)),
-                ('service', models.CharField(max_length=2, null=True, choices=[(b'EX', b'Express'), (b'BA', b'Basic')])),
+                ('service', models.CharField(max_length=10, null=b'BASIC', choices=[(b'BASIC', b'Basic'), (b'EXPRESS', b'Express')])),
                 ('status', models.CharField(default=b'RE', max_length=2, choices=[(b'RE', b'Recieved'), (b'AS', b'Assigned'), (b'TR', b'In Transit'), (b'DE', b'Delivered'), (b'PD', b'Paid')])),
-                ('easypost_id', models.CharField(max_length=200, null=True)),
-                ('rate_id', models.CharField(max_length=200, null=True)),
-                ('tracking_code', models.CharField(max_length=100, null=True)),
-                ('postal_label', models.URLField(null=True)),
+                ('invoice_line', models.CharField(max_length=5000, null=True)),
                 ('courier', models.ForeignKey(related_name='courier', to=settings.AUTH_USER_MODEL, null=True)),
                 ('dropoff', models.ForeignKey(related_name='end', to='delivery.Address', null=True)),
-                ('owner', models.ForeignKey(related_name='orders', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('invoice_id', models.ForeignKey(blank=True, to='invoicing.Invoice', null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -58,6 +57,20 @@ class Migration(migrations.Migration):
                 ('width', models.FloatField()),
                 ('height', models.FloatField()),
                 ('weight', models.FloatField()),
+                ('easypost_id', models.CharField(max_length=200, null=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Shipment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('easypost_id', models.CharField(max_length=200)),
+                ('rate_id', models.CharField(max_length=200, null=True)),
+                ('cost', models.FloatField(null=True, blank=True)),
+                ('tracking_code', models.CharField(max_length=100, null=True)),
+                ('postal_label', models.URLField(null=True)),
+                ('status', models.CharField(max_length=200, null=True)),
+                ('order', models.OneToOneField(null=True, blank=True, to='delivery.Order')),
             ],
         ),
         migrations.AddField(
@@ -69,5 +82,10 @@ class Migration(migrations.Migration):
             model_name='order',
             name='pickup',
             field=models.ForeignKey(related_name='start', to='delivery.Address', null=True),
+        ),
+        migrations.AddField(
+            model_name='order',
+            name='user',
+            field=models.ForeignKey(related_name='user', blank=True, to=settings.AUTH_USER_MODEL, null=True),
         ),
     ]
