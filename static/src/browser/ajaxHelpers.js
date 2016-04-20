@@ -192,7 +192,11 @@ export function placeOrder() {
 		data: JSON.stringify(orderMain),
 		success: function(response){
 			// Set Order ID
-			orderPK = response.order.id
+			console.log('ORDER PLACED \n')
+			console.log(response)
+			console.log('\n')
+
+			orderPK = response.id
 			let rates = response.rates
 			buildRates(rates)
 			$( '.stepOne' ).hide(300)

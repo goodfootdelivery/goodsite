@@ -10167,7 +10167,11 @@
 			data: JSON.stringify(orderMain),
 			success: function success(response) {
 				// Set Order ID
-				orderPK = response.order.id;
+				console.log('ORDER PLACED \n');
+				console.log(response);
+				console.log('\n');
+
+				orderPK = response.id;
 				var rates = response.rates;
 				buildRates(rates);
 				$('.stepOne').hide(300);

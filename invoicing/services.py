@@ -1,7 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Client
-from .invoice import FB_URL, API_KEY, COMPANY
 from refreshbooks import api
+
+# Production
+# COMPANY = 'Good Foot Support Services (Good Foot Delivery)'
+# FB_URL = 'goodfootdelivery.freshbooks.com'
+# API_KEY = '1dc85e1ad7a0ac4a9840e4687e94ac20'
+
+# Testing
+COMPANY = 'Goodfoot Delivery Gamma'
+FB_URL = 'goodfootdeliverygamma.freshbooks.com'
+API_KEY = '0e7d9e834a671c665ada820250babc01'
 
 
 class FreshbooksService(object):
@@ -47,3 +56,13 @@ class FreshbooksService(object):
             return None
         else:
             return resp.invoice_id
+    # Return Invoice Total
+    @staticmethod
+    def get_invoice_amount(invoice_id):
+        try:
+            fb = api.TokenClient(FB_URL, API_KEY, user_agent=COMPANY)
+            resp = fb.invoice.get(invoice_id=invoice_id)
+        except Exception:
+            return None
+        else:
+            return resp.invoice.amount

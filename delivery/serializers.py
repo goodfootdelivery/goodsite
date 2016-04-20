@@ -61,7 +61,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ( 'id', 'pickup', 'dropoff', 'parcel', 'order_date',
-                        'price', 'delivery_date', 'service', 'rates')
+                        'price', 'delivery_time', 'delivery_date', 'service', 'rates')
         depth = 1
 
     def create(self, validated_data):
@@ -137,7 +137,7 @@ class RateSerializer(serializers.BaseSerializer):
                 prices = GoogleService.get_local_rates(str(order.pickup))
                 purchase = EasypostService.purchase_label(shipment.easypost_id, rate_id)
                 data.update(purchase)
-                data['price'] = purchase['cost'] + prices[0]['price']
+                data['rate'] = purchase['cost'] + prices[0]['price']
         except easypost.Error as e:
             raise ValidationError({
                 'Easypost Error': e.json_body['error']['message']

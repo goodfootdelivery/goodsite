@@ -100,7 +100,7 @@ class Order(models.Model):
     parcel = models.ForeignKey(Parcel, null=True)
     order_date = models.DateField(auto_now_add=True)
     delivery_date = models.DateField()
-    delivery_time = models.TimeField(null=True)
+    delivery_time = models.TimeField()
     comments = models.CharField(max_length=200, blank=True)
     price = models.FloatField(null=True)
     service = models.CharField(max_length=10, choices=SERVICES, null='BASIC')
