@@ -18,36 +18,45 @@
 			<div class="row">
 		<!-- <pickup></pickup> -->
 				<form id='start' class="pickup col-xs-6">
-					<legend class="stepOne">Pickup</legend>
+					<legend>Pickup</legend>
 					{% include "delivery/addressForm.html" %}
 				</form>
 		<!-- <dropoff></dropoff> -->
 				<form id='end' class="col-xs-6">
-					<legend class="stepOne">Dropoff</legend>
+					<legend>Dropoff</legend>
 					{% include "delivery/addressForm.html" %}
 				</form>
 			</div>
 
-		<!-- <datetimeparcel></datetimeparcel> -->
-
-			<form id="details">
-					{% include "delivery/detailForm.html" %}
-			</form>
-
-			<div class="row stepOne">
-				<div class="col-xs-12">
-					<button id="next" style="float:right" type="button" class="btn btn-primary">Next</button>
-				</div>
-			</div>
 		</div>
 	</section>
 
 	<section class='stepTwo' style="display:none">
-		{% include "delivery/chooseRate.html" %}
+		<div class="container">
+			<form id="details">
+	<!-- <datetimeparcel></datetimeparcel> -->
+					{% include "delivery/detailForm.html" %}
+			</form>
+		</div>
 	</section>
 
 	<section class='stepThree' style="display:none">
+		{% include "delivery/chooseRate.html" %}
+	</section>
+
+	<section class='stepFour' style="display:none">
 		{% include "delivery/confirmOrder.html" %}
+	</section>
+
+	<section>
+			<div class="container row">
+				<div class="col-xs-6">
+					<button id="back" style="margin:auto" type="button" class="btn btn-danger">Back</button>
+				</div>
+				<div class="col-xs-6">
+					<button id="next" style="float:right" type="button" class="btn btn-primary">Next</button>
+				</div>
+			</div>
 	</section>
 {% endblock %}
 

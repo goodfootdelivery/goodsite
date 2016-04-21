@@ -62,6 +62,10 @@
 
 	$(function () {
 
+		/**
+	  * Geocomplete & Datepicker Initialization
+	  */
+
 		$("#start input[name=geocompleted]").geocomplete({
 			details: "#start",
 			detailsAttribute: "geo",
@@ -83,39 +87,38 @@
 			beforeShowDay: $.datepicker.noWeekends
 		});
 
+		/**
+	  * Move On To Next Phase Of Order
+	  */
+
 		$('#next').click(function () {
-			// Address Building
-			(0, _ajaxHelpers.callAPI)('addresses', $('#start').serialize(), 'start');
-			// placeOrder()
-
-			// Map Stuff
-			// let pickup_url = $.staticMap({
-			// 		address: $( '#start input[name=geocompleted]' ).val(),
-			// 		zoom: 18,
-			// 		height: 200,
-			// 		width: 300
-			// 	}); $( '#start .address-map' ).attr('src', pickup_url)
-
-			// let dropoff_url = $.staticMap({
-			// 		address: $( '#end input[name=geocompleted]' ).val(),
-			// 		zoom: 16,
-			// 		height: 200,
-			// 		width: 300
-			// 	}); $( '#end .address-map' ).attr('src', dropoff_url)
+			switch (_ajaxHelpers.phase) {
+				case 1:
+					$(['start', 'end']).each(function (_, form) {
+						(0, _ajaxHelpers.setAddr)(form);
+					});
+					break;
+				case 2:
+					(0, _ajaxHelpers.placeOrder)();
+					break;
+				case 3:
+					var chosenRate = $('#rates input[name=rate]').val();
+					var obj = { "rate_id": chosenRate };
+					(0, _ajaxHelpers.purchaseOrder)(chosenRate);
+					break;
+				default:
+					console.log("PHASE OUT OF BOUNDS");
+			}
 		});
 
-		$('#submit').click(function () {
-			var chosenRate = $('#rates input[name=rate]').val();
-			var obj = {
-				"rate_id": chosenRate
-			};
-			console.log('CHOSEN RATE \n');
-			console.log(obj);
-			console.log('\n');
-			(0, _ajaxHelpers.purchaseOrder)(chosenRate);
-		});
+		/**
+	  * Move On To Previous Phase Of Order
+	  */
 
-		// document.ready() end..
+		$('#back').click(function () {});
+		// Address Building
+		// setAddr('addresses', $( '#start' ).serialize(), 'start')
+		// placeOrder()
 	}); /*
 	     *			jQuery orderForm Entry point
 	     *
@@ -9980,7 +9983,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.callAPI = callAPI;
+	exports.setAddr = setAddr;
 	exports.placeOrder = placeOrder;
 	exports.purchaseOrder = purchaseOrder;
 	/*
@@ -9996,6 +9999,10 @@
 	var LRG_PARCEL = { "length": 3.00, "width": 3.00, "height": 3.00, "weight": 3.00 };
 
 	var orderPK = null;
+	var addressesLeft = exports.addressesLeft = 2;
+	var phase = exports.phase = 1;
+
+	var addressIndex = exports.addressIndex = ['start', 'end'];
 
 	var isLocal = exports.isLocal = true;
 
@@ -10006,12 +10013,69 @@
 		delivery_date: null,
 		ready_time_start: null
 	};
-
 	/*
-	 * GEOCODE HELPER
+	 *	GOODFOOT API HELPERS
 	 */
 
-	// takes a string
+	// function callSuccess(data, form){
+	// 	// Apply Validation & Initiate Next Request
+	// 	switch (form) {
+	// 		case "start":
+	// 			orderMain.pickup = data.id
+	// 			setAddr('addresses', $( '#end' ).serialize(), 'end')
+	// 			break;
+	// 		case "end":
+	// 			orderMain.dropoff = data.id;
+	// 			( data.city != "Toronto" )? isLocal = false : isLocal = true
+	// 			// place order when request are complete
+	// 			placeOrder()
+	// 			break;
+	// 		default:
+	// 			console.log('Form Name Not Recognized')
+	// 	}
+
+	// 	// Initialize Map
+	// 	let selector = '#' + form + ' '
+	// 	let mapURL = $.staticMap({
+	// 			address: $( selector + ' input[name=geocompleted]' ).val(),
+	// 			zoom: 18,
+	// 			height: 200,
+	// 			width: 300
+	// 		});
+	// 	$( selector + ' .address-map' ).attr('src', mapURL)
+
+	// 	// Swap Form for Map
+	// 	$( selector + '.stepOne' ).hide(300)
+	// 	$( selector + '.stepTwo' ).show(300)
+	// }
+
+	// const buildRates = (rates) => {
+	// 	// Table Header and Row Initializers
+	// 	let trHTML = '';
+	// 	let trHEAD = 'local-rates';
+	// 	if (!isLocal){
+	// 		$.each(rates, function (_, rate) {
+	// 			trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>'
+	// 				+ rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service +
+	// 				'</td><td>' + rate.days + '</td></tr>';
+	// 		});
+	// 		trHEAD = 'non-local-rates'
+	// 	} else {
+	// 		$.each(rates, function (_, rate) {
+	// 			trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.service + '"></td><td>' +
+	// 				rate.service + '</td><td>' + rate.price + '</td></tr>';
+	// 		});
+	// 	}
+	// 	// Build Table
+	// 	$( '#' + trHEAD ).show(300)
+	// 	$('#rates').append(trHTML);
+	// 	$( '.stepTwo' ).show(300)
+	// }
+
+	/*
+	 * Geocoder Helper Function
+	 */
+
 	function geoCode(addr) {
 		$.ajax({
 			url: 'http://geocoder.ca',
@@ -10044,76 +10108,6 @@
 	}
 
 	/*
-	 *	GOODFOOT API HELPERS
-	 */
-
-	function callSuccess(data, form) {
-		// Apply Validation & Initiate Next Request
-		switch (form) {
-			case "start":
-				orderMain.pickup = data.id;
-				callAPI('addresses', $('#end').serialize(), 'end');
-				break;
-			case "end":
-				orderMain.dropoff = data.id;
-				data.city != "Toronto" ? exports.isLocal = isLocal = false : exports.isLocal = isLocal = true;
-				// place order when request are complete
-				placeOrder();
-				break;
-			default:
-				console.log('Form Name Not Recognized');
-		}
-
-		// Initialize Map
-		var selector = '#' + form + ' ';
-		var pickup_url = $.staticMap({
-			address: $(selector + ' input[name=geocompleted]').val(),
-			zoom: 18,
-			height: 200,
-			width: 300
-		});$(selector + ' .address-map').attr('src', pickup_url);
-
-		// Swap Form for Map
-		$(selector + '.stepOne').hide(300);
-		$(selector + '.stepTwo').show(300);
-	}
-
-	function callError(data, form) {
-		if ('name' in data) {
-			var selector = "#" + form + " input[name=name]";
-			$(selector).closest('.form-group').addClass('has-error');
-		}
-		if ('street' in data) {
-			var addrErr = "#" + form + " input[name=geocompleted]";
-			$(addrErr).closest('.form-group').addClass('has-error');
-		}
-		if ('postal_code' in data) {
-			var addrErr = "#" + form + " input[name=geocompleted]";
-			$(addrErr).closest('.form-group').addClass('has-error');
-		}
-
-		console.log(data);
-	}
-
-	// Throws an Object Error
-	function callAPI(url, obj, form) {
-		$.ajax({
-			url: API_BASE + url + '/',
-			type: 'POST',
-			headers: {
-				'X-CSRFToken': $.cookie('csrftoken')
-			},
-			data: obj,
-			success: function success(data) {
-				callSuccess(data, form);
-			},
-			error: function error(data) {
-				callError(data.responseJSON, form);
-			}
-		});
-	};
-
-	/*
 	 *	Parcel Builder Helper
 	 */
 
@@ -10134,29 +10128,108 @@
 		}
 	}
 
-	var buildRates = function buildRates(rates) {
-		// Table Header and Row Initializers
-		var trHTML = '';
-		var trHEAD = 'local-rates';
-		if (!isLocal) {
-			$.each(rates, function (_, rate) {
-				trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>' + rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service + '</td><td>' + rate.days + '</td></tr>';
-			});
-			trHEAD = 'non-local-rates';
-		} else {
-			$.each(rates, function (_, rate) {
-				trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.service + '"></td><td>' + rate.service + '</td><td>' + rate.price + '</td></tr>';
-			});
+	/**
+	 * Shows and hides sections of Form based on phase variables.
+	 */
+
+	var switchPhase = function switchPhase(phase) {
+		console.log('PHASE SWITCH');
+		console.log(phase);
+		switch (phase) {
+			case 1:
+				$('.stepOne').show(300);
+				$('.stepTwo').hide(300);
+				break;
+			case 2:
+				$('.stepOne').hide(300);
+				$('.stepTwo').show(300);
+				break;
+			case 3:
+				$('.stepTwo').hide(300);
+				$('.stepThree').show(300);
+				break;
+			case 4:
+				$('.stepThree').hide(300);
+				$('.stepFour').show(300);
+				break;
+			default:
+				break;
 		}
-		// Build Table
-		$('#' + trHEAD).show(300);
-		$('#rates').append(trHTML);
-		$('.stepTwo').show(300);
+	};
+
+	/*
+	 *			API CALLS
+	 *
+	 *	These Functions make calls to the Goodfoot API
+	 *
+	 */
+
+	/**
+	 * Sets a Single Address
+	 */
+
+	function setAddr(form) {
+		var obj = $('#' + form).serialize();
+		$.ajax({
+			url: API_BASE + 'addresses/',
+			type: 'POST',
+			headers: {
+				'X-CSRFToken': $.cookie('csrftoken')
+			},
+			data: obj,
+			success: function success(data) {
+				// callSuccess(data, form)
+				switch (form) {
+					case "start":
+						orderMain.pickup = data.id;
+						console.log(orderMain.pickup);
+					case "end":
+						data.city != "Toronto" ? exports.isLocal = isLocal = false : exports.isLocal = isLocal = true;
+						orderMain.dropoff = data.id;
+						console.log(orderMain.dropoff);
+					default:
+						exports.addressesLeft = addressesLeft -= 1;
+						// Initialize Map
+						var selector = '#' + form + ' ';
+						var mapURL = $.staticMap({
+							address: $(selector + ' input[name=geocompleted]').val(),
+							zoom: 18,
+							height: 200,
+							width: 300
+						});
+						$(selector + ' .address-map').attr('src', mapURL);
+					// console.log("FORM NAME NOT RECOGNIZED")
+				}
+				if (addressesLeft == 0) {
+					// $( selector + '.stepOne' ).hide(300)
+					// $( selector + '.stepTwo' ).show(300)
+					exports.phase = phase += 1;
+					switchPhase(phase);
+				}
+			},
+			error: function error(data) {
+				console.log('ADDRESS ERROR');
+				var errors = $.parseJSON(data.responseText);
+				if ('name' in errors) {
+					var selector = "#" + form + " input[name=name]";
+					$(selector).closest('.form-group').addClass('has-error');
+				}
+				if ('street' in errors) {
+					var addrErr = "#" + form + " input[name=geocompleted]";
+					$(addrErr).closest('.form-group').addClass('has-error');
+				}
+				if ('postal_code' in errors) {
+					var addrErr = "#" + form + " input[name=geocompleted]";
+					$(addrErr).closest('.form-group').addClass('has-error');
+				}
+			}
+		});
 	};
 
 	/**
-	 *	Place Order
+	 *	Places Order
 	 */
+
 	function placeOrder() {
 		orderMain.parcel = getParcel();
 		orderMain.delivery_date = $('#details input[name=date]').val();
@@ -10172,18 +10245,31 @@
 			contentType: 'application/json',
 			data: JSON.stringify(orderMain),
 			success: function success(response) {
+				console.log('__ORDER_PLACED__');
 				// Set Order ID
-				console.log('ORDER PLACED \n');
-				console.log(response);
-				console.log('\n');
-
 				orderPK = response.id;
+				// Add Rates to Form
 				var rates = response.rates;
-				buildRates(rates);
-				$('.stepOne').hide(300);
+				var trHTML = '';
+				var trHEAD = 'local-rates';
+				if (!isLocal) {
+					$.each(rates, function (_, rate) {
+						trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>' + rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service + '</td><td>' + rate.days + '</td></tr>';
+					});
+					trHEAD = 'non-local-rates';
+				} else {
+					$.each(rates, function (_, rate) {
+						trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.service + '"></td><td>' + rate.service + '</td><td>' + rate.price + '</td></tr>';
+					});
+				}
+				// Build Table
+				$('#' + trHEAD).show(300);
+				$('#rates').append(trHTML);
+				exports.phase = phase += 1;
+				switchPhase(phase);
 			},
 			error: function error(_error2) {
-				console.log('ERROR IN ORDER CALL: \n');
+				console.log('ORDER CALL ERROR:\n');
 				console.log(_error2.responseText);
 				console.log('\n');
 				if ('delivery_date' in _error2.responseJSON) {
@@ -10192,6 +10278,10 @@
 			}
 		});
 	}
+
+	/**
+	 *	Purchases Order
+	 */
 
 	function purchaseOrder(rate) {
 		$.ajax({
@@ -10205,11 +10295,11 @@
 				"rate_id": rate
 			}),
 			success: function success(response) {
-				$('.stepOne, .stepTwo').hide(300);
-				$('.stepThree').show(300);
+				exports.phase = phase += 1;
+				switchPhase(phase);
 			},
 			error: function error(_error3) {
-				console.log('ERROR IN PURCHASE CALL: \n');
+				console.log('PURCHASE CALL ERROR:\n');
 				console.log(_error3.responseText);
 				console.log('\n');
 				console.log(_error3);
