@@ -10179,27 +10179,32 @@
 			data: obj,
 			success: function success(data) {
 				// callSuccess(data, form)
+				console.log('FORM: ' + form);
 				switch (form) {
 					case "start":
 						orderMain.pickup = data.id;
+						console.log('pickup address:');
 						console.log(orderMain.pickup);
+						break;
 					case "end":
 						data.city != "Toronto" ? exports.isLocal = isLocal = false : exports.isLocal = isLocal = true;
+						console.log('dropoff address:');
 						orderMain.dropoff = data.id;
 						console.log(orderMain.dropoff);
+						break;
 					default:
-						exports.addressesLeft = addressesLeft -= 1;
-						// Initialize Map
-						var selector = '#' + form + ' ';
-						var mapURL = $.staticMap({
-							address: $(selector + ' input[name=geocompleted]').val(),
-							zoom: 18,
-							height: 200,
-							width: 300
-						});
-						$(selector + ' .address-map').attr('src', mapURL);
-					// console.log("FORM NAME NOT RECOGNIZED")
+						console.log("FORM NAME NOT RECOGNIZED");
 				}
+				exports.addressesLeft = addressesLeft -= 1;
+				// Initialize Map
+				var selector = '#' + form + ' ';
+				var mapURL = $.staticMap({
+					address: $(selector + ' input[name=geocompleted]').val(),
+					zoom: 18,
+					height: 200,
+					width: 300
+				});
+				$(selector + ' .address-map').attr('src', mapURL);
 				if (addressesLeft == 0) {
 					// $( selector + '.stepOne' ).hide(300)
 					// $( selector + '.stepTwo' ).show(300)

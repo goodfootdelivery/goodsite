@@ -210,27 +210,32 @@ export function setAddr(form) {
 		data: obj,
 		success: function(data) {
 			// callSuccess(data, form)
+			console.log('FORM: ' + form)
 			switch (form){
 				case "start":
 					orderMain.pickup = data.id
+					console.log('pickup address:')
 					console.log(orderMain.pickup)
+					break
 				case "end":
 					( data.city != "Toronto" )? isLocal = false : isLocal = true
+					console.log('dropoff address:')
 					orderMain.dropoff = data.id
 					console.log(orderMain.dropoff)
+					break
 				default:
-					addressesLeft -= 1
-					// Initialize Map
-					let selector = '#' + form + ' '
-					let mapURL = $.staticMap({
-							address: $( selector + ' input[name=geocompleted]' ).val(),
-							zoom: 18,
-							height: 200,
-							width: 300
-						});
-					$( selector + ' .address-map' ).attr('src', mapURL)
-					// console.log("FORM NAME NOT RECOGNIZED")
+					console.log("FORM NAME NOT RECOGNIZED")
 			}
+			addressesLeft -= 1
+			// Initialize Map
+			let selector = '#' + form + ' '
+			let mapURL = $.staticMap({
+					address: $( selector + ' input[name=geocompleted]' ).val(),
+					zoom: 18,
+					height: 200,
+					width: 300
+				});
+			$( selector + ' .address-map' ).attr('src', mapURL)
 			if (addressesLeft == 0){
 				// $( selector + '.stepOne' ).hide(300)
 				// $( selector + '.stepTwo' ).show(300)
