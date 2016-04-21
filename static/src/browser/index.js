@@ -80,9 +80,6 @@ $(() => {
 
 
 	$( '#back' ).click(function(){});
-	// Address Building
-	// setAddr('addresses', $( '#start' ).serialize(), 'start')
-	// placeOrder()
 
 
 });

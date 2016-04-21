@@ -3,8 +3,8 @@
  *					Wed  9 Mar 12:39:04 2016
  */
 
-const API_BASE = 'http://localhost:8000/api/'
-// const API_BASE = 'http://69c420b0.ngrok.io/api/'
+// const API_BASE = 'http://localhost:8000/api/'
+const API_BASE = 'http://order.goodfootdelivery.com/api/'
 
 const SML_PARCEL = { "length": 1.00, "width": 1.00, "height": 1.00, "weight": 1.00 }
 const MED_PARCEL = { "length": 2.00, "width": 2.00, "height": 2.00, "weight": 2.00 }
@@ -25,65 +25,6 @@ export const orderMain = {
 	delivery_date: null,
 	ready_time_start: null
 }
-/*
- *	GOODFOOT API HELPERS
- */
-
-// function callSuccess(data, form){
-// 	// Apply Validation & Initiate Next Request
-// 	switch (form) {
-// 		case "start":
-// 			orderMain.pickup = data.id
-// 			setAddr('addresses', $( '#end' ).serialize(), 'end')
-// 			break;
-// 		case "end":
-// 			orderMain.dropoff = data.id;
-// 			( data.city != "Toronto" )? isLocal = false : isLocal = true
-// 			// place order when request are complete
-// 			placeOrder()
-// 			break;
-// 		default:
-// 			console.log('Form Name Not Recognized')
-// 	}
-
-// 	// Initialize Map
-// 	let selector = '#' + form + ' '
-// 	let mapURL = $.staticMap({
-// 			address: $( selector + ' input[name=geocompleted]' ).val(),
-// 			zoom: 18,
-// 			height: 200,
-// 			width: 300
-// 		});
-// 	$( selector + ' .address-map' ).attr('src', mapURL)
-
-// 	// Swap Form for Map
-// 	$( selector + '.stepOne' ).hide(300)
-// 	$( selector + '.stepTwo' ).show(300)
-// }
-
-
-// const buildRates = (rates) => {
-// 	// Table Header and Row Initializers
-// 	let trHTML = '';
-// 	let trHEAD = 'local-rates';
-// 	if (!isLocal){
-// 		$.each(rates, function (_, rate) {
-// 			trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.id + '"></td><td>'
-// 				+ rate.carrier + '</td><td>' + '$' + rate.rate + '</td><td>' + rate.service + 
-// 				'</td><td>' + rate.days + '</td></tr>';
-// 		});
-// 		trHEAD = 'non-local-rates'
-// 	} else {
-// 		$.each(rates, function (_, rate) {
-// 			trHTML += '<tr><td><input type="radio" name="rate" value="' + rate.service + '"></td><td>' +
-// 				rate.service + '</td><td>' + rate.price + '</td></tr>';
-// 		});
-// 	}
-// 	// Build Table
-// 	$( '#' + trHEAD ).show(300)
-// 	$('#rates').append(trHTML);
-// 	$( '.stepTwo' ).show(300)
-// }
 
 
 
@@ -166,6 +107,7 @@ const switchPhase = (phase) => {
 			break
 		case 2:
 			$( '.stepOne' ).hide(300)
+			$( '.stepZero' ).show(300)
 			$( '.stepTwo' ).show(300)
 			break
 		case 3:
@@ -174,6 +116,7 @@ const switchPhase = (phase) => {
 			break
 		case 4:
 			$( '.stepThree' ).hide(300)
+			$( '.stepZero' ).hide(300)
 			$( '.stepFour' ).show(300)
 			break
 		default:
@@ -236,9 +179,11 @@ export function setAddr(form) {
 					width: 300
 				});
 			$( selector + ' .address-map' ).attr('src', mapURL)
-			if (addressesLeft == 0){
-				// $( selector + '.stepOne' ).hide(300)
-				// $( selector + '.stepTwo' ).show(300)
+			// if (addressesLeft == 0){
+			// 	phase +=1
+			// 	switchPhase(phase)
+			// }
+			if (orderMain.pickup != null && orderMain.dropoff != null ){
 				phase +=1
 				switchPhase(phase)
 			}

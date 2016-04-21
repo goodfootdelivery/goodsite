@@ -18,12 +18,12 @@
 			<div class="row">
 		<!-- <pickup></pickup> -->
 				<form id='start' class="pickup col-xs-6">
-					<legend>Pickup</legend>
+					<legend class="stepZero">Pickup</legend>
 					{% include "delivery/addressForm.html" %}
 				</form>
 		<!-- <dropoff></dropoff> -->
 				<form id='end' class="col-xs-6">
-					<legend>Dropoff</legend>
+					<legend class="stepZero">Dropoff</legend>
 					{% include "delivery/addressForm.html" %}
 				</form>
 			</div>
@@ -51,7 +51,7 @@
 	<section>
 			<div class="container row">
 				<div class="col-xs-6">
-					<button id="back" style="margin:auto" type="button" class="btn btn-danger">Back</button>
+					<!-- <button id="back" style="margin:auto" type="button" class="btn btn-danger">Back</button> -->
 				</div>
 				<div class="col-xs-6">
 					<button id="next" style="float:right" type="button" class="btn btn-primary">Next</button>
