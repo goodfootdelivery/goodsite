@@ -14,14 +14,29 @@ import datetime
 
 POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"
 
+class Place(models.Model):
+    google_id = models.CharField(primary_key=True, max_length=200)
+    address = models.CharField(max_length=200, null=True)
+    comments = models.CharField(max_length=2000, null=True)
+
+    def __str__(self):
+        return 'Address Instructions:\n\t%s' % (self.comments)
+
 
 # Address Model
 
 
 class Address(models.Model):
+    BOOK = (
+            ('PI', 'Pickup'),
+            ('DR', 'Dropoff'),
+    )
     user = models.ForeignKey('auth.User', null=True, related_name='addresses')
+    place = models.ForeignKey(Place, null=True)
+    saved = models.CharField(max_length=10, null=True, choices=BOOK, default='PI')
     # Contact
     name = models.CharField(max_length=50)
+    company = models.CharField(max_length=50, null=True, blank=True)
     phone = models.CharField(max_length=12, null=True)
     # Address
     street = models.CharField(max_length=100)
@@ -83,15 +98,14 @@ class Order(models.Model):
     SERVICES = (
             ('BASIC', 'Basic'),
             ('EXPRESS', 'Express'),
-        )
-
+    )
     STATUSES = (
             ('RE', 'Recieved'),     #
             ('AS', 'Assigned'),     ## Active
             ('TR', 'In Transit'),   #
             ('DE', 'Delivered'),    # Outstanding
             ('PD', 'Paid'),         # Cleared
-        )
+    )
     user = models.ForeignKey('auth.User', null=True, blank=True, related_name='user')
     courier = models.ForeignKey(User, null=True,
                                 limit_choices_to={'groups__name': 'Couriers'}, related_name='courier')
@@ -105,7 +119,7 @@ class Order(models.Model):
     ready_time_end = models.TimeField(default=datetime.time(18,00))
     comments = models.CharField(max_length=200, blank=True)
     price = models.FloatField(null=True)
-    service = models.CharField(max_length=10, choices=SERVICES, null='BASIC')
+    service = models.CharField(max_length=10, choices=SERVICES, default='BASIC')
     status = models.CharField(max_length=2, choices=STATUSES, default='RE')
     invoice_line = models.CharField(max_length=5000, null=True)
     invoice_id = models.ForeignKey(Invoice, null=True, blank=True)

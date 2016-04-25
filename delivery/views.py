@@ -21,28 +21,29 @@ TEST_EP_KEY = 'yARJbUTstAI0WNeVQLxK4g'
 
 class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
+    # permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
 
     def get_queryset(self):
-        user = self.request.user
-        return Address.objects.filter(user=user)
+        # user = self.request.user
+        # return Address.objects.filter(user=user)
+        return Address.objects.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
 
 # ORDER VIEWS
 
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
-    permission_classes = (permissions.IsAuthenticated,
-                          IsOwnerOrReadOnly)
+    # permission_classes = (permissions.IsAuthenticated, IsOwnerOrReadOnly)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user.id)
+        # return Order.objects.filter(user=self.request.user.id)
+        return Order.objects.all()
 
     def update(self, request, pk=None):
         order = Order.objects.get(pk=pk)
@@ -57,7 +58,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         order = serializer.save()
         data = {
-            'status': 'ORDER_PURCHASED',
+            'status': 'PURCHASED',
             "order": order.id,
             "price": order.price
         }

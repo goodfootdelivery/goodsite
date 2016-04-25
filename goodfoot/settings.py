@@ -6,6 +6,7 @@
 
 import os
 import socket
+import dj_database_url
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -27,12 +28,13 @@ if socket.gethostname() == 'box3045.bluehost.com':
     STATIC_ROOT = os.path.join('/home2/goodfop0/public_html/gamma/site_media/static')
 
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": "dev.db",
-        }
-    }
+    # DATABASES = {
+    #     "default": {
+    #         "ENGINE": "django.db.backends.sqlite3",
+    #         "NAME": "dev.db",
+    #     }
+    # }
+    DATABASES['default'] = dj_database_url.config()
 
     DEBUG = True
     STATIC_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "static")
@@ -121,6 +123,8 @@ TEMPLATES = [
 
 MIDDLEWARE_CLASSES = [
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # Cors
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -146,6 +150,7 @@ INSTALLED_APPS = [
 
     # api
     'rest_framework',
+    'corsheaders',
 
     # theme
     "bootstrapform",
@@ -232,3 +237,6 @@ REST_FRAMEWORK = {
 # TWITTER_OAUTH_SECRET = 'QNDPgm2u9evoLgRG949pfwglWx1W62QKIVkSq6aycpZgC'
 # TWITTER_CONSUMER_KEY = '5NtWawCQr4jRQNcxHltofbH5B'
 # TWITTER_CONSUMER_SECRET = 'AIvZjSWPXCAn3EiWeO3Sc7VGnClrIOHPQH3MIBe5yZ6kUJdGkm'
+
+# Cors Settings
+CORS_ORIGIN_ALLOW_ALL = True

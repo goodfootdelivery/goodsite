@@ -5,6 +5,7 @@ django-appconf==1.0.1
 django-bootstrap-form==3.2
 django-braces==1.8.1
 django-classy-tags==0.7.0
+django-cors-headers==1.1.0
 django-grappelli==2.7.3
 django-jsonfield==0.9.15
 django-leaflet==0.18.0

@@ -21,26 +21,32 @@ OFFICE_LONG = {
 }
 
 
+
 # Google Services
 
 
-# Accepts Two Strings
+
 class GoogleService(object):
     @staticmethod
-    def get_distance(pickup, dropoff):
+    def get_hours(pickup, dropoff):
         client = googlemaps.Client(key=GKEY)
         dist_mat = client.distance_matrix(pickup, dropoff, mode='transit')
 
         if not dist_mat['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
-            return dist_mat['rows'][0]['elements'][0]['duration']['value']
+            seconds = dist_mat['rows'][0]['elements'][0]['duration']['value']
+            return seconds / 3600.00
         else:
             raise Exception('Googlemaps Error')
 
     @staticmethod
     def get_local_rates(pickup, dropoff=OFFICE_SHORT):
         prices = []
-        seconds = GoogleService.get_distance(pickup, dropoff)
-        hours = seconds / 3600.00
+        hours = GoogleService.get_hours(pickup, dropoff)
+        long_distance_trigger = 1.2
+        hourly_rate = 16.00
+
+        if hours > long_distance_trigger:
+            pass
 
         nd_rate = round( hours*20.00, 3 )
         if 8.50 > nd_rate:
@@ -51,19 +57,21 @@ class GoogleService(object):
             prices.append({'service': 'BASIC', 'price': nd_rate})
 
         ex_rate = round( hours*25.00, 3 )
-        if 15.00 > nd_rate:
+        if 15.00 > ex_rate:
             prices.append({'service': 'EXPRESS', 'price': 15.00})
-        elif 60.00 < nd_rate:
+        elif 60.00 < ex_rate:
             prices.append({'service': 'EXPRESS', 'price': 60.00})
         else:
             prices.append({'service': 'EXPRESS', 'price': ex_rate})
         return prices
 
 
+
+
 # EasyPost Services
 
 
-# Accepts a Dict of Strs
+
 class EasypostService(object):
     # create Easypost Address
     @staticmethod

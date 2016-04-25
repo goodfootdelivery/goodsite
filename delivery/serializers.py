@@ -21,21 +21,23 @@ easypost.api_key = TEST_EP_KEY
 
 class AddressSerializer(serializers.ModelSerializer):
     easypost_id = serializers.ReadOnlyField()
+    google_id = serializers.CharField()
     class Meta:
         model = Address
         fields = ( 'id', 'easypost_id', 'street', 'unit', 'postal', 'prov', 'country',
-                  'city', 'name', 'phone', )
+                  'city', 'name', 'phone', 'google_id' )
+
+    def create(self, validated_data):
+        pass
 
     def validate(self, data):
-        # if self.city.upper() == 'TORONTO':
-        #     return data
-        # else:
         try:
             easypost_id = EasypostService.create_address(**data)
             data.update({'easypost_id':easypost_id})
         except Exception as e:
             raise ValidationError({'Easypost Address Error': e})
-        return data
+        else:
+            return data
 
 
 ### PARCEL SERIALIZER ###
@@ -60,7 +62,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ( 'id', 'pickup', 'dropoff', 'parcel', 'order_date',
+        fields = ( 'id', 'pickup', 'dropoff', 'parcel', 'order_date', 'comments',
                         'price', 'ready_time_start', 'ready_time_end', 'delivery_date', 'service', 'rates')
         depth = 1
 
@@ -79,6 +81,14 @@ class OrderSerializer(serializers.ModelSerializer):
     def validate_pickup(self, value):
         if not value.is_local():
             raise ValidationError('Pickup Address Not Local')
+        return value
+
+    def validate_delivery_date(self, value):
+        print
+        print 'DELIVERY DATE:'
+        print value
+        print type(value)
+        print
         return value
 
     def validate(self, data):
@@ -115,7 +125,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class RateSerializer(serializers.BaseSerializer):
     def to_internal_value(self, data):
-        print data
         rate_id = data.get('rate_id')
         order = data.get('order')
         shipment = data.get('shipment')
