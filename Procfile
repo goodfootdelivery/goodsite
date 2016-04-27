@@ -1,0 +1,1 @@
+web: gunicorn goodfoot.wsgi --log-file -

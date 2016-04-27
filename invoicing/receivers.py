@@ -1,7 +1,7 @@
 from django.dispatch import receiver
 
-from account.signals import email_confirmed, user_signed_up
-from pinax.eventlog.models import log
+# from account.signals import email_confirmed, user_signed_up
+# from pinax.eventlog.models import log
 
 from delivery.models import Order
 from delivery.signals import order_purchased
@@ -24,29 +24,3 @@ def handle_order_purchased(sender, **kwargs):
     # Query If Request Passed
     if order:
         order.save()
-
-
-# Create New Client on Initial Login
-
-@receiver(user_signed_up)
-def handle_user_signed_up(sender, **kwargs):
-    log(
-        user=kwargs.get("user"),
-        action="USER_SIGNED_UP",
-        extra={}
-    )
-    client = Client.register(kwargs.get("user"))
-    # Query If Request Passed
-    if client:
-        client.save()
-
-
-# Verify Client upon Email Confirmation
-
-@receiver(email_confirmed)
-def handle_email_confirmed(sender, **kwargs):
-    log(
-        user=kwargs.get("user"),
-        action="EMAIL_CONFIRMED",
-        extra={}
-    )

@@ -1,52 +1,33 @@
 from rest_framework.exceptions import APIException
 from .models import Order, Address, Parcel, Shipment
+from goodfoot.settings import OFFICE_SHORT, OFFICE_LONG, G_KEY, EP_KEY
 import googlemaps
 import easypost
 
-GKEY = 'AIzaSyAF5a1ktypMvsvnMMnoaFGHkmt_9vnWfok'
-TEST_EP_KEY = 'OJwynagQo2hRGHBnKbAiHg'
-
-easypost.api_key = TEST_EP_KEY
-
-OFFICE_SHORT = '720 Bathurst St, Toronto, ON M5S 2R4, CA'
-OFFICE_LONG = {
-    'name' : 'GoodFoot Delivery Office',
-    'phone' : '416 572 3771',
-    'street1' : '720 Bathurst St',
-    'street2' : '411',
-    'city' : 'Toronto',
-    'state' : 'ON',
-    'country' : 'Canada',
-    'zip' : 'M5S 2R4'
-}
-
+easypost.api_key = EP_KEY
 
 
 # Google Services
 
 
-
 class GoogleService(object):
     @staticmethod
-    def get_hours(pickup, dropoff):
-        client = googlemaps.Client(key=GKEY)
+    def get_distance(pickup, dropoff):
+        client = googlemaps.Client(key=G_KEY)
         dist_mat = client.distance_matrix(pickup, dropoff, mode='transit')
 
         if not dist_mat['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
-            seconds = dist_mat['rows'][0]['elements'][0]['duration']['value']
-            return seconds / 3600.00
+            return dist_mat['rows'][0]['elements'][0]['duration']['value']
         else:
             raise Exception('Googlemaps Error')
 
     @staticmethod
     def get_local_rates(pickup, dropoff=OFFICE_SHORT):
         prices = []
-        hours = GoogleService.get_hours(pickup, dropoff)
+        seconds = GoogleService.get_distance(pickup, dropoff)
         long_distance_trigger = 1.2
         hourly_rate = 16.00
-
-        if hours > long_distance_trigger:
-            pass
+        hours = seconds / 3600.00
 
         nd_rate = round( hours*20.00, 3 )
         if 8.50 > nd_rate:
@@ -57,14 +38,13 @@ class GoogleService(object):
             prices.append({'service': 'BASIC', 'price': nd_rate})
 
         ex_rate = round( hours*25.00, 3 )
-        if 15.00 > ex_rate:
+        if 15.00 > nd_rate:
             prices.append({'service': 'EXPRESS', 'price': 15.00})
-        elif 60.00 < ex_rate:
+        elif 60.00 < nd_rate:
             prices.append({'service': 'EXPRESS', 'price': 60.00})
         else:
             prices.append({'service': 'EXPRESS', 'price': ex_rate})
         return prices
-
 
 
 

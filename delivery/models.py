@@ -14,13 +14,15 @@ import datetime
 
 POSTAL_REGEX = "[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"
 
+
 class Place(models.Model):
     google_id = models.CharField(primary_key=True, max_length=200)
-    address = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=200, null=True)
     comments = models.CharField(max_length=2000, null=True)
 
     def __str__(self):
         return 'Address Instructions:\n\t%s' % (self.comments)
+
 
 
 # Address Model
@@ -32,7 +34,7 @@ class Address(models.Model):
             ('DR', 'Dropoff'),
     )
     user = models.ForeignKey('auth.User', null=True, related_name='addresses')
-    place = models.ForeignKey(Place, null=True)
+    place = models.ForeignKey(Place, null=True, blank=True)
     saved = models.CharField(max_length=10, null=True, choices=BOOK, default='PI')
     # Contact
     name = models.CharField(max_length=50)

@@ -21,14 +21,13 @@ easypost.api_key = TEST_EP_KEY
 
 class AddressSerializer(serializers.ModelSerializer):
     easypost_id = serializers.ReadOnlyField()
-    google_id = serializers.CharField()
     class Meta:
         model = Address
         fields = ( 'id', 'easypost_id', 'street', 'unit', 'postal', 'prov', 'country',
-                  'city', 'name', 'phone', 'google_id' )
+                  'city', 'name', 'phone', 'place' )
 
-    def create(self, validated_data):
-        pass
+    # def create(self, validated_data):
+    #     pass
 
     def validate(self, data):
         try:
