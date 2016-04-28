@@ -12,8 +12,9 @@ urlpatterns = [
 
     url(r'^grappelli/', include('grappelli.urls')),
     url(r"^admin/", include(admin.site.urls)),
-    # url(r"^account/", include("account.urls")),
+    url('^auth/registrations//(?P<username>.+)/$', PurchaseList.as_view()),
     url(r'^auth/', include('rest_auth.urls')),
+    url(r'^auth/registration/', include('rest_auth.registration.urls')),
 
     # API
     url(r'^delivery/', include('delivery.urls')),

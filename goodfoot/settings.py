@@ -55,8 +55,14 @@ else:
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "0i+s(u^($6&7@uy-vrujwo^!h16n5yk=7j4y3g0@evpvgu_2pl"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Site ID
+SITE_ID = 1
+
+# Email Settings
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Grappelli Settings
+GRAPPELLI_ADMIN_TITLE = 'GoodFoot Delivery'
 
 # Application definition
 
@@ -67,12 +73,17 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.messages",
     "django.contrib.sessions",
+    "django.contrib.sites",
     "django.contrib.staticfiles",
     # api
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_auth',
     'corsheaders',
+    # auth
+    'allauth',
+    'allauth.account',
+    'rest_auth',
+    'rest_auth.registration',
     # theme
     "bootstrapform",
     # external
@@ -142,13 +153,14 @@ ALLOWED_HOSTS = ['*']
 # Cors Settings
 CORS_ORIGIN_ALLOW_ALL = True
 
-
 # REST Settings
-
 
 REST_FRAMEWORK = {
     'PAGE_SIZE': 20
 }
+
+# All Auth Settings
+# ACCOUNT_LOGIN_ON_EMAIL
 
 
 # Static files (CSS, JavaScript, Images)

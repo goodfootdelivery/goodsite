@@ -1,7 +1,9 @@
 from django.dispatch import receiver
-
+from django.core.exceptions import ObjectDoesNotExist
 # from account.signals import email_confirmed, user_signed_up
 # from pinax.eventlog.models import log
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
 
 from delivery.models import Order
 from delivery.signals import order_purchased
@@ -24,3 +26,10 @@ def handle_order_purchased(sender, **kwargs):
     # Query If Request Passed
     if order:
         order.save()
+
+@receiver(post_save, sender=User, dispatch_uid='create_client')
+def create_client(sender, instance, **kwargs):
+    try:
+        Client.objects.get(user=instance)
+    except ObjectDoesNotExist:
+        pass

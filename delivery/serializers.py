@@ -52,8 +52,6 @@ class ParcelSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     pickup = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     dropoff = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
-    # pickup = AddressSerializer()
-    # dropoff = AddressSerializer()
     parcel = ParcelSerializer()
     service = serializers.ReadOnlyField()
     price = serializers.ReadOnlyField()
@@ -83,11 +81,13 @@ class OrderSerializer(serializers.ModelSerializer):
         return value
 
     def validate_delivery_date(self, value):
+        # TESTING #
         print
         print 'DELIVERY DATE:'
         print value
         print type(value)
         print
+        # TESTING #
         return value
 
     def validate(self, data):
